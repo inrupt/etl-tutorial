@@ -1,0 +1,166 @@
+prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+prefix xsd: <http://www.w3.org/2001/XMLSchema#>
+prefix owl: <http://www.w3.org/2002/07/owl#>
+prefix dcterms: <http://purl.org/dc/terms/>
+prefix vann: <http://purl.org/vocab/vann/>
+
+prefix inrupt_common: <https://inrupt.com/vocab/common#>
+
+prefix inrupt_gen: <https://inrupt.com/vocab/tool/artifact_generator#>
+prefix lowes_inrupt_ext: <https://w3id.org/lowes/vocab/extension/inrupt#>
+
+#
+# Extensions deliberately add (i.e., extend) existing terms in existing
+# vocabularies, specifically to add extra features, such as multilingual
+# values for labels and comments.
+#
+# So we very deliberately re-use the underlying vocab's namespace, but use our
+# own prefix to try and differentiate.
+#
+lowes_inrupt_ext: a owl:Ontology, inrupt_gen:Ontology ;
+    owl:versionInfo "0.0.1" ;
+    owl:versionIRI <https://inrupt.com/vocab/extension/schema/0.0.1> ;
+    dcterms:creator <https://inrupt.com/profile/card/#us> ;
+    dcterms:issued "2021/10/15"^^xsd:date ;
+    dcterms:title "Lowe's extension to the Inrupt Common vocabulary" ;
+    dcterms:description """Lowe's extension to Inrupt terms, allowing us quickly and
+ easily use terms we believe should be included in Inrupt's vocabularies, but without us having to
+ wait for them to be officially included and released by Inrupt.""" ;
+    vann:preferredNamespacePrefix "inrupt_common" ;
+    vann:preferredNamespaceUri "https://inrupt.com/vocab/common#" ;
+    dcterms:license "http://www.opendatacommons.org/licenses/pddl/" .
+
+#
+# NOTE: All the terms here actually belong in the Inrupt Common vocabulary,
+# but we're defining them here just for convenience until we move them all
+# en-masse to Inrupt Common and re-publish new versions of that bundle
+# publicly.
+#
+
+inrupt_common:webId a rdf:Property, owl:ObjectProperty ;
+    rdfs:isDefinedBy inrupt_common: ;
+    rdfs:label "WebID"@en ;
+    rdfs:label "WebID"@es ;
+    rdfs:comment "A WebID is an identifier, typically for the owner of a Solid Pod (e.g., could be an individual, or a company, or an application, etc.)."@en ;
+    rdfs:comment "Un WebID es un identificador, generalmente para el propietario de un Solid Pod (por ejemplo, podría ser un individuo, una empresa, una aplicación, etc.)."@es .
+
+
+inrupt_common:storageRoot a rdf:Property, owl:ObjectProperty ;
+    rdfs:isDefinedBy inrupt_common: ;
+    rdfs:label "Storage root"@en ;
+    rdfs:label "Raíz de almacenamiento"@es ;
+    rdfs:comment "The IRI of the root resource of a Solid Pod."@en ;
+    rdfs:comment "El IRI del recurso raíz de un Solid Pod."@es .
+
+inrupt_common:CredentialResource a rdfs:Class, owl:Class ;
+    rdfs:isDefinedBy inrupt_common: ;
+    rdfs:label "Class of Credential Resources"@en ;
+    rdfs:label "Clase de recursos de credenciales"@es ;
+    rdfs:comment """A credential resource contains credentials needed to access various APIs or services, which can include APIs provided by 3rd-parties, or credentials to act as a registered application, etc."""@en ;
+    rdfs:comment """Un recurso de credenciales contiene las credenciales necesarias para acceder a varias API o servicios, que pueden incluir API proporcionadas por terceros o credenciales para actuar como una aplicación registrada, etc."""@es .
+
+inrupt_common:clientId a rdf:Property, owl:ObjectProperty ;
+    rdfs:isDefinedBy inrupt_common: ;
+    rdfs:label "Client ID"@en ;
+    rdfs:label "Client ID"@es ;
+    rdfs:comment "The OIDC client identifier value, used by registered client applications to identify themselves to an identity provider."@en ;
+    rdfs:comment "El valor del identificador de cliente de OIDC, utilizado por las aplicaciones de cliente registradas para identificarse ante un proveedor de identidad."@es .
+
+inrupt_common:clientSecret a rdf:Property, owl:ObjectProperty ;
+    rdfs:isDefinedBy inrupt_common: ;
+    rdfs:label "Client secret"@en ;
+    rdfs:label "Secreta del cliente"@es ;
+    rdfs:comment "The OIDC client secret value, used by registered client applications to authenticate themselves to an identity provider."@en ;
+    rdfs:comment "El valor secreto del cliente OIDC, utilizado por las aplicaciones cliente registradas para autenticarse ante un proveedor de identidad."@es .
+
+inrupt_common:triplestoreEndpointUpdate a rdf:Property, owl:ObjectProperty ;
+    rdfs:isDefinedBy inrupt_common: ;
+    rdfs:label "Triplestore endpoint update"@en ;
+    rdfs:label "Actualización del punto final de Triplestore"@es ;
+    rdfs:comment "This should be a string representation of the endpoint URL for triplestore update requests."@en ;
+    rdfs:comment "Debe ser una representación de cadena de la URL del punto final para las solicitudes de actualización de triplestore."@es .
+
+inrupt_common:triplestoreNamedGraph a rdf:Property, owl:ObjectProperty ;
+    rdfs:isDefinedBy inrupt_common: ;
+    rdfs:label "Triplestore Named Graph"@en ;
+    rdfs:label "Gráfico con nombre de Triplestore"@es ;
+    rdfs:comment "Named graph to use to represent an individual Solid Pod (e.g., multiple users can have their Pods within their own Named Graph in a single triplestore database instance)."@en ;
+    rdfs:comment "Gráfico con nombre que se utiliza para representar un Solid Pod individual (p. Ej., Varios usuarios pueden tener sus Pods dentro de su propio Gráfico con nombre en una única instancia de base de datos de triple almacén)."@es .
+
+
+inrupt_common:NotificationContainer a rdf:Class, owl:Class ;
+    rdfs:isDefinedBy inrupt_common: ;
+    rdfs:label "Notification container"@en ;
+    rdfs:label "Contenedor de notificaciones"@es ;
+    rdfs:comment "The class of notification containers."@en ;
+    rdfs:comment "La clase de contenedores de notificación."@es .
+
+
+inrupt_common:eventSource a rdf:Property, owl:ObjectProperty ;
+    rdfs:isDefinedBy inrupt_common: ;
+    rdfs:label "Event source"@en ;
+    rdfs:label "Origen del evento"@es ;
+    rdfs:comment "The source of an event, represented as an IRI identifying that source (e.g., some 3rd party API)."@en ;
+    rdfs:comment "La fuente de un evento, representada como un IRI que identifica esa fuente (por ejemplo, alguna API de terceros)."@es .
+
+
+inrupt_common:eventType a rdf:Property, owl:ObjectProperty ;
+    rdfs:isDefinedBy inrupt_common: ;
+    rdfs:label "Event type"@en ;
+    rdfs:label "Tipo de evento"@es ;
+    rdfs:comment "The specific type of event (e.g., a water leak detected, or an appliance turning on or off, etc.)."@en ;
+    rdfs:comment "El tipo específico de evento (por ejemplo, una fuga de agua detectada o un aparato que se enciende o apaga, etc.)."@es .
+
+inrupt_common:dataSource a rdf:Property, owl:ObjectProperty ;
+    rdfs:isDefinedBy inrupt_common: ;
+    rdfs:label "Data source"@en ;
+    rdfs:label "Fuente de datos"@es ;
+    rdfs:comment "References a data source (e.g., some 3rd-party data that we've ingested)."@en ;
+    rdfs:comment "Hace referencia a una fuente de datos (por ejemplo, algunos datos de terceros que hemos ingerido)."@es .
+
+#
+# When we perform Extract, Transform, and Load (ETL) to populate a user Pod,
+# it can be very common for process to be runnable for a simple hierarchy of
+# application-specific instances.
+# For example, for a generic Home Data application, we might expect a simple
+# hierarchy based on a number of homes a user might own (e.g., their primary
+# dwelling, a vaction home, and a rental property), and so our ETL process
+# might run once for each home.
+#
+inrupt_common:DataHierarchyFirst a rdfs:Class, owl:Class ;
+    rdfs:isDefinedBy inrupt_common: ;
+    rdfs:label "The class of Data Hierarchy First"@en ;
+    rdfs:label "La clase de jerarquía de datos primero"@es ;
+    rdfs:comment "The first level of our data hierarchy (e.g., for Home Data, this might be a container per home we own)."@en ;
+    rdfs:comment "El primer nivel de nuestra jerarquía de datos (por ejemplo, para Home Data, esto podría ser un contenedor por casa que poseemos)."@es .
+
+inrupt_common:dataHierarchyFirst a rdfs:Class, owl:Class ;
+    rdfs:isDefinedBy inrupt_common: ;
+    rdfs:label "Data Hierarchy First"@en ;
+    rdfs:label "Jerarquía de datos primero"@es ;
+    rdfs:comment "The first level of our data hierarchy (e.g., for Home Data, this might be a container per home we own)."@en ;
+    rdfs:comment "El primer nivel de nuestra jerarquía de datos (por ejemplo, para Home Data, esto podría ser un contenedor por casa que poseemos)."@es .
+
+
+inrupt_common:archived a rdf:Property, owl:ObjectProperty ;
+   rdfs:isDefinedBy inrupt_common: ;
+   rdfs:label "Archived"@en ;
+   rdfs:label "Archivado"@es ;
+   rdfs:comment "Whether the subject has been marked as archived, without being deleted."@en ;
+   rdfs:comment "Si el asunto se ha marcado como archivado, sin eliminarlo."@es .
+
+inrupt_common:etlPushCredentialResourceToPod a rdf:Property, owl:ObjectProperty ;
+     rdfs:isDefinedBy inrupt_common: ;
+     rdfs:label "ETL - push credential resource to Pod"@en ;
+     rdfs:label "ETL: enviar el recurso de credenciales al Pod"@es ;
+     rdfs:comment "Flag to tell our customer ETL process to push local customer credentials to their Pod."@en ;
+     rdfs:comment "Marcar para indicarle al proceso ETL de nuestro cliente que envíe las credenciales del cliente local a su Pod."@es .
+
+#
+#inrupt_common: a rdf:Property, owl:ObjectProperty ;
+#    rdfs:isDefinedBy inrupt_common: ;
+#    rdfs:label ""@en ;
+#    rdfs:label ""@es ;
+#    rdfs:comment ""@en ;
+#    rdfs:comment ""@es .

@@ -32,9 +32,14 @@ module.exports = {
       statements: 100,
     },
   },
-  coveragePathIgnorePatterns: ["/node_modules/", "<rootDir>/dist"],
+  coveragePathIgnorePatterns: [
+    "/node_modules/",
+    "/src/InruptTooling/",
+    "<rootDir>/dist",
+  ],
   testPathIgnorePatterns: [
     "/node_modules/",
+    "/src/InruptTooling/",
     // By default we only run unit tests:
     "/src/e2e-node/",
     "/src/e2e-browser/",

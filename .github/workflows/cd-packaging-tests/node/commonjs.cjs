@@ -1,5 +1,5 @@
 const {
   sampleModuleFn,
-} = require("@inrupt/template-ts");
+} = require("@inrupt/etl-tutorial");
 
 console.log(sampleModuleFn());

@@ -1,0 +1,32 @@
+{
+ "items_per_page": 20,
+ "kind": "search#companies",
+ "page_number": 1,
+ "items": [
+  {
+   "company_status": "active",
+   "title": "BT LIMITED",
+   "description": "02216369 - Incorporated on  2 February 1988",
+   "company_type": "ltd",
+   "company_number": "02216369",
+   "description_identifier": [
+    "incorporated-on"
+   ],
+   "date_of_creation": "1988-02-02",
+   "links": {
+    "self": "/company/02216369"
+   },
+   "address_snippet": "1 Braham Street, London, United Kingdom, E1 8EE",
+   "kind": "searchresults#company",
+   "address": {
+    "postal_code": "E1 8EE",
+    "locality": "London",
+    "address_line_1": "Braham Street",
+    "premises": "1",
+    "country": "United Kingdom"
+   }
+  }
+ ],
+ "total_results": 1,
+ "start_index": 0
+}

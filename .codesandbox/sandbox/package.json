@@ -1,7 +1,7 @@
 {
-  "name": "template-ts-sandbox",
+  "name": "etl-tutorial-sandbox",
   "version": "1.0.0",
-  "description": "Example project calling out to template-ts",
+  "description": "Example project calling out to etl-tutorial",
   "main": "index.html",
   "scripts": {
     "start": "webpack serve --open-page index.html",
@@ -11,7 +11,7 @@
   "dependencies": {
     "@inrupt/solid-client": "^1.4.0",
     "@inrupt/solid-client-authn-browser": "0.2.2 - 1.x",
-    "@inrupt/template-ts": "file:../.."
+    "@inrupt/etl-tutorial": "file:../.."
   },
   "devDependencies": {
     "buffer": "^6.0.3",

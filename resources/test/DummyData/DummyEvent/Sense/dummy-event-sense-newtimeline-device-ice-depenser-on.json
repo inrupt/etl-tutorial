@@ -1,0 +1,25 @@
+{
+   "payload": {
+     "user_id": 67117,
+     "items_removed": [],
+     "items_added": [
+         {
+             "time": "2021-11-03T22:57:13.676Z",
+             "type": "DeviceOn",
+             "icon": "socket",
+             "body": "Ice Dispenser turned on",
+             "destination": "device:1ea11fc8",
+             "monitor_id": 999111,
+             "device_id": "9df22fc6",
+             "device_state": "DeviceOn",
+             "show_action": false,
+             "allow_sticky": false,
+             "guid": "e12bc5f6-5f32-458c-13f2-c9b280f123da",
+             "user_device_type": "OtherDevice",
+             "device_transition_from_state": "Off"
+           }
+       ],
+     "items_updated": []
+   },
+   "type": "new_timeline_event"
+ }

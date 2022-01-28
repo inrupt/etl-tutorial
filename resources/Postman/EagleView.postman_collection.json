@@ -1,0 +1,153 @@
+{
+	"info": {
+		"_postman_id": "da9ad6e7-3114-440a-bd94-5bd78c5f1da0",
+		"name": "EagleView",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "https://webservices-integrations.eagleview.com/Token",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"var jsonData = pm.response.json();",
+							"",
+							"pm.test(\"Set bearer token as Postman environment variable\", function() {",
+							"    pm.response.to.have.status(200);",
+							"    pm.expect(jsonData.access_token).not.empty.string;",
+							"    pm.environment.set(\"eagleViewAuthToken\", `Bearer ${jsonData.access_token}`);",
+							"})",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Basic {{LOWES_SOURCE_EAGLEVIEW_HTTP_BASIC_TOKEN}}",
+						"type": "text"
+					},
+					{
+						"key": "Accept",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "urlencoded",
+					"urlencoded": [
+						{
+							"key": "grant_type",
+							"value": "password",
+							"type": "text"
+						},
+						{
+							"key": "username",
+							"value": "{{LOWES_SOURCE_EAGLEVIEW_USERNAME}}",
+							"type": "text"
+						},
+						{
+							"key": "password",
+							"value": "{{LOWES_SOURCE_EAGLEVIEW_PASSWORD}}",
+							"type": "text"
+						}
+					]
+				},
+				"url": {
+					"raw": "https://webservices-integrations.eagleview.com/Token",
+					"protocol": "https",
+					"host": [
+						"webservices-integrations",
+						"eagleview",
+						"com"
+					],
+					"path": [
+						"Token"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "https://webservices-integrations.eagleview.com/v2/Product/GetAvailableProducts",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "{{eagleViewAuthToken}}",
+						"type": "text"
+					},
+					{
+						"key": "Accept",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "https://webservices-integrations.eagleview.com/v2/Product/GetAvailableProducts",
+					"protocol": "https",
+					"host": [
+						"webservices-integrations",
+						"eagleview",
+						"com"
+					],
+					"path": [
+						"v2",
+						"Product",
+						"GetAvailableProducts"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "https://webservices-integrations.eagleview.com/v2/Order/PriceOrder",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Authorization",
+						"type": "text",
+						"value": "{{eagleViewAuthToken}}"
+					},
+					{
+						"key": "Accept",
+						"type": "text",
+						"value": "application/json"
+					},
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"OrderReports\": [\n    {\n      \"ReportAddresses\": [\n        {\n          \"Address\": \"some house\",\n          \"City\": \"non-existent\",\n          \"State\": \"Limerick\",\n          \"Zip\": \"not-a-zip-code\",\n          \"Country\": \"Lilliput\",\n          \"AddressType\": 1\n        }],\n      \"PrimaryProductId\": 1,\n      \"DeliveryProductId\": 8,\n      \"MeasurementInstructionType\": 1,\n      \"ChangesInLast4Years\": true\n    }]\n}\n"
+				},
+				"url": {
+					"raw": "https://webservices-integrations.eagleview.com/v2/Order/PriceOrder",
+					"protocol": "https",
+					"host": [
+						"webservices-integrations",
+						"eagleview",
+						"com"
+					],
+					"path": [
+						"v2",
+						"Order",
+						"PriceOrder"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}

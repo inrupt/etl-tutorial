@@ -1,0 +1,14 @@
+{
+  "id": 1823465,
+  "device_id": "6716198879371749925",
+  "triggered_datetime": "2021-05-08T03:09:07.000Z",
+  "flume_leak": true,
+  "query": {
+    "request_id": "SYSTEM_TRIGGERED_USAGE_ALERT",
+    "until_datetime": "2021-05-07 23:10:00",
+    "tz": "America/New_York",
+    "bucket": "MIN",
+    "since_datetime": "2021-05-07 21:09:00"
+  },
+  "event_rule_name": "Flume Smart Leak Alert"
+}

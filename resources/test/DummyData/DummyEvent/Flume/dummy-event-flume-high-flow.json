@@ -1,0 +1,14 @@
+{
+  "id": 1903479,
+  "device_id": "6716198879371749925",
+  "triggered_datetime": "2021-05-19T12:34:31.000Z",
+  "flume_leak": false,
+  "query": {
+    "request_id": "SYSTEM_TRIGGERED_USAGE_ALERT",
+    "until_datetime": "2021-05-19 08:35:00",
+    "tz": "America/New_York",
+    "bucket": "MIN",
+    "since_datetime": "2021-05-19 08:19:00"
+  },
+  "event_rule_name": "High Flow Alert"
+}
