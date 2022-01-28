@@ -25,6 +25,12 @@ jobs:
       with:
         path: node_modules
         key: ${{ runner.os }}-node${{ runner.node-version }}-build-${{ env.cache-name }}-${{ hashFiles('**/package-lock.json') }}
+
+      # We generate our vocab bundle from all the vocabs at runtime,
+      # since normally vocab bundles are expected to be published somewhere,
+      # but in our case, we want to keep everything together for now.
+    - run: npx @inrupt/artifact-generator generate --vocabListFile "resources/Vocab/vocab-etl-tutorial-bundle-all.yml" --outputDirectory "./src/InruptTooling/Vocab/EtlTutorial" --noprompt --publish npmInstallAndBuild
+
     - run: npm ci
     - run: npm run build
     - run: npm run lint
