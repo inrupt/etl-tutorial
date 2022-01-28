@@ -1,4 +1,4 @@
-# End-to-end tests for template-ts in Node
+# End-to-end tests for ETL Tutorial in Node
 
 ## Running the tests
 

@@ -1,4 +1,4 @@
-// Copyright 2021 Inrupt Inc.
+// Copyright 2022 Inrupt Inc.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal in
@@ -17,6 +17,11 @@
 // OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
 // SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
-// Ignore the "prefer default" rule; index files won't export a default.
-/* eslint import/prefer-default-export: 0 */
-export { default as sampleModuleFn } from "./module";
+import processCommandLine from "./commandLineProcessor";
+
+processCommandLine(true, process.argv.slice(2)).catch((error) =>
+  // This is specifically for command-line processing (and even then, only in
+  // the case of errors), and so using console output here is fine.
+  /* eslint no-console: 0 */
+  console.error(error)
+);

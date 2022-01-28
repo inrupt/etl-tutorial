@@ -1,0 +1,56 @@
+prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+prefix xsd: <http://www.w3.org/2001/XMLSchema#>
+prefix owl: <http://www.w3.org/2002/07/owl#>
+prefix vann: <http://purl.org/vocab/vann/>
+prefix dcterms: <http://purl.org/dc/terms/>
+prefix cc: <http://creativecommons.org/ns#>
+prefix skosxl: <http://www.w3.org/2008/05/skos-xl#>
+
+prefix inrupt_gen: <https://inrupt.com/vocab/tool/artifact_generator#>
+prefix inrupt_common: <https://inrupt.com/vocab/common#>
+
+prefix etl_tutorial: <https://inrupt.com/vocab/etl_tutorial#>
+
+#
+# This vocabulary is use to define terms that are specific to our particular
+# application - in this case, our ETL Tutorial.
+#
+
+#
+# Describe our vocabulary - i.e., an English description, its version, who created it, its
+# suggested prefix, its license, etc.
+#
+etl_tutorial: a owl:Ontology, inrupt_gen:Ontology  ;
+     owl:versionInfo "0.0.1" ;
+     owl:versionIRI <https://inrupt.com/vocab/etl_tutorial//0.0.1> ;
+     dcterms:title "Vocabulary for Inrupt's ETL Tutorial" ;
+     dcterms:description """A vocabulary for common terms used across this ETL Tutorial"""@en ;
+     dcterms:creator <https://inrupt.com/profile/card/#us> ;
+     dcterms:issued "2021-08-23"^^xsd:date ;
+     vann:preferredNamespacePrefix "etl_tutorial" ;
+     vann:preferredNamespaceUri <https://inrupt.com/vocab/etl_tutorial#> ;
+     cc:attributionURL etl_tutorial: ;
+     cc:license <https://creativecommons.org/publicdomain/zero/1.0/> .
+
+etl_tutorial:EtlTutorial a rdf:Property, owl:ObjectProperty ;
+    rdfs:isDefinedBy etl_tutorial: ;
+    rdfs:label "The class of ETL Tutorial"@en ;
+    rdfs:label "La clase de ETL Tutorial"@es ;
+    rdfs:comment "ETL Tutorial - illustrating how to Extract data, Transform it into RDF, and Load it in a Solid Pod."@en ;
+    rdfs:comment "Tutorial de ETL: ilustra cómo extraer datos, transformarlos en RDF y cargarlos en un sólido Pod."@es .
+
+etl_tutorial:etlTutorial a rdf:Property, owl:ObjectProperty ;
+    rdfs:isDefinedBy etl_tutorial: ;
+    rdfs:label "ETL Tutorial"@en ;
+    rdfs:label "Tutorial de ETL"@es ;
+    rdfs:comment "This property references the Pod entrypoint for ETL Tutorial data."@en ;
+    rdfs:comment "Esta propiedad hace referencia al punto de entrada del pod para los datos del tutorial de ETL."@es .
+
+#
+#etl_tutorial: a rdf:Property, owl:ObjectProperty ;
+#    rdfs:isDefinedBy etl_tutorial: ;
+#    rdfs:label ""@en ;
+#    rdfs:label ""@es ;
+#    rdfs:comment ""@en ;
+#    rdfs:comment ""@es .
