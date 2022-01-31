@@ -123,24 +123,20 @@ inrupt_common:dataSource a rdf:Property, owl:ObjectProperty ;
 # When we perform Extract, Transform, and Load (ETL) to populate a user Pod,
 # it can be very common for process to be runnable for a simple hierarchy of
 # application-specific instances.
-# For example, for a generic Home Data application, we might expect a simple
-# hierarchy based on a number of homes a user might own (e.g., their primary
-# dwelling, a vaction home, and a rental property), and so our ETL process
-# might run once for each home.
 #
 inrupt_common:DataHierarchyFirst a rdfs:Class, owl:Class ;
     rdfs:isDefinedBy inrupt_common: ;
     rdfs:label "The class of Data Hierarchy First"@en ;
     rdfs:label "La clase de jerarquía de datos primero"@es ;
-    rdfs:comment "The first level of our data hierarchy (e.g., for Home Data, this might be a container per home we own)."@en ;
-    rdfs:comment "El primer nivel de nuestra jerarquía de datos (por ejemplo, para Home Data, esto podría ser un contenedor por casa que poseemos)."@es .
+    rdfs:comment "The first level of our data hierarchy."@en ;
+    rdfs:comment "El primer nivel de nuestra jerarquía de datos."@es .
 
 inrupt_common:dataHierarchyFirst a rdfs:Class, owl:Class ;
     rdfs:isDefinedBy inrupt_common: ;
     rdfs:label "Data Hierarchy First"@en ;
     rdfs:label "Jerarquía de datos primero"@es ;
-    rdfs:comment "The first level of our data hierarchy (e.g., for Home Data, this might be a container per home we own)."@en ;
-    rdfs:comment "El primer nivel de nuestra jerarquía de datos (por ejemplo, para Home Data, esto podría ser un contenedor por casa que poseemos)."@es .
+    rdfs:comment "The first level of our data hierarchy."@en ;
+    rdfs:comment "El primer nivel de nuestra jerarquía de datos."@es .
 
 
 inrupt_common:archived a rdf:Property, owl:ObjectProperty ;

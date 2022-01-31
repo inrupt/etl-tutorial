@@ -27,6 +27,7 @@ import { SolidDataset, Thing } from "@inrupt/solid-client";
 import {
   INRUPT_COMMON,
   SOLID,
+  // eslint-disable-next-line import/no-unresolved
 } from "@inrupt/vocab-etl-tutorial-bundle-all-rdfdatafactory";
 import { getCredentialStringOptional } from "./credentialUtil";
 import { insertIntoTriplestoreResources } from "./triplestore";
@@ -226,7 +227,7 @@ async function etlDataSourcesForUser(
         credentialDetails.dataset,
         await companiesHouseUkExtractCompanyById(
           credentialDetails.dataset,
-          "02216369"
+          "00000000"
         )
       )
     );

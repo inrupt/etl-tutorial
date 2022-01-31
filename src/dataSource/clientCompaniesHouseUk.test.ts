@@ -27,7 +27,7 @@ import { getStringNoLocaleMandatoryOne } from "../solidDatasetUtil";
 
 // For our tests, we have example API responses as JSON, so this is fine.
 /* eslint-disable import/extensions */
-import exampleCompanySearchValid from "../../resources/test/DummyData/DummyApiResponse/DummyCompaniesHouseUk/dummy-api-companieshouse-uk-search-companyid-bt.json";
+import exampleCompanySearchValid from "../../resources/test/DummyData/DummyApiResponse/DummyCompaniesHouseUk/dummy-api-companieshouse-search-companyid.json";
 /* eslint-enable import/extensions */
 import {
   companiesHouseUkExtractCompanyById,
@@ -87,9 +87,9 @@ describe("Companies House UK", () => {
 
       const responseJson = await companiesHouseUkExtractCompanyById(
         credential,
-        "02216369"
+        "00000000"
       );
-      expect(responseJson.items[0].title).toBe("BT LIMITED");
+      expect(responseJson.items[0].title).toBe("MYCOMPANY LIMITED");
 
       const responseRdf = companiesHouseUkTransformCompany(
         credential,
@@ -103,7 +103,7 @@ describe("Companies House UK", () => {
           responseRdf.rdfResources[1],
           SCHEMA_INRUPT.addressRegion
         )
-      ).toEqual("Braham Street");
+      ).toEqual("Main street");
     });
   });
 });
