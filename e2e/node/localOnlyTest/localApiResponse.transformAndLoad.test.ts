@@ -19,17 +19,13 @@
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-import { describe, expect, it } from "@jest/globals";
+import { describe, expect, it, beforeAll, afterAll } from "@jest/globals";
 
 import {
   INRUPT_COMMON,
   SOLID,
 } from "@inrupt/vocab-etl-tutorial-bundle-all-rdfdatafactory";
-import {
-  getSolidDataset,
-  SolidDataset,
-  solidDatasetAsMarkdown,
-} from "@inrupt/solid-client";
+import { getSolidDataset, SolidDataset } from "@inrupt/solid-client";
 
 import { Session } from "@inrupt/solid-client-authn-node";
 

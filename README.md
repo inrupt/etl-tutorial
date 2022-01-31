@@ -192,7 +192,7 @@ hard-coded to look for specifically named JSON files in the folder
 To run these tests, execute this script from the root directory:
 
 ```script
-npm run e2e-test-node-extractTransform
+npm run e2e-test-node-etl-localOnly
 ```
 
 If the credentials you supplied are all valid, you should see data displayed on-screen (with
@@ -299,7 +299,7 @@ For details on how to efficiently update even remotely published vocabularies fr
 **Generated artifacts:**
 
 - After running the Artifact Generator command in the install instructions above, a series of
-  artifacts will be generated in [./src/InruptTooling/Vocab/Lowes](./src/InruptTooling/Vocab/Lowes):
+  artifacts will be generated in [./src/InruptTooling/Vocab/EtlTutorial](./src/InruptTooling/Vocab/EtlTutorial):
 - You'll notice multiple 'forms' of generated artifacts here, for both Java and JavaScript (see
   [https://github.com/inrupt/artifact-generator/blob/main/documentation/multiple-forms-of-artifact.md]()
   for a detailed description of these various forms of artifact).
@@ -316,14 +316,14 @@ For details on how to efficiently update even remotely published vocabularies fr
   Spanish).
 - This documentation is in the form of an entire website per vocabulary, with each website
   generated under
-  [./src/InruptTooling/Vocab/Lowes/Generated/Widoco](./src/InruptTooling/Vocab/Lowes/Generated/Widoco).
+  [./src/InruptTooling/Vocab/EtlTutorial/Generated/Widoco](./src/InruptTooling/Vocab/EtlTutorial/Generated/Widoco).
 - To open any of these websites, browse to the `./index-en.html` file in the root of each
   directory.
   **_Note:_** Notice that the documentation is generated in both English and Spanish (language
   selection is available in the top-right-hand corner of the vocabulary webpage), as all our
   vocabularies describe themselves, and the terms they contain, in both of those languages (see
   our
-  [InsideMaps vocabulary](./resources/Vocab/ThirdParty/CopyOfVocab/lowes-3rd-party-insidemaps.ttl)
+  [Companies House vocabulary](./resources/Vocab/ThirdParty/CopyOfVocab/inrupt-3rd-party-companies-house-uk.ttl)
   vocabulary for instance).
 
 **Postman Collections for API calls:**
@@ -395,171 +395,94 @@ For details on how to efficiently update even remotely published vocabularies fr
   re-run just for InsideMaps and leave all other creds empty).
   But then, how would I delete or remove entire data source Containers.
 
-- Error handling - should the ETL tool exit when it encounters an error reading from a data source? Should it just fail for the current user, or the entire process?
-
-- Read water usage preferences for gallons/liters/cubic feet/cubic gallons from Flume's preferences
-  and set that preference for the user Pod, and displays in the WebApp.
-
-- Suggest Lowe's submit dwelling-related vocabulary terms to Schema.org (for example, a
-  lowes:waterChargePerGallon).
+- Error handling - should the ETL tool exit when it encounters an error reading from a data source?
+  Should it just fail for the current user, or the entire process?
 
 - Investigate get local government public data, e.g., perhaps local areas publish their local water
   charge rates (so we could query that data in real-time to provide water charges based on the
-  user's Estated census_tract field).
+  user's "census_tract" field).
 
 - User preferences, for things like gallons vs liters, or feet vs meters. Ideally these should be
   accessible by any app accessing the Pod, but if not yet defined in the
   Pod, the user could stipulate they wish to create these Pod-wise preferences based on current
-  preferences they may have set in Flume or Sense (if we can get those preferences from those
-  sources via their APIs (can't see anything in the documentation for either Sense or Flume
-  though)).
+  preferences they may have set.
+
 - Drive ETL process based on direct user input via the WebApp, to do things like:
-  - Enter credentials for pre-defined data sources (e.g., screens for Sense credential input, and
-    Flume credential input, etc.).
+  - Enter credentials for pre-defined data sources.
   - Allow the user to draw polygons on the InsideMaps floorplans (to generate the GeoJSON files).
   - Detect discrepancies in preferences between data sources (e.g., user has set imperial as their
-    Pod-wide choice, but the preference set in Flume is metric). Alert the user to this, and allow
-    them to update their Pod-wide preference if they choose.
+    Pod-wide choice, but the preference set within a specific data source is metric).
+    Alert the user to this, and allow them to update their Pod-wide preference if they choose.
 
 ## Knowledge Transfer
 
-- [x] Add the ability to associate RDF metadata with Non-RDF resources (like photos).
-- [x] Retrieving and storing EagleView home photos.
-- [x] Displaying EagleView home photos in WebApp.
-- [x] Retrieve and store usage data (for Sense and Flume).
+- Runs as a new CLI option (i.e., `--runEod` (for 'Run End-of-Day')).
+  - Mandatory param: `--etlCredentialResource`
+  - Mandatory param: `--localUserCredentialResourceGlob`
+  - Optional param: `--localUserCredentialResourceGlobIgnore`
+  - Optional param: `--fromDate` (defaults to yesterday)
+  - Optional param: `--toDate` (defaults to yesterday)
+- Code is also called as part of the normal `--runEtl` process too for each user, and defaults to
+  yesterday.
 
-  - Runs as a new CLI option (i.e., `--runEod` (for 'Run End-of-Day')).
-    - Mandatory param: `--etlCredentialResource`
-    - Mandatory param: `--localUserCredentialResourceGlob`
-    - Optional param: `--localUserCredentialResourceGlobIgnore`
-    - Optional param: `--fromDate` (defaults to yesterday)
-    - Optional param: `--toDate` (defaults to yesterday)
-  - Code is also called as part of the normal `--runEtl` process too for each user, and defaults to
-    yesterday.
-  - Execute API query. For example, for Flume:
-    ```
-    POST https://api.flumewater.com/me/devices/6716198879371749925/query
-    {
-      "queries": [
-        {
-          "request_id": "daily-usage",
-          "bucket": "DAY",
-          "since_datetime": "2021-11-24 00:00:00",
-          "until_datetime": "2021-11-24 23:59:59"
-        }
-      ]
-    }
-    ```
-    RESPONSE:
-    ```
-    {
-      "success": true,
-      "code": 602,
-      "message": "Request OK",
-      "http_code": 200,
-      "http_message": "OK",
-      "detailed": null,
-      "data": [
-        {
-          "daily-usage": [
-            {
-              "datetime": "2021-11-24 00:00:00",
-              "value": 41.6598231
-            }
-         ]
-        }
-      ],
-      "count": 0,
-      "pagination": null
-    }
-    ```
-
-- [ ] Flume don't provide a means for the user to state the water charges per gallon of usage, so we
-      can add a user-specific field to the user credentials, e.g., lowes:waterChargePerGallon (float).
-      I'd add this term to the Lowe's vocab (and not Flume), since it's such a generic,
-      dwelling-data-related concept (but it's so generic in fact that we could suggest it as an addition
-      to Schema.org).
-
-- [ ] Sense do provide a means for the user to state the electricity charges per unit of usage, but
-      I can't see from their documentation how we can get that data via their API. So, like Flume, we
-      can add a user-specific field to the user credentials, (e.g.,
-      `lowes:electricityChargePerGallon (float)`).
-  ```
-  GET https://api.sense.com/apiservice/api/v1/monitors/<MONITOR-ID>/data?time_unit=day&start=2021-11-24T00:00:00&end=2021-11-24T23:59:59
-  ```
-- [ ] Add new vocab terms to the Lowe's vocab (see sample RDF below).
-
-- [ ] PUT a RDF resource containing usage data like this (with the URL containing the date):
-
-  ```
-    </private/lowes/homestead/dwelling/home-1/usage/daily/2021-11-24>
-    a lowes:DailyUsage ;
-    lowes:dwelling </private/lowes/homestead/dwelling/home-1> ;
-    rdfs:comment "Dwelling usage values (daily)"@en ;
-
-    lowes:usageCostCurrency "USD" ;
-    lowes:usageWaterUnits "gallons" ;
-    lowes:usageWaterAmountDaily 124.2^^xsd:decimal ;
-    lowes:usageWaterCostDaily 7.23^^xsd:decimal ;
-
-    lowes:usageElectricityUnits "kWh" ;
-    lowes:usageElectricityUnitsDaily 124.2^^xsd:decimal ;
-    lowes:usageElectricityCostDaily 2.32^^xsd:decimal .
-  ```
-
-- [ ] Awareness of the 'type' mapping mismatches between data sources. For example, the 'asset types'
-      from InsideMaps will not all (and cannot, without prior agreement) match up with the 'device
-      types' coming from Sense.
-      Examples from InsideMaps: "Furnace 1", "General Water Heater".
-      Some type might match up (by coincidence), (e.g., "Dishwasher" or "Refrigerator").
-
-## John's Questions for Pat
+## Frequently Asked Questions
 
 - Is it ok to create the same `Thing` or `Container` multiple times?
+
   - A: Yes.
-- Should I extract Sense and Flume API responses and then do a single transform?
-  - A: Its just personal choice really. Personally I don't think I would, as currently all data
-    sources are isolated from each other, and know nothing of each other. So I would perform the
-    ETL for each source independently, and Load each data source's usage data into their own
-    resource in the Pod.
-- How should we get the `device_id` for the Flume Usage request?
-  - A: Query the Pod for the specific type of device we need (assuming full ETL has already been
-    run).
+
+- Should I extract API responses from multiple data sources and then do a single transform?
+
+  - A: Its just personal choice really. Personally I don't think I would, as generally all data
+    sources should be isolated from each other, and know nothing of each other. So I would perform
+    the ETL for each source independently, and Load each data source's usage data into their own
+    resources in the Pod.
+
 - Where should we put partner credential secrets?
+
   - A: It may be easiest (and perhaps most appropriate) to simply add these credentials to the
     existing registered application credentials resource (e.g.,
     [here](resources/CredentialResource/RegisteredApp/example-registered-app-credential.ttl))
     Alternatively, I already added a placeholder partner-credential resource here:
     `resources/CredentialResource/Partner/example-partner-credential.ttl`, but the ETL tool would
     need to be extended to look for, read from, and use, any values from this resource.
+
 - What is `owl:Property`?
-  - A: It's a fairly common vocabulary practice to include simply metadata from OWL for things like
+
+  - A: It's a fairly common vocabulary practice to include simple metadata from OWL for things like
     Classes, Properties and NamedIndividuals, but certainly not required.
     I only included them in the vocabs for this project because the documentation tool [Widoco](https://github.com/dgarijo/Widoco)
-    looks for them when generating it's lovely HTML documentation for vocabularies.
+    looks for them when generating its HTML documentation for vocabularies.
+
 - How much code should be shared between one-off jobs and `runEtl`?
-  - A: Just in general, I'd try and reuse code as much as possible. Commonly EOD jobs run either
+
+  - A: Just in general, I'd try and reuse code as much as possible. Commonly, EOD jobs run either
     reconciliation or aggregation functions, and so conceptually it can be very useful to run
     directly after all ETL jobs. It certainly makes sense in our case to run the EOD process
-    directly after the initial ETL so that the user can immediately see yesterdays usage statistics
-    as soon as their Pod is created by Lowe's (as opposed to having to wait until the following day
-    to allow the EOD job to run that night).
+    directly after the initial ETL so that the user can immediately see yesterday's usage statistics
+    as soon as their Pod is created (as opposed to having to wait until the following day to allow
+    the EOD job to run that night).
+
 - What are the relationships between resources, datasets, containers, and things?
   - A: 'Resource' is the most general term we use to refer to any 'entity' in a Solid Pod, so it
     could be a Container, an RDF resource or a binary blob.
+
     A 'Dataset' is the formal name for a collection of RDF quads, and really Solid Pods are made up
     of **only** either RDF Datasets, or binary Blobs.
+
     'Containers' are simply RDF Datasets that logically 'contain' other Resources. They themselves
     are always RDF Datasets, and the name basically comes from the W3C standard of Linked Data
     Platform (but that standard should just be seen as a guide - i.e., Solid took initial
     inspiration from that standard, but may move away from formally requiring compliance with that
     standard).
+
     A 'Thing' is simply a collection of RDF triples where all the triples have the exact same RDF
-    Subject IRI.
+    Subject IRI. It can be a convenient conceptual model when working with RDF, as we often wish to
+    read or write a number of properties of a single 'thing' or entity at once.
 - When should we call `getThing` as opposed to `getSolidDataset`?
   - A: We use `getThing` to extract a very specific collection of triples from an RDF Dataset (i.e.,
     from a SolidDataset), where all the triples in that collection have the exact same RDF Subject
-    IRI value (which is the IRI value we pass as the 2nd parameter to the `getThing` function. This
+    IRI value (which is the IRI value we pass as the 2nd parameter to the `getThing` function). This
     is useful because a single Dataset can contain any number of triples with differing RDF Subject
     values (i.e., a single Dataset can have triples describing multiple 'things').
 

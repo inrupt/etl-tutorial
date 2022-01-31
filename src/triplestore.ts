@@ -105,13 +105,6 @@ ${insertStatement}
 
   const fullBody = `prefix inrupt_common: <https://inrupt.com/vocab/common#>
 
-prefix lowes: <https://lowes.com/vocab/lowes#>
-prefix lowes_3rd_party_eagleview: <https://lowes.com/vocab/3rdparty/eagleview#>
-prefix lowes_3rd_party_estated: <https://lowes.com/vocab/3rdparty/estated#>
-prefix lowes_3rd_party_flume: <https://lowes.com/vocab/3rdparty/flume#>
-prefix lowes_3rd_party_insidemaps: <https://lowes.com/vocab/3rdparty/insidemaps#>
-prefix lowes_3rd_party_sense: <https://lowes.com/vocab/3rdparty/sense#>
-
 INSERT DATA {
 ${graphWrappedInsertStatement}
 }`;

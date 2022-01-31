@@ -165,16 +165,18 @@ visualization here was demonstrated at financial conferences worldwide.
 
 So how are we looking to introduce Linked Data generally?
 
-## Lowe's PoC: Project Homestead
+## General approach to customer Proof of Concepts (PoC)
 
-Well, the idea is to demonstrate the ability of graphs to far more easily integrate
-multiple data sources, by expressing the data from each source as Linked Data, and storing
-it as an inter-connected graph in a Solid Pod.
+Well, the idea is to demonstrate the ability of graphs to far more easily
+integrate multiple data sources, by expressing the data from each source as
+Linked Data, and storing the data from multiple sources as a single,
+inter-connected graph in a Solid Pod.
 
-This will allow those Pod owners to view and query their data as a single, integrated graph,
-as opposed to today, where they can only ask questions of each data source in isolation.
+This allows those Pod owners to view, query, interact with, and manage all
+their data as a single, integrated graph - as opposed to today, where they can
+only ask questions of each data source in isolation.
 
-So in othre words, pulling multiple CURRENTLY disparate data sources together
+So in other words, pulling multiple CURRENTLY disparate data sources together
 provides a Pod owner with a single, consolidated view of their entire life,
 via a FULLY STANDARDIZED Solid Pod.
 
@@ -182,7 +184,7 @@ As a result, Pod owners can treat their personal data as the basis for a single,
 coherent, USER-CENTRIC Knowledge Graph.
 
 And being completely STANDARDS-BASED and INTEROPERABLE, they are also
-completely free to add endless more sources of data from their lives, to
+completely free to endlessly add more sources of data from their lives, to
 provide them with ever-richer and deeper insights into, and more control over,
 their digital lives.
 

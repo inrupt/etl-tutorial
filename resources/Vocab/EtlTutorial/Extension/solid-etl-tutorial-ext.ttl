@@ -24,7 +24,7 @@ solid_etl_tutorial_ext: a owl:Ontology, inrupt_gen:Ontology ;
     owl:versionIRI <http://www.w3.org/ns/solid/terms/0.0.1> ;
     dcterms:creator <https://inrupt.com/profile/card/#us> ;
     dcterms:issued "2020/10/02"^^xsd:date ;
-    dcterms:title "Lowe's extension adding new Solid Terms" ;
+    dcterms:title "Inrupt extension adding new Solid Terms" ;
     dcterms:description "Extension to the Solid Terms vocabulary adding new terms" ;
     vann:preferredNamespacePrefix "solid_etl_tutorial_ext" ;
     vann:preferredNamespaceUri "http://www.w3.org/ns/solid/terms#" ;
