@@ -1,0 +1,31 @@
+{
+ "items_per_page": 20,
+ "kind": "search#companies",
+ "page_number": 1,
+ "items": [
+  {
+   "company_status": "active",
+   "title": "MYCOMPANY LIMITED",
+   "description": "00000000 - Incorporated on YYYY-MM-DD",
+   "company_type": "ltd",
+   "company_number": "00000000",
+   "description_identifier": [
+    "incorporated-on"
+   ],
+   "date_of_creation": "YYYY-MM-DD",
+   "links": {
+    "self": "/company/00000000"
+   },
+   "address_snippet": "1 main street, SomeCity, SomeCountry",
+   "kind": "searchresults#company",
+   "address": {
+    "locality": "SomeCity",
+    "address_line_1": "Main street",
+    "premises": "1",
+    "country": "SomeCountry"
+   }
+  }
+ ],
+ "total_results": 1,
+ "start_index": 0
+}
