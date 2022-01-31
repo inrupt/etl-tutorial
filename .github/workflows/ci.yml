@@ -10,7 +10,11 @@ jobs:
     strategy:
       matrix:
         # Available OS's: https://help.github.com/en/actions/reference/virtual-environments-for-github-hosted-runners
-        os: [ubuntu-20.04, windows-2019, macos-10.15]
+
+        # Comment out MacOS, as it's very slow at the moment, and not really
+        # critical.
+        # os: [ubuntu-20.04, windows-2019, macos-10.15]
+        os: [ubuntu-20.04, windows-2019]
         node-version: [16.x, 14.x, 12.x]
     steps:
     - uses: actions/checkout@v2.3.4
@@ -35,11 +39,7 @@ jobs:
     - run: npm run build
     - run: npm run lint
     - run: npm run check-licenses
-
-    # REMOVE FOR NOW (due to CI failing on "Uncontrolled Resource Consumption in parse-link-header"
-    # on path "rdf-parse > @comunica/actor-http-native > parse-link-header").
-    # - run: npm audit --audit-level=moderate
-
+    - run: npm audit --audit-level=moderate
     - run: npm test
     - run: npx package-check
     - name: Archive code coverage results
