@@ -66,7 +66,7 @@ function configureLog(argv: Arguments) {
 
     // Unless our debug logging has been explicitly configured, turn all
     // debugging on.
-    if (namespaces.indexOf("homestead-etl") === -1) {
+    if (namespaces.indexOf("etl") === -1) {
       debugModule.enable("etl-tutorial:*");
     }
   }

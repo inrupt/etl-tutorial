@@ -25,10 +25,6 @@ export const APPLICATION_ENTRYPOINT = `private/${APPLICATION_VENDOR_NAME}/${APPL
 
 // This value is optional for new ETL processes. The idea is that some ETL
 // processes can be run multiple, independent times to populate a single Pod.
-// For example, an ETL process to load Home Data into a user's Pod might be
-// runnable for multiple dwellings for a single user - e.g., for the users
-// primary residence, a vacation home they may own, and perhaps multiple
-// rental dwellings.
 // This value can simply be left empty if it's not needed, but if a value is
 // provided, it should be truncated with a slash to ensure it represents a
 // container.

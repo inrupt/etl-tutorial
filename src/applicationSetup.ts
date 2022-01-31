@@ -21,6 +21,7 @@ import {
   INRUPT_COMMON,
   ETL_TUTORIAL,
   SOLID,
+  // eslint-disable-next-line import/no-unresolved
 } from "@inrupt/vocab-etl-tutorial-bundle-all-rdfdatafactory";
 import {
   buildThing,
@@ -209,8 +210,11 @@ export async function createApplicationResources(
 
   const etlRunContainerBuilder = buildThing({ url: etlRunContainer })
     .addIri(RDF.type, INRUPT_COMMON.DataHierarchyFirst)
-    .addStringEnglish(RDFS.label, "Home")
-    .addStringEnglish(RDFS.comment, "Test User's home.");
+    .addStringEnglish(RDFS.label, "ETL process 1")
+    .addStringEnglish(
+      RDFS.comment,
+      "Container for the first ETL process instance."
+    );
 
   labels.forEach((literal) =>
     etlRunContainerBuilder.addLiteral(RDFS.label, literal)
