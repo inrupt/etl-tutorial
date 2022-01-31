@@ -92,7 +92,7 @@ export default async function processCommandLine<T>(
       .exitProcess(exitOnFail)
       .command(
         COMMAND_RUN_ETL,
-        "Runs the Lowe's ETL process to populate Solid Pods.",
+        "Runs the ETL process to populate Solid Pods.",
         (yargsInner) =>
           yargsInner
             .alias("e", "etlCredentialResource")

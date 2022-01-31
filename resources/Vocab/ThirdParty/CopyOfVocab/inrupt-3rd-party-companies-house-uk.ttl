@@ -20,7 +20,7 @@ prefix inrupt_3rd_party_companies_house_uk: <https://inrupt.com/vocab/3rdparty/c
 #
 inrupt_3rd_party_companies_house_uk: a owl:Ontology, inrupt_gen:Ontology  ;
      owl:versionInfo "0.0.1" ;
-     owl:versionIRI <https://lowes.com/vocab/3rdparty/companies-house-uk/0.0.1> ;
+     owl:versionIRI <https://inrupt.com/vocab/3rdparty/companies-house-uk/0.0.1> ;
      dcterms:title
          "Inrupt vocabulary for Companies House UK"@en ,
          "Vocabulario de Inrupt para Companies House UK"@es ;

@@ -30,7 +30,7 @@
 				"header": [
 					{
 						"key": "Authorization",
-						"value": "Basic {{LOWES_SOURCE_EAGLEVIEW_HTTP_BASIC_TOKEN}}",
+						"value": "Basic {{DATA_SOURCE_EAGLEVIEW_HTTP_BASIC_TOKEN}}",
 						"type": "text"
 					},
 					{
@@ -49,12 +49,12 @@
 						},
 						{
 							"key": "username",
-							"value": "{{LOWES_SOURCE_EAGLEVIEW_USERNAME}}",
+							"value": "{{DATA_SOURCE_EAGLEVIEW_USERNAME}}",
 							"type": "text"
 						},
 						{
 							"key": "password",
-							"value": "{{LOWES_SOURCE_EAGLEVIEW_PASSWORD}}",
+							"value": "{{DATA_SOURCE_EAGLEVIEW_PASSWORD}}",
 							"type": "text"
 						}
 					]

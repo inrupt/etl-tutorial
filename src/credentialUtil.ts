@@ -129,31 +129,6 @@ export function buildCredentialResourceFromEnvironmentVariables(
     ignoreArray
   );
 
-  // addCredential(
-  //   builder,
-  //   LOWES_3RD_PARTY_FLUME.authenticationUsername,
-  //   "LOWES_SOURCE_FLUME_USERNAME",
-  //   ignoreArray
-  // );
-  // addCredential(
-  //   builder,
-  //   LOWES_3RD_PARTY_FLUME.authenticationPassword,
-  //   "LOWES_SOURCE_FLUME_PASSWORD",
-  //   ignoreArray
-  // );
-  // addCredential(
-  //   builder,
-  //   LOWES_3RD_PARTY_FLUME.authenticationClientId,
-  //   "LOWES_SOURCE_FLUME_CLIENT_ID",
-  //   ignoreArray
-  // );
-  // addCredential(
-  //   builder,
-  //   LOWES_3RD_PARTY_FLUME.authenticationClientSecret,
-  //   "LOWES_SOURCE_FLUME_CLIENT_SECRET",
-  //   ignoreArray
-  // );
-
   return builder;
 }
 

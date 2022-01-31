@@ -20,11 +20,11 @@ inrupt_3rd_party_dnb: a owl:Ontology, inrupt_gen:Ontology  ;
      owl:versionInfo "0.0.1" ;
      owl:versionIRI <https://inrupt.com/vocab/3rdparty/dnb/0.0.1> ;
      dcterms:title
-         "Lowe's vocabulary for D&B APIs"@en ,
-         "Vocabulario de Lowe's para las API de D&B"@es ;
+         "Inrupt vocabulary for D&B APIs"@en ,
+         "Vocabulario de Inrupt para las API de D&B"@es ;
      dcterms:description
-         "Lowe's vocabulary created to represent terms from D&B APIs."@en ,
-         "Vocabulario de Lowe's creado para representar términos de las API de D&B."@es ;
+         "Inrupt vocabulary created to represent terms from D&B APIs."@en ,
+         "Vocabulario de Inrupt creado para representar términos de las API de D&B."@es ;
      dcterms:creator <https://inrupt.com/profile/card/#us> ;
      dcterms:issued "2021-08-23"^^xsd:date ;
      vann:preferredNamespacePrefix "inrupt_3rd_party_dnb" ;

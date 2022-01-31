@@ -8,7 +8,7 @@ prefix vann: <http://purl.org/vocab/vann/>
 prefix inrupt_common: <https://inrupt.com/vocab/common#>
 
 prefix inrupt_gen: <https://inrupt.com/vocab/tool/artifact_generator#>
-prefix lowes_inrupt_ext: <https://w3id.org/lowes/vocab/extension/inrupt#>
+prefix inrupt_common_ext: <https://inrupt.com/vocab/common-local-ext#>
 
 #
 # Extensions deliberately add (i.e., extend) existing terms in existing
@@ -18,13 +18,13 @@ prefix lowes_inrupt_ext: <https://w3id.org/lowes/vocab/extension/inrupt#>
 # So we very deliberately re-use the underlying vocab's namespace, but use our
 # own prefix to try and differentiate.
 #
-lowes_inrupt_ext: a owl:Ontology, inrupt_gen:Ontology ;
+inrupt_common_ext: a owl:Ontology, inrupt_gen:Ontology ;
     owl:versionInfo "0.0.1" ;
     owl:versionIRI <https://inrupt.com/vocab/extension/schema/0.0.1> ;
     dcterms:creator <https://inrupt.com/profile/card/#us> ;
     dcterms:issued "2021/10/15"^^xsd:date ;
-    dcterms:title "Lowe's extension to the Inrupt Common vocabulary" ;
-    dcterms:description """Lowe's extension to Inrupt terms, allowing us quickly and
+    dcterms:title "Local extension to the Inrupt Common vocabulary" ;
+    dcterms:description """Local extension to Inrupt terms, allowing us quickly and
  easily use terms we believe should be included in Inrupt's vocabularies, but without us having to
  wait for them to be officially included and released by Inrupt.""" ;
     vann:preferredNamespacePrefix "inrupt_common" ;
