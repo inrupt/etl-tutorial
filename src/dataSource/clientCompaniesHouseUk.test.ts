@@ -103,7 +103,7 @@ describe("Companies House UK", () => {
           responseRdf.rdfResources[1],
           SCHEMA_INRUPT.addressRegion
         )
-      ).toEqual("Braham Street");
+      ).toEqual("Main street");
     });
   });
 });
