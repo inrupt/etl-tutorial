@@ -288,7 +288,7 @@ For details on how to efficiently update even remotely published vocabularies fr
 
 ## Contents
 
-["_People think [Linked Data] is a pain because it is complicated._"](https://book.validatingrdf.com/bookHtml005.html)) - Dan Brickley (Google and Schema.org) and Libby Millar (BBC).
+["_People think [Linked Data] is a pain because it is complicated._"](https://book.validatingrdf.com/bookHtml005.html)) - Dan Brickley (Google and Schema.org) and Libby Miller (BBC).
 
 **Vocabularies:**
 
