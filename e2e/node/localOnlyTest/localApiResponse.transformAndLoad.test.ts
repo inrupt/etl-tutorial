@@ -39,7 +39,7 @@ import {
 
 // For our tests, we have example API responses as JSON, so this is fine.
 /* eslint-disable import/extensions */
-import companiesHouseUkExampleSearchCompanyId from "../../../resources/test/RealData/RealApiResponse/api-uk-companieshouse-search-companyid-bt.json";
+import companiesHouseUkSearchCompanyIdExample from "../../../resources/test/RealData/PublicApiResponse/api-uk-companieshouse-search-companyid-unilever.json";
 /* eslint-enable import/extensions */
 
 import {
@@ -97,6 +97,7 @@ describe("All data sources", () => {
         clientSecret: etlClientSecret,
         oidcIssuer: etlOidcIssuer,
       });
+      expect(session.info.isLoggedIn).toBe(true);
       debug(
         `Successfully logged into Solid Pod - WebID: [${session.info.webId}]`
       );
@@ -131,7 +132,7 @@ describe("All data sources", () => {
     it("should transform and load", async () => {
       const resources = await companiesHouseUkTransformCompany(
         credential,
-        companiesHouseUkExampleSearchCompanyId
+        companiesHouseUkSearchCompanyIdExample
       );
 
       let response = await insertIntoTriplestoreResources(

@@ -406,12 +406,24 @@ describe("Solid dataset util functions", () => {
       );
     });
 
-    it("should throw if triples has undefined Object value", () => {
+    it("should throw if triple has null Object value", () => {
       const thing = buildThing()
         // Here we deliberately force a 'null' value for a triple Object.
         // eslint-disable-next-line @typescript-eslint/ban-ts-comment
         // @ts-ignore
         .addStringNoLocale(SCHEMA_INRUPT.familyName, null)
+        .build();
+
+      expect(() => toNTriples(thing)).toThrow("Literal value was not provided");
+    });
+
+    it("should throw if triple has undefined Object value", () => {
+      const thing = buildThing()
+        // Here we deliberately force an 'undefined' value for a triple
+        // Object.
+        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+        // @ts-ignore
+        .addStringNoLocale(SCHEMA_INRUPT.familyName, undefined)
         .build();
 
       expect(() => toNTriples(thing)).toThrow("Literal value was not provided");

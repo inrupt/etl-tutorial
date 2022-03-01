@@ -8,18 +8,9 @@ The following changes have been implemented but not released yet:
 
 ### New features
 
-## [0.0.1] - 2021-03-04
+- Handle empty address values in UK Companies House responses.
+- Created a 'Public API response' resource folder.
 
-=======
+## [0.0.1] - 2022-02-01
 
-### Dependency change
-
-- Lorem Ipsum
-
-### Bugs fixed
-
-- Dolor sit anet
-
-### New features
-
-- And so on
+Initial creation.

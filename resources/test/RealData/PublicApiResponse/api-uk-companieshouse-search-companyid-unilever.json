@@ -1,0 +1,31 @@
+{
+  "items": [
+    {
+      "description": "00041424 - Incorporated on 21 June 1894",
+      "company_status": "active",
+      "links": {
+        "self": "/company/00041424"
+      },
+      "address_snippet": "Port Sunlight, Wirral, Merseyside, CH62 4ZD",
+      "address": {
+        "locality": "Merseyside",
+        "postal_code": "CH62 4ZD",
+        "premises": "Port Sunlight",
+        "address_line_1": "Wirral"
+      },
+      "kind": "searchresults#company",
+      "company_number": "00041424",
+      "company_type": "plc",
+      "date_of_creation": "1894-06-21",
+      "description_identifier": [
+        "incorporated-on"
+      ],
+      "title": "UNILEVER PLC"
+    }
+  ],
+  "items_per_page": 20,
+  "total_results": 1,
+  "kind": "search#companies",
+  "start_index": 0,
+  "page_number": 1
+}

@@ -212,7 +212,7 @@ export function toNTriples(thing: Thing): string {
     const obj = quad.object;
     thingAsNTriples += `<${quad.subject.value}> <${quad.predicate.value}> `;
     if (obj.termType === "Literal") {
-      if (obj.value === null) {
+      if (obj.value === null || obj.value === undefined) {
         const message = `RDF Literal value was not provided, for Subject [${quad.subject.value}] and Predicate [${quad.predicate.value}]`;
         debug(message);
         throw new Error(message);

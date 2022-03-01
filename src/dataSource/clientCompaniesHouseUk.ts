@@ -123,7 +123,11 @@ export function companiesHouseUkTransformCompany(
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any, @typescript-eslint/explicit-module-boundary-types
   companySearchResults.items.forEach((companyData: any) => {
-    const searchResultIri = `${dataSourceContainerIri}ABC-${companyData.company_number}-XYZ/`;
+    const searchResultIri = `${dataSourceContainerIri}${companyData.company_number}/`;
+
+    // It seems Companies House UK can have empty 'country' values (e.g., as
+    // of Feb 2022, Unilever (the largest company in the UK)).
+    const countryValue = companyData.address.country || "<Unspecified Country>";
 
     // Here we've chosen to model the company address as its own separate
     // resource.
@@ -148,10 +152,7 @@ export function companiesHouseUkTransformCompany(
         SCHEMA_INRUPT.postalCode,
         companyData.address.postal_code
       )
-      .addStringNoLocale(
-        SCHEMA_INRUPT.addressCountry,
-        companyData.address.country
-      )
+      .addStringNoLocale(SCHEMA_INRUPT.addressCountry, countryValue)
       .build();
 
     const company = buildThing({
