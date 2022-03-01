@@ -96,6 +96,8 @@ describe("All data sources", () => {
             ", "
           )}].`
         );
+
+        expect(passportNumber).toBe("123123123213");
       }
     });
   });
@@ -147,6 +149,8 @@ describe("All data sources", () => {
         debug(
           `Company address: address [${streetAddress}], region [${region}], locality [${locality}], country [${country}], post code [${postCode}].`
         );
+
+        expect(name).toBe("");
       }
     }, 20000);
   });

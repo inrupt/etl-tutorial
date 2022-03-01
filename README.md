@@ -1,27 +1,30 @@
 # Inrupt ETL Tutorial
 
-This repository contains code demonstrating how to Extract, Transform and Load (ETL) from
-various publicly accessible 3rd-party data sources and load into user Pods.
+This repository contains code demonstrating how to Extract, Transform, and Load
+(ETL) into user Pods from various data sources, including publicly accessible
+3rd-party data sources, local files, etc.
 
 Developed by [Inrupt, inc](https://www.inrupt.com).
 
 ## Background
 
-To aid in the understanding of Linked Data, which is the foundation for everything in Solid, we
-first recommend reading the
+To aid in the understanding of Linked Data, which is the foundation for
+everything in Solid, we first recommend reading the
 [High-level overview of how Solid stores data](./docs/LinkedData-HighLevel.md).
 
 ## Install and Run
 
-As we don't yet wish to publicly publish any of the vocabularies we develop for this prototype
-(namely the vocabularies we create on behalf of the 3rd-party data sources), we first need to
-generate a local `npm` package that bundles together JavaScript classes representing all the terms
-from all those vocabularies.
+As we don't yet wish to publicly publish any of the vocabularies we develop for
+this tutorial (namely the vocabularies we create on behalf of 3rd-party data
+sources that don't yet provide RDF vocabularies themselves), we first need to
+generate a local `npm` package that bundles together JavaScript classes
+representing all the terms from all those vocabularies.
 
 To do this, run Inrupt's open-source
-[Artifact Generator](https://github.com/inrupt/artifact-generator), pointing it at our local
-configuration YAML file that references all the local vocabularies we wish to bundle together (which
-are all located in the [./resources/Vocab](./resources/Vocab) folder):
+[Artifact Generator](https://github.com/inrupt/artifact-generator), pointing it
+at our local configuration YAML file that references all the local vocabularies
+we wish to bundle together (which are all located in the
+[./resources/Vocab](./resources/Vocab) folder):
 
 ```script
 npx @inrupt/artifact-generator generate --vocabListFile "resources/Vocab/vocab-etl-tutorial-bundle-all.yml" --outputDirectory "./src/InruptTooling/Vocab/EtlTutorial" --noprompt --force --publish npmInstallAndBuild
@@ -41,8 +44,8 @@ npm test
 
 ## Running full End-2-End tests (using 3rd-party APIs)
 
-You need to provide valid credentials for the actual End-2-Ends tests to run, since they make actual
-API calls to the 3rd-party data sources.
+You need to provide valid credentials for the actual End-2-Ends tests to run,
+since they make actual API calls to the 3rd-party data sources.
 
 To do this:
 
@@ -56,7 +59,8 @@ We have a number of End-2-End tests, to test in various ways.
 
 The first End-2-End tests to run are in `e2e/node/extractTransform.test.ts`.
 These test the extraction of data from the data sources, transform the retrieved
-data into Linked Data, and then display it to the console as a manual, visual verification.
+data into Linked Data, and then display it to the console as a manual, visual
+verification.
 
 To run these tests, run this script from the root directory:
 
@@ -64,17 +68,21 @@ To run these tests, run this script from the root directory:
 npm run e2e-test-node-extractTransform
 ```
 
-If the supplied credentials are all valid, you should see data displayed on-screen, with
-colorful console output via the [debug](https://www.npmjs.com/package/debug) library, from all data
-sources that have configured credentials. Data sources without credentials are simply ignored, so
-these tests are convenient for testing individual data sources in isolation (i.e., simply comment
-out the credentials for the other data sources), or collectively.
+If the supplied credentials are all valid, you should see data displayed
+on-screen, with colorful console output via the
+[debug](https://www.npmjs.com/package/debug) library, from all data sources that
+have configured credentials. Data sources without credentials are simply
+ignored, so
+these tests are convenient for testing individual data sources in isolation
+(i.e., simply comment out the credentials for the other data sources), or
+collectively.
 
 ### Running the ETL process 'for real'
 
-To execute the entire ETL process 'for real' (i.e., hitting the 3rd-party APIs and populating real
-Solid Pods (and optionally also a triplestore)), we run the application from the command-line, and
-drive it via credential resources stored as Linked Data.
+To execute the entire ETL process 'for real' (i.e., hitting the 3rd-party APIs
+and populating real Solid Pods (and optionally also a triplestore)), we run the
+application from the command-line, and drive it via credential resources stored
+as Linked Data.
 
 For example, we can have local Turtle files, one per user, configured with that user's
 API credentials for each of the 3rd-party data sources, and their Solid Pod credentials (such as
@@ -464,6 +472,7 @@ For details on how to efficiently update even remotely published vocabularies fr
     the EOD job to run that night).
 
 - What are the relationships between resources, datasets, containers, and things?
+
   - A: 'Resource' is the most general term we use to refer to any 'entity' in a Solid Pod, so it
     could be a Container, an RDF resource or a binary blob.
 
@@ -479,6 +488,7 @@ For details on how to efficiently update even remotely published vocabularies fr
     A 'Thing' is simply a collection of RDF triples where all the triples have the exact same RDF
     Subject IRI. It can be a convenient conceptual model when working with RDF, as we often wish to
     read or write a number of properties of a single 'thing' or entity at once.
+
 - When should we call `getThing` as opposed to `getSolidDataset`?
   - A: We use `getThing` to extract a very specific collection of triples from an RDF Dataset (i.e.,
     from a SolidDataset), where all the triples in that collection have the exact same RDF Subject
