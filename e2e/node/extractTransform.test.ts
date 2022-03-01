@@ -150,7 +150,7 @@ describe("All data sources", () => {
           `Company address: address [${streetAddress}], region [${region}], locality [${locality}], country [${country}], post code [${postCode}].`
         );
 
-        expect(name).toBe("");
+        expect(name).toBe("UNILEVER PLC");
       }
     }, 20000);
   });
