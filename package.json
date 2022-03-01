@@ -5,8 +5,6 @@
   "license": "MIT",
   "scripts": {
     "build": "rollup --config rollup.config.js",
-    "build-api-docs": "typedoc",
-    "build-docs-preview-site": "npm run build-api-docs; cd docs/api; rm source/api/index.md; make html; cd ../; rm -r dist || true; mkdir -p dist/api; cp -r api/build/html/. dist/;",
     "lint": "eslint src",
     "test": "jest src",
     "e2e-test-node": "jest --config=jest.e2e.config.js e2e/node",
@@ -77,19 +75,17 @@
     "rollup-plugin-typescript2": "^0.30.0",
     "testcafe": "^1.16.0",
     "ts-jest": "^27.1.3",
-    "typedoc": "^0.22.11",
-    "typedoc-plugin-markdown": "^3.11.12",
-    "typescript": "^4.2.4"
+    "typescript": "^4.6.2"
   },
   "lint-staged": {
     "*.{js,jsx,ts,tsx}": "eslint --cache --fix",
     "*.{ts,tsx,js,jsx,css,md,mdx}": "prettier --write"
   },
   "dependencies": {
-    "@inrupt/vocab-etl-tutorial-bundle-all-rdfdatafactory": "file:./src/InruptTooling/Vocab/EtlTutorial/Generated/SourceCodeArtifacts/TypeScript-RdfDataFactory",
     "@inrupt/solid-client": "^1.18.0",
     "@inrupt/solid-client-authn-node": "^1.11.3",
     "@inrupt/vocab-common-rdf-rdfdatafactory": "^1.0.3",
+    "@inrupt/vocab-etl-tutorial-bundle-all-rdfdatafactory": "file:./src/InruptTooling/Vocab/EtlTutorial/Generated/SourceCodeArtifacts/TypeScript-RdfDataFactory",
     "@inrupt/vocab-inrupt-core-rdfdatafactory": "^1.0.3",
     "@rdfjs/dataset": "^1.1.1",
     "@rdfjs/types": "^1.0.1",
