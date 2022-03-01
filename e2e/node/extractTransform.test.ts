@@ -62,6 +62,10 @@ config({
 const debug = debugModule("etl-tutorial:extractTransform-test");
 debugModule.enable("etl-tutorial:*");
 
+// For testing, we hard-code a UK company search for the biggest company in
+// the UK - Unilever.
+const COMPANY_ID_UNILEVER = "00041424";
+
 describe("All data sources", () => {
   const credential: SolidDataset =
     createCredentialResourceFromEnvironmentVariables();
@@ -100,7 +104,7 @@ describe("All data sources", () => {
     it("returns the expected value", async () => {
       const response = await companiesHouseUkExtractCompanyById(
         credential,
-        "02216369"
+        COMPANY_ID_UNILEVER
       );
       expect(response).toBeDefined();
 

@@ -27,7 +27,8 @@ import { getStringNoLocaleMandatoryOne } from "../solidDatasetUtil";
 
 // For our tests, we have example API responses as JSON, so this is fine.
 /* eslint-disable import/extensions */
-import exampleCompanySearchValid from "../../resources/test/DummyData/DummyApiResponse/DummyCompaniesHouseUk/dummy-api-companieshouse-search-companyid.json";
+import companiesHouseUkSearchCompanyIdExample from "../../resources/test/RealData/PublicApiResponse/api-uk-companieshouse-search-companyid-unilever.json";
+
 /* eslint-enable import/extensions */
 import {
   companiesHouseUkExtractCompanyById,
@@ -82,14 +83,14 @@ describe("Companies House UK", () => {
 
     it("should extract company", async () => {
       mockedFetch.mockResolvedValueOnce(
-        new Response(JSON.stringify(exampleCompanySearchValid))
+        new Response(JSON.stringify(companiesHouseUkSearchCompanyIdExample))
       );
 
       const responseJson = await companiesHouseUkExtractCompanyById(
         credential,
         "00000000"
       );
-      expect(responseJson.items[0].title).toBe("MYCOMPANY LIMITED");
+      expect(responseJson.items[0].title).toBe("UNILEVER PLC");
 
       const responseRdf = companiesHouseUkTransformCompany(
         credential,
@@ -103,7 +104,7 @@ describe("Companies House UK", () => {
           responseRdf.rdfResources[1],
           SCHEMA_INRUPT.addressRegion
         )
-      ).toEqual("Main street");
+      ).toEqual("Wirral");
     });
   });
 });
