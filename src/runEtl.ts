@@ -54,6 +54,10 @@ import {
 
 const debug = debugModule(`${APPLICATION_NAME}:runEtl`);
 
+// For tutorial purposes, we hard-code a UK company search for the biggest
+// registered company in the UK - Unilever.
+const COMPANY_ID_TO_SEARCH_FOR = "00041424";
+
 export async function loadResources(
   dataSource: string,
   credential: SolidDataset,
@@ -227,7 +231,7 @@ async function etlDataSourcesForUser(
         credentialDetails.dataset,
         await companiesHouseUkExtractCompanyById(
           credentialDetails.dataset,
-          "00000000"
+          COMPANY_ID_TO_SEARCH_FOR
         )
       )
     );

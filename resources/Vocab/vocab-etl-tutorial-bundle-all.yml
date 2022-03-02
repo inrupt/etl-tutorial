@@ -424,7 +424,7 @@ vocabList:
 
   - widocoLanguages: en-es
     inputResources:
-      - ./ThirdParty/CopyOfVocab/inrupt-3rd-party-bt.ttl
+      - ./ThirdParty/CopyOfVocab/inrupt-3rd-party-unilever.ttl
 
   - widocoLanguages: en-es
     inputResources:

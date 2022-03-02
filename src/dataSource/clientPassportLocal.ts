@@ -24,7 +24,7 @@ import {
   CRED,
 } from "@inrupt/vocab-common-rdf-rdfdatafactory";
 import {
-  INRUPT_3RD_PARTY_BT,
+  INRUPT_3RD_PARTY_UNILEVER,
   INRUPT_3RD_PARTY_PASSPORT_OFFICE_UK,
 } from "@inrupt/vocab-etl-tutorial-bundle-all-rdfdatafactory";
 import { buildThing, SolidDataset } from "@inrupt/solid-client";
@@ -34,10 +34,10 @@ import { wireUpDataSourceContainer } from "../applicationSetup";
 
 const debug = debugModule(`${APPLICATION_NAME}:clientPassport`);
 
-const DATA_SOURCE = "Passport";
+const DATA_SOURCE = "PassportOffice-UK";
 
 const inputToEtlFromMl = {
-  [SCHEMA_INRUPT.familyName.value]: "Mr BT",
+  [SCHEMA_INRUPT.familyName.value]: "Mr Customer",
   [SCHEMA_INRUPT.name.value]: "Alexei",
   [SCHEMA_INRUPT.NS("gender").value]: "male",
   [SCHEMA_INRUPT.NS("birthDate").value]: "2001/04/27",
@@ -45,11 +45,16 @@ const inputToEtlFromMl = {
   [CRED.issuer.value]: INRUPT_3RD_PARTY_PASSPORT_OFFICE_UK.PassportOffice.value,
   [CRED.issuanceDate.value]: "2010/01/01",
   [CRED.expirationDate.value]: "2020/01/01",
-  [INRUPT_3RD_PARTY_PASSPORT_OFFICE_UK.passportNumber.value]: "123123123213",
+  [INRUPT_3RD_PARTY_PASSPORT_OFFICE_UK.passportNumber.value]: "PII-123123213",
 };
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export async function passportLocalExtract(): Promise<any> {
+  debug(
+    `Successfully retrieved passport data from [${DATA_SOURCE}] for [${
+      inputToEtlFromMl[SCHEMA_INRUPT.familyName.value]
+    }].`
+  );
   return Promise.resolve(inputToEtlFromMl);
 }
 
@@ -93,8 +98,8 @@ export function passportTransform(
 
     // Tag this instance of a passport as being an 'ID', but also 'Travel'
     // (just to show multiple tags).
-    .addIri(INRUPT_3RD_PARTY_BT.tag, INRUPT_3RD_PARTY_BT.Tag_Id)
-    .addIri(INRUPT_3RD_PARTY_BT.tag, INRUPT_3RD_PARTY_BT.Tag_Travel)
+    .addIri(INRUPT_3RD_PARTY_UNILEVER.tag, INRUPT_3RD_PARTY_UNILEVER.Tag_Id)
+    .addIri(INRUPT_3RD_PARTY_UNILEVER.tag, INRUPT_3RD_PARTY_UNILEVER.Tag_Travel)
 
     .addStringNoLocale(
       INRUPT_3RD_PARTY_PASSPORT_OFFICE_UK.passportNumber,

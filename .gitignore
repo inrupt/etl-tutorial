@@ -24,7 +24,7 @@ Generated
 # we must make sure they don't get pushed to source control.
 resources/test/RealData/RealRegisteredAppCredentialResource/registered-app-*
 resources/test/RealData/RealUserCredentialResource/user-credential-*
-resources/test/RealData/RealApiResponse/
+resources/test/RealData/PrivateApiResponse/
 
 
 node_modules

@@ -66,7 +66,7 @@ describe("Passport", () => {
           responseRdf.rdfResources[0],
           INRUPT_3RD_PARTY_PASSPORT_OFFICE_UK.passportNumber
         )
-      ).toEqual("123123123213");
+      ).toEqual("PII-123123213");
     });
   });
 });

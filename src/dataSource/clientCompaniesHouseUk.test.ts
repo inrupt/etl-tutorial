@@ -88,7 +88,7 @@ describe("Companies House UK", () => {
 
       const responseJson = await companiesHouseUkExtractCompanyById(
         credential,
-        "00000000"
+        "<We mock our response - so value here is irrelvant>"
       );
       expect(responseJson.items[0].title).toBe("UNILEVER PLC");
 
