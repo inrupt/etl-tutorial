@@ -125,7 +125,7 @@ describe("All data sources", () => {
       );
 
       if (storageRoot !== null) {
-        const url = `${storageRoot}private/inrupt/etl-tutorial/`;
+        const url = `${storageRoot}private/`;
         const dataset = await getSolidDataset(url, { fetch: session.fetch });
         expect(dataset).toBeDefined();
       }
