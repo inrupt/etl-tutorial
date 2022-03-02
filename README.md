@@ -10,7 +10,7 @@ Developed by [Inrupt, inc](https://www.inrupt.com).
 
 To aid in the understanding of Linked Data, which is the foundation for
 everything in Solid, we first recommend reading the
-[High-level overview of how Solid stores data](./docs/LinkedData-HighLevel.md).
+[High-level overview of how Solid stores data](docs/LinkedDataOverview/LinkedData-HighLevel.md).
 
 ## Install and Run
 
@@ -57,7 +57,7 @@ We have a number of End-2-End tests, to test in various ways.
 
 ### Running just Extract and Transform
 
-The first End-2-End tests to run are in `e2e/node/extractTransform.test.ts`.
+The first End-2-End tests to run are in `e2e/node/extractTransformDisplay.test.ts`.
 These test the extraction of data from the data sources, transform the retrieved
 data into Linked Data, and then display it to the console as a manual, visual
 verification.
@@ -65,7 +65,7 @@ verification.
 To run these tests, run this script from the root directory:
 
 ```script
-npm run e2e-test-node-extractTransform
+npm run e2e-ExtractTransform-display
 ```
 
 If the supplied credentials are all valid, you should see data displayed
@@ -200,7 +200,7 @@ hard-coded to look for specifically named JSON files in the folder
 To run these tests, execute this script from the root directory:
 
 ```script
-npm run e2e-test-node-etl-localOnly
+npm run e2e-local-TransformLoad
 ```
 
 If the credentials you supplied are all valid, you should see data displayed on-screen (with
@@ -292,7 +292,7 @@ it is specified as the `Authorization` header value (look in the 'Headers' tab) 
 ## Advanced Vocabulary Management
 
 For details on how to efficiently update even remotely published vocabularies from 3rd-parties, see
-[Advanced Vocabulary management](./docs/AdvancedVocabularyManagement.md).
+[Advanced Vocabulary management](docs/AdvancedVocabManagement/AdvancedVocabularyManagement.md).
 
 ## Contents
 
