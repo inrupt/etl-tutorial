@@ -49,6 +49,10 @@ import {
 import { companiesHouseUkTransformCompany } from "../../src/dataSource/clientCompaniesHouseUk";
 
 import { updateOrInsertResourceInSolidPod } from "../../src/solidPod";
+import {
+  passportLocalExtract,
+  passportTransform,
+} from "../../src/dataSource/clientPassportLocal";
 
 // Load environment variables from .env.test.local if available:
 config({
@@ -126,6 +130,35 @@ describe("All data sources", () => {
         expect(dataset).toBeDefined();
       }
     }, 10000);
+  });
+
+  describe("Passport office", () => {
+    it("should transform and load", async () => {
+      const resources = await passportTransform(
+        credential,
+        await passportLocalExtract()
+      );
+
+      let response = await insertIntoTriplestoreResources(
+        credential,
+        resources.rdfResources,
+        resources.blobsWithMetadata
+      );
+      debug(
+        `Response from loading passport details into Triplestore: [${response}]`
+      );
+      expect(response).not.toBeNull();
+
+      const responsePod = await updateOrInsertResourceInSolidPod(
+        session,
+        resources.rdfResources,
+        resources.blobsWithMetadata
+      );
+      debug(
+        `Response from loading passport details into Pod: [${responsePod}]`
+      );
+      expect(responsePod).not.toBeNull();
+    }, 60000);
   });
 
   describe("Companies House UK", () => {

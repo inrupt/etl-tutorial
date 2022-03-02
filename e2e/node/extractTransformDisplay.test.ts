@@ -36,7 +36,7 @@ import { config } from "dotenv-flow";
 import { createCredentialResourceFromEnvironmentVariables } from "../../src/credentialUtil";
 import { CollectionOfResources } from "../../src/solidPod";
 import {
-  INRUPT_3RD_PARTY_BT,
+  INRUPT_3RD_PARTY_UNILEVER,
   INRUPT_3RD_PARTY_COMPANIES_HOUSE_UK,
   INRUPT_3RD_PARTY_PASSPORT_OFFICE_UK,
 } from "@inrupt/vocab-etl-tutorial-bundle-all-rdfdatafactory";
@@ -89,7 +89,7 @@ describe("All data sources", () => {
           INRUPT_3RD_PARTY_PASSPORT_OFFICE_UK.passportNumber
         );
         const issuer = getStringNoLocaleMandatoryOne(passport, CRED.issuer);
-        const tags = getIriAll(passport, INRUPT_3RD_PARTY_BT.tag);
+        const tags = getIriAll(passport, INRUPT_3RD_PARTY_UNILEVER.tag);
 
         debug(
           `Passport details: passport number [${passportNumber}], issuer [${issuer}], tags [${tags.join(
@@ -97,7 +97,7 @@ describe("All data sources", () => {
           )}].`
         );
 
-        expect(passportNumber).toBe("123123123213");
+        expect(passportNumber).toBe("PII-123123213");
       }
     });
   });

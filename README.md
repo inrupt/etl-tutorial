@@ -30,6 +30,13 @@ we wish to bundle together (which are all located in the
 npx @inrupt/artifact-generator generate --vocabListFile "resources/Vocab/vocab-etl-tutorial-bundle-all.yml" --outputDirectory "./src/InruptTooling/Vocab/EtlTutorial" --noprompt --force --publish npmInstallAndBuild
 ```
 
+**Note:** If you have the Artifact Generator installed locally (e.g., for faster
+execution), then you can run it directly:
+
+```script
+node ../SDK/artifact-generator/src/index.js  generate --vocabListFile "resources/Vocab/vocab-etl-tutorial-bundle-all.yml" --outputDirectory "./src/InruptTooling/Vocab/EtlTutorial" --noprompt --force --publish npmInstallAndBuild
+```
+
 Now install as normal:
 
 ```script
