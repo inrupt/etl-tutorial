@@ -13,7 +13,7 @@ attempts to offer general direction.
 ## Prerequisites
 
 - As a minimum, we'd highly recommend being at least somewhat familiar with
-  Turtle before attempting to
+  Turtle before attempting to understand or even use this project.
 
 ## 'Extras'
 
