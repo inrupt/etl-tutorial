@@ -1,24 +1,40 @@
-# ETL Tutorial CheatSheet
+# ETL Tutorial 'CheatSheet'
 
 This page offers a "_Quick Start_" introduction to Inrupt's ETL tutorial.
 
+_*Note:*_ This page is intended for developers already familiar with the
+operation and details of this repository, and to provide general guidelines for
+quickly explaining the overall purpose and operation of ETL of data into Solid
+Pods.
+
+Each use-case will be different and unique to some degree, but this guide
+attempts to offer general direction.
+
+## Prerequisites
+
+- As a minimum, we'd highly recommend being at least somewhat familiar with
+  Turtle before attempting to
+
 ## 'Extras'
 
-This repository includes:
+This repository also includes some _indirectly_ related material:
 
-- A very high-level overview of Linked Data, as a presentation with detailed
-  accompanying prose [here](docs/LinkedDataOverview).
+- A very high-level overview of Linked Data, as a presentation with slides, but
+  also with detailed accompanying prose [here](docs/LinkedDataOverview).
 - A detailed description of options for Advanced Vocabulary Management, for
-  developers to work more efficiently with evolving vocabs.
-- One page of instructions to register for, download, install and run a free
-  Linked Data database (i.e., a triplestore), load that database with dummy
-  data representing a Solid Pod, and visualizing that data interactively.
-  (Suitable for non-technical people, and should take less than 10 minutes
+  developers to work more efficiently with evolving vocabs once familiar and
+  experienced with the basics.
+- A single page of instructions to register for, download, install and run the
+  free edition of a commercial Linked Data database (i.e., a triplestore), load
+  that database with dummy data representing a Solid Pod, and then visualizing
+  that Pod data interactively (and hopefully intuitively!).
+  (Suitable for non-technical people, and should take less than **10 minutes**
   _*in total*_.)
 
 ## Setup
 
-Here we'll quickly run through setting up the project locally.
+Here we'll quickly run through setting up, running the ETL process in various
+ways, and finally visualizing the results of this project locally.
 
 ### Clone the repo
 
@@ -30,28 +46,35 @@ Get the ETL Tutorial repository:
 
 ### Generate JavaScript constants from our local vocabularies:
 
-- Run Inrupt's Artifact Generator:
+- Run Inrupt's Artifact Generator to generate local source-code from the local
+  vocabularies this project defines (for illustrative purposes):
 
-  Once-off using `npx` (slower):
+  Once-off using `npx` (slower, but no local dependencies required):
 
   ```
   npx @inrupt/artifact-generator generate --vocabListFile "resources/Vocab/vocab-etl-tutorial-bundle-all.yml" --outputDirectory "./src/InruptTooling/Vocab/EtlTutorial" --noprompt --force --publish npmInstallAndBuild
   ```
 
-  From local install:
+  From local install (faster, but requires local Artifact Generator to be
+  installed):
 
   ```
   node ../SDK/artifact-generator/src/index.js generate --vocabListFile "resources/Vocab/vocab-etl-tutorial-bundle-all.yml" --outputDirectory "./src/InruptTooling/Vocab/EtlTutorial" --noprompt --force
   ```
 
-### Run our unit tests
+### Run the full unit test suite
 
 ```
 npm test
 ```
 
-- 100% Branch code coverage.
-- All runs locally, doesn't populate anything (e.g., Pod or triplestore).
+- Ensures everything is _basically_ installed and setup correctly.
+- Demonstrates that we have 100% branch code coverage (which we know doesn't
+  '_prove_' anything in itself, but shows at least some commitment to
+  maintaining some measurable measure of 'code quality' 😄 !).
+- All tests run locally - they don't require any Web access (i.e., they don't
+  invoke any APIs), and they don't attempt to populate anything (e.g., Solid
+  Pods or triplestores).
 
 ## Running full End-2-End tests (using 3rd-party APIs, or loading to Pods)
 

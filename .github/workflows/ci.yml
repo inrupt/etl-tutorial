@@ -39,9 +39,7 @@ jobs:
     - run: npm run build
     - run: npm run lint
     - run: npm run check-licenses
-    # Due to all kinds of temporary dependency issues with `rdf-parse`,
-    # removing the audit stage.
-    # - run: npm audit --audit-level=moderate
+    - run: npm audit --audit-level=moderate
     - run: npm test
     - run: npx package-check
     - name: Archive code coverage results

@@ -10,6 +10,8 @@ The following changes have been implemented but not released yet:
 
 - Handle empty address values in UK Companies House responses.
 - Created a 'Public API response' resource folder.
+- Removed TestCafe and dependencies (as it wasn't used, and was causing npm
+  warnings on install).
 
 ## [0.0.1] - 2022-02-01
 

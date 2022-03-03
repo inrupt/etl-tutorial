@@ -7,6 +7,7 @@
     "build": "rollup --config rollup.config.js",
     "lint": "eslint src",
     "test": "jest src",
+    "test-all": "npm test && npm run e2e-ExtractTransform-display && npm run e2e-local-TransformLoad",
     "e2e-test-node": "jest --config=jest.e2e.config.js e2e/node",
     "e2e-test-browser": "testcafe",
     "e2e-ExtractTransform-display": "jest --config=jest.e2e.config.js e2e/node/extractTransformDisplay.test.ts",
@@ -49,7 +50,6 @@
     "@inrupt/eslint-config-lib": "^0.3.0",
     "@inrupt/vocab-inrupt-test-rdfdatafactory": "^1.0.3",
     "@skypack/package-check": "^0.2.2",
-    "@testing-library/testcafe": "^4.2.3",
     "@types/debug": "^4.1.7",
     "@types/dotenv-flow": "^3.2.0",
     "@types/jest": "^27.4.0",
@@ -73,7 +73,6 @@
     "prettier": "^2.5.1",
     "rollup": "^2.66.1",
     "rollup-plugin-typescript2": "^0.30.0",
-    "testcafe": "^1.16.0",
     "ts-jest": "^27.1.3",
     "typescript": "^4.6.2"
   },
@@ -93,7 +92,7 @@
     "debug": "^4.3.3",
     "glob": "^7.2.0",
     "rdf-data-factory": "^1.1.0",
-    "rdf-parse": "^1.9.1",
+    "rdf-parse": "^2.0.0",
     "yargs": "^17.3.1"
   },
   "resolutions": {
