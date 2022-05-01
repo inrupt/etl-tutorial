@@ -31,6 +31,7 @@ import { buildThing, SolidDataset } from "@inrupt/solid-client";
 import { APPLICATION_NAME } from "../applicationConstant";
 import { CollectionOfResources } from "../solidPod";
 import { wireUpDataSourceContainer } from "../applicationSetup";
+import { pluralize } from "../util";
 
 const debug = debugModule(`${APPLICATION_NAME}:clientPassport`);
 
@@ -105,20 +106,24 @@ export function passportTransform(
       INRUPT_3RD_PARTY_PASSPORT_OFFICE_UK.passportNumber,
       passportData[INRUPT_3RD_PARTY_PASSPORT_OFFICE_UK.passportNumber.value]
     )
-    .addStringNoLocale(CRED.issuanceDate, passportData[CRED.issuanceDate.value])
-    .addStringNoLocale(
+    .addDate(CRED.issuanceDate, new Date(passportData[CRED.issuanceDate.value]))
+    .addDate(
       CRED.expirationDate,
-      passportData[CRED.expirationDate.value]
+      new Date(passportData[CRED.expirationDate.value])
     )
     .addStringNoLocale(CRED.issuer, passportData[CRED.issuer.value])
     .build();
 
   result.rdfResources.push(passport);
 
+  const resourceText = pluralize("resource", result.rdfResources.length);
+  const blobText = pluralize("Blob", (result.blobsWithMetadata as []).length);
   debug(
-    `...transformed passport data into [${
+    `Transformed passport data into [${
       result.rdfResources.length
-    }] RDF resources and [${(result.blobsWithMetadata as []).length}] Blobs.`
+    }] RDF ${resourceText} and [${
+      (result.blobsWithMetadata as []).length
+    }] ${blobText}.`
   );
 
   return result;

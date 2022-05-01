@@ -98,9 +98,9 @@ export async function updateOrInsertResourceInSolidPod(
 ): Promise<string> {
   const plural = resources.length !== 1;
   if (!session.info.isLoggedIn) {
-    const message = `Solid Pod session is not logged in - ignoring request to write [${
-      resources.length
-    }] resource${plural ? "s" : ""}.`;
+    const message = `Ignoring request to write [${resources.length}] resource${
+      plural ? "s" : ""
+    } to Solid Pod (session is not logged in).`;
     debug(message);
     return Promise.resolve(message);
   }

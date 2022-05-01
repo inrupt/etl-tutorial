@@ -59,7 +59,7 @@ config({
   silent: process.env.CI === "true",
 });
 
-const debug = debugModule("etl-tutorial:extractTransform-test");
+const debug = debugModule("etl-tutorial:ExtractTransform-display");
 debugModule.enable("etl-tutorial:*");
 
 // For testing, we hard-code a UK company search for the biggest company in

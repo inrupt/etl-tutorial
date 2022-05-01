@@ -51,7 +51,7 @@ describe("triplestore", () => {
         "INRUPT_TRIPLESTORE_ENDPOINT_UPDATE",
       ]);
       expect(await clearTriplestore(credentials)).toContain(
-        "ignoring request to clear"
+        "Ignoring request to clear"
       );
     });
 
@@ -164,7 +164,7 @@ describe("triplestore", () => {
 
       expect(
         await insertIntoTriplestoreResources(credentials, resources)
-      ).toContain("ignoring request to insert [1] resource into triplestore");
+      ).toContain("Ignoring request to insert [1] resource into triplestore");
     });
 
     it("should succeed", async () => {

@@ -63,11 +63,13 @@ config({
   silent: process.env.CI === "true",
 });
 
-const debug = debugModule(
-  "etl-tutorial:localApiResponse.transformAndLoad.test"
-);
+const debug = debugModule("etl-tutorial:localExtract-TransformLoad.test");
 debugModule.enable("etl-tutorial:*");
 
+// Note: All these tests are expected to 'pass' if we provide no Pod
+// credentials and no Triplestore Update endpoint, as performing the Load
+// operation to either is always optional for each, as is each individual data
+// source.
 describe("All data sources", () => {
   let credential: SolidDataset;
   const session = new Session();
@@ -93,7 +95,7 @@ describe("All data sources", () => {
       etlOidcIssuer === null
     ) {
       debug(
-        `Ignoring Solid login - we need all credentials for ETL process to authenticate with Solid - we got clientId [${etlClientId}], clientSecret [${etlClientSecret}], and oidcIssuer [${etlOidcIssuer}].`
+        `Ignoring Solid login - we need credentials for this ETL process to authenticate with a Solid Pod to load into (whereas we got 'clientId' [${etlClientId}], 'clientSecret' [${etlClientSecret}], and 'oidcIssuer' [${etlOidcIssuer}]).`
       );
     } else {
       await session.login({
@@ -107,10 +109,9 @@ describe("All data sources", () => {
       );
     }
 
-    // BIg assumption here, but (for now) assume we always clear the entire
+    // Big assumption here, but (for now) assume we always clear the entire
     // triplestore for any test run.
     const clearResponse = await clearTriplestore(credential);
-    debug(`Clear triplestore response: [${clearResponse}]`);
   });
 
   afterAll(() => {
@@ -173,9 +174,6 @@ describe("All data sources", () => {
         resources.rdfResources,
         resources.blobsWithMetadata
       );
-      debug(
-        `Response from loading Companies House UK Company search into Triplestore: [${response}]`
-      );
       expect(response).not.toBeNull();
 
       const responsePod = await updateOrInsertResourceInSolidPod(
@@ -183,8 +181,27 @@ describe("All data sources", () => {
         resources.rdfResources,
         resources.blobsWithMetadata
       );
-      debug(
-        `Response from loading Companies House UK Company search into Pod: [${responsePod}]`
+      expect(responsePod).not.toBeNull();
+    }, 60000);
+  });
+
+  describe("Passport (local)", () => {
+    it("should transform and load", async () => {
+      const passportData = await passportLocalExtract();
+
+      const resources = await passportTransform(credential, passportData);
+
+      let response = await insertIntoTriplestoreResources(
+        credential,
+        resources.rdfResources,
+        resources.blobsWithMetadata
+      );
+      expect(response).not.toBeNull();
+
+      const responsePod = await updateOrInsertResourceInSolidPod(
+        session,
+        resources.rdfResources,
+        resources.blobsWithMetadata
       );
       expect(responsePod).not.toBeNull();
     }, 60000);

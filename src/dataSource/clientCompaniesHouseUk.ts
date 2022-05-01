@@ -33,7 +33,7 @@ import {
   getStringNoLocaleOptionalOne,
   getThingOfTypeMandatoryOne,
 } from "../solidDatasetUtil";
-import { handleResponseJson } from "../util";
+import { handleResponseJson, pluralize } from "../util";
 import { APPLICATION_NAME } from "../applicationConstant";
 import { CollectionOfResources } from "../solidPod";
 import { wireUpDataSourceContainer } from "../applicationSetup";
@@ -176,10 +176,14 @@ export function companiesHouseUkTransformCompany(
     result.rdfResources.push(company);
     result.rdfResources.push(address);
 
+    const resourceText = pluralize("resource", result.rdfResources.length);
+    const blobText = pluralize("Blob", (result.blobsWithMetadata as []).length);
     debug(
-      `...transformed Companies House UK company data into [${
+      `Transformed Companies House UK company data into [${
         result.rdfResources.length
-      }] RDF resources and [${(result.blobsWithMetadata as []).length}] Blobs.`
+      }] RDF ${resourceText} and [${
+        (result.blobsWithMetadata as []).length
+      }] ${blobText}.`
     );
   });
 

@@ -26,6 +26,7 @@ import { toNTriples } from "./solidDatasetUtil";
 import { getCredentialStringOptional } from "./credentialUtil";
 import { BlobWithMetadata } from "./solidPod";
 import { APPLICATION_NAME } from "./applicationConstant";
+import { pluralize } from "./util";
 
 const debug = debugModule(`${APPLICATION_NAME}:triplestore`);
 
@@ -45,7 +46,7 @@ export async function clearTriplestore(
 
   if (noRepository(repoEndpointUpdate)) {
     const message =
-      "We have no triplestore update endpoint - ignoring request to clear triplestore.";
+      "Ignoring request to clear triplestore (we have no triplestore update endpoint).";
     debug(message);
     return Promise.resolve(message);
   }
@@ -167,9 +168,11 @@ export async function insertIntoTriplestoreResources(
 
     if (noRepository(repoEndpointUpdate)) {
       const plural = resources.length !== 1;
-      const message = `We have no triplestore update endpoint - ignoring request to insert [${
+      const message = `Ignoring request to insert [${
         resources.length
-      }] resource${plural ? "s" : ""} into triplestore.`;
+      }] resource${
+        plural ? "s" : ""
+      } into triplestore (we have no triplestore update endpoint).`;
       debug(message);
       return await Promise.resolve(message);
     }
@@ -200,9 +203,16 @@ export async function insertIntoTriplestoreResources(
     await Promise.all(responses);
 
     if (blobsWithMetadata) {
-      debug(
-        `Looking for Blob metdata from [${blobsWithMetadata.length}] Blobs.`
-      );
+      if (blobsWithMetadata.length === 0) {
+        debug(
+          `No Blobs, so no associated Blob metadata to add to triplestore.`
+        );
+      } else {
+        debug(
+          `Looking for Blob metdata from [${blobsWithMetadata.length}] Blobs.`
+        );
+      }
+
       const blobResponses = blobsWithMetadata.map(
         (blobWithMetadata): Promise<string> => {
           if (blobWithMetadata.metadata) {
@@ -226,7 +236,8 @@ export async function insertIntoTriplestoreResources(
     throw new Error(message);
   }
 
-  const message = `Successfully inserted [${resources.length}] resources into triplestore [${repoEndpointUpdate}].`;
+  const resourceText = pluralize("resource", resources.length);
+  const message = `Successfully inserted [${resources.length}] ${resourceText} into triplestore [${repoEndpointUpdate}].`;
   debug(message);
   return message;
 }
