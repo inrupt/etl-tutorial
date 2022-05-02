@@ -62,7 +62,7 @@ export async function companiesHouseUkExtractCompanyById(
 
   if (authToken === null) {
     debug(
-      `No, or missing, credentials for [${DATA_SOURCE}] (got authentication token [${authToken}]) - ignoring.`
+      `Ignoring extraction of data from [${DATA_SOURCE}] - no, or missing, credentials (got authentication token [${authToken}]).`
     );
     return null;
   }
@@ -84,7 +84,7 @@ export async function companiesHouseUkExtractCompanyById(
     })
     .then((json) => {
       debug(
-        `Successfully retrieved company data from [${DATA_SOURCE}] for company ID [${companyId}].`
+        `Successfully extracted company data from [${DATA_SOURCE}] for company ID [${companyId}].`
       );
       return json;
     })

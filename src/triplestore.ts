@@ -110,7 +110,7 @@ INSERT DATA {
 ${graphWrappedInsertStatement}
 }`;
 
-  // This can be a handy debug message (it would good as a TRACE-level
+  // This can be a handy debug message (it would be good as a TRACE-level
   // message!). It can be useful for detecting RDF triples that might be
   // missing RDF Object values.
   // debug(`Attempting to write to triplestore:\n${fullBody}`);

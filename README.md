@@ -14,17 +14,19 @@ everything in Solid, we first recommend reading the
 
 ## Install and Run
 
-As we don't yet wish to publicly publish any of the vocabularies we develop
-for this tutorial (namely the vocabularies we create on behalf of 3rd-party
-data sources that don't yet provide RDF vocabularies themselves), we first
-need to generate a local `npm` package that bundles together JavaScript
+Since we may not yet wish to publicly publish any of the vocabularies we
+develop for this tutorial (namely the vocabularies we create on behalf of
+3rd-party data sources that don't yet provide RDF vocabularies themselves), we
+first need to generate a local `npm` package that bundles together JavaScript
 classes representing all the terms from all those vocabularies.
 
-To do this, run Inrupt's open-source
+To do this, we run Inrupt's open-source
 [Artifact Generator](https://github.com/inrupt/artifact-generator), pointing
 it at our local configuration YAML file that references all the local
-vocabularies we wish to bundle together (which are all located in the
-[./resources/Vocab](./resources/Vocab) folder):
+vocabularies we wish to use terms from, and that bundles together the
+generated JavaScript classes that contain constants for all the terms from
+each of those vocabularies (which are all located in the
+[./resources/Vocab](./resources/Vocab) directory):
 
 ```script
 npx @inrupt/artifact-generator generate --vocabListFile "resources/Vocab/vocab-etl-tutorial-bundle-all.yml" --outputDirectory "./src/InruptTooling/Vocab/EtlTutorial" --noprompt --force --publish npmInstallAndBuild
@@ -70,17 +72,27 @@ different aspects of the overall ETL process in isolation. This clear
 separation also allows us to understand the various different credentials we
 generally need for an overall ETL process flow.
 
-In all cases, and indeed when running the actual ETL process 'for real', we
-only need to create and edit a local environment file to provide the various
-credentials needed (although these End-2-End tests will also 'pass' without
-any such environment file at all, as the ETL code treats updating Pods or a
-triplestore as completely optional - so if no credentials are provided at all,
-everything will still pass).
+For all these tests, and indeed when running the actual ETL process 'for real',
+we only need to create and edit a single local environment file to provide the
+various credentials needed.
 
-The End-2-End tests we provide are:
+Note however, that all these End-2-End tests, and the ETL process itself, will
+also all 'pass' without any such environment file at all, as the ETL code
+treats loading into Pods or a triplestore as completely optional - so if no
+credentials are provided at all, everything will still pass.
+
+The End-2-End tests we provide are below, which you can safely be run now too,
+without first creating the local environment file. You should see the console
+output telling you the steps being 'ignored' due to lack of credentials:
 
 1. Extract, Transform, and display to console.
+   ```script
+   npm run e2e-test-node-ExtractTransform-display
+   ```
 2. Load locally, Transform, and Load to Pods (and/or triplestore).
+   ```script
+   npm run e2e-test-node-localExtract-TransformLoad
+   ```
 
 #### Extract, Transform, and display to console.
 
@@ -279,18 +291,14 @@ triplestore, or Pods hosted on a locally running Solid server).
 
 For these tests to run though, we need local copies of real API responses.
 Currently, the tests are hard-coded to look for specifically named JSON files
-in the folder `resources/test/RealData/RealApiResponse/` (see the imports at
-the top of the test file `e2e/node/localExtract-TransformLoad.test.ts` for the
-expected filenames).
+in the directory `resources/test/RealData/RealApiResponse/` (see the imports
+at the top of the test file `e2e/node/localExtract-TransformLoad.test.ts` for
+the expected filenames).
 
 To run these tests, execute this script from the root directory:
 
 ```script
-<<<<<<< HEAD
-npm run e2e-local-TransformLoad
-=======
 npm run e2e-test-node-localExtract-TransformLoad
->>>>>>> 646530a (Tidy up debug messages, extend README)
 ```
 
 If the credentials you supplied are all valid, you should see data displayed

@@ -52,7 +52,7 @@ const inputToEtlFromMl = {
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export async function passportLocalExtract(): Promise<any> {
   debug(
-    `Successfully retrieved passport data from [${DATA_SOURCE}] for [${
+    `Successfully extracted passport data from [${DATA_SOURCE}] for [${
       inputToEtlFromMl[SCHEMA_INRUPT.familyName.value]
     }].`
   );
