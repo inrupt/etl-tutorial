@@ -176,8 +176,8 @@ export function companiesHouseUkTransformCompany(
     result.rdfResources.push(company);
     result.rdfResources.push(address);
 
-    const resourceText = pluralize("resource", result.rdfResources.length);
-    const blobText = pluralize("Blob", (result.blobsWithMetadata as []).length);
+    const resourceText = pluralize("resource", result.rdfResources);
+    const blobText = pluralize("Blob", result.blobsWithMetadata);
     debug(
       `Transformed Companies House UK company data into [${
         result.rdfResources.length

@@ -239,7 +239,7 @@ export async function createApplicationResources(
       .build()
   );
 
-  const resourceText = pluralize("resource", resources.length);
+  const resourceText = pluralize("resource", resources);
   debug(
     `...created [${resources.length}] [${APPLICATION_LABEL}] specific ${resourceText}.`
   );

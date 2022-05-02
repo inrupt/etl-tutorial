@@ -116,8 +116,8 @@ export function passportTransform(
 
   result.rdfResources.push(passport);
 
-  const resourceText = pluralize("resource", result.rdfResources.length);
-  const blobText = pluralize("Blob", (result.blobsWithMetadata as []).length);
+  const resourceText = pluralize("resource", result.rdfResources);
+  const blobText = pluralize("Blob", result.blobsWithMetadata);
   debug(
     `Transformed passport data into [${
       result.rdfResources.length

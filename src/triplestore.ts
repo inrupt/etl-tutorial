@@ -203,15 +203,9 @@ export async function insertIntoTriplestoreResources(
     await Promise.all(responses);
 
     if (blobsWithMetadata) {
-      if (blobsWithMetadata.length === 0) {
-        debug(
-          `No Blobs, so no associated Blob metadata to add to triplestore.`
-        );
-      } else {
-        debug(
-          `Looking for Blob metdata from [${blobsWithMetadata.length}] Blobs.`
-        );
-      }
+      debug(
+        `Looking for Blob metdata from [${blobsWithMetadata.length}] Blobs.`
+      );
 
       const blobResponses = blobsWithMetadata.map(
         (blobWithMetadata): Promise<string> => {
@@ -236,7 +230,7 @@ export async function insertIntoTriplestoreResources(
     throw new Error(message);
   }
 
-  const resourceText = pluralize("resource", resources.length);
+  const resourceText = pluralize("resource", resources);
   const message = `Successfully inserted [${resources.length}] ${resourceText} into triplestore [${repoEndpointUpdate}].`;
   debug(message);
   return message;
