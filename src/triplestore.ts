@@ -69,17 +69,17 @@ export async function clearTriplestore(
   })
     .then((res: Response) => {
       if (!res.ok) {
-        const message = `Failed to clear Named Graph [${namedGraph}] from triplestore [${repoEndpointUpdate}], got status [${res.status} - ${res.statusText}]`;
+        const message = `Failed to clear Named Graph [${namedGraph}] from triplestore via SPARQL Update endpoint: [${repoEndpointUpdate}], got status [${res.status} - ${res.statusText}]`;
         debug(message);
         throw new Error(message);
       }
 
-      const message = `Successfully cleared Named Graph [${namedGraph}] from triplestore [${repoEndpointUpdate}].`;
+      const message = `Successfully cleared Named Graph [${namedGraph}] from triplestore via SPARQL Update endpoint: [${repoEndpointUpdate}].`;
       debug(message);
       return message;
     })
     .catch((error) => {
-      const message = `Failed to clear Named Graph [${namedGraph}] from triplestore [${repoEndpointUpdate}]. Error: [${error.message}].`;
+      const message = `Failed to clear Named Graph [${namedGraph}] from triplestore via SPARQL Update endpoint: [${repoEndpointUpdate}]. Error: [${error.message}].`;
       debug(message);
       throw new Error(message);
     });
@@ -127,15 +127,15 @@ ${graphWrappedInsertStatement}
       if (!res.ok) {
         debug(`DATA ATTEMPTING TO LOAD:`);
         debug(fullBody);
-        const message = `Failed to insert into Named Graph [${namedGraph}] in triplestore [${repoEndpointUpdate}], got status [${res.status} - ${res.statusText}]`;
+        const message = `Failed to insert into Named Graph [${namedGraph}] in triplestore via SPARQL Update endpoint: [${repoEndpointUpdate}], got status [${res.status} - ${res.statusText}]`;
         debug(message);
         throw new Error(message);
       }
 
-      return `Successfully inserted into Named Graph [${namedGraph}] in triplestore [${repoEndpointUpdate}].`;
+      return `Successfully inserted into Named Graph [${namedGraph}] in triplestore via SPARQL Update endpoint: [${repoEndpointUpdate}].`;
     })
     .catch((error) => {
-      const message = `Failed to insert statements into Named Graph [${namedGraph}] of triplestore [${repoEndpointUpdate}]. Error: [${error.message}].`;
+      const message = `Failed to insert statements into Named Graph [${namedGraph}] of triplestore via SPARQL Update endpoint: [${repoEndpointUpdate}]. Error: [${error.message}].`;
       debug(message);
       throw new Error(message);
     });
@@ -202,9 +202,13 @@ export async function insertIntoTriplestoreResources(
     });
     await Promise.all(responses);
 
-    if (blobsWithMetadata) {
+    if (!blobsWithMetadata || blobsWithMetadata.length === 0) {
       debug(
-        `Looking for Blob metdata from [${blobsWithMetadata.length}] Blobs.`
+        `No Blobs with metadata, so no Blob metadata resources to write to triplestore.`
+      );
+    } else {
+      debug(
+        `Looking for Blob metadata from [${blobsWithMetadata.length}] Blobs.`
       );
 
       const blobResponses = blobsWithMetadata.map(
@@ -231,7 +235,7 @@ export async function insertIntoTriplestoreResources(
   }
 
   const resourceText = pluralize("resource", resources);
-  const message = `Successfully inserted [${resources.length}] ${resourceText} into triplestore [${repoEndpointUpdate}].`;
+  const message = `Successfully inserted [${resources.length}] ${resourceText} into triplestore via SPARQL Update endpoint: [${repoEndpointUpdate}].`;
   debug(message);
   return message;
 }

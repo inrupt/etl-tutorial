@@ -36,12 +36,18 @@ import {
 import { handleResponseJson, pluralize } from "../util";
 import { APPLICATION_NAME } from "../applicationConstant";
 import { CollectionOfResources } from "../solidPod";
-import { wireUpDataSourceContainer } from "../applicationSetup";
+import {
+  makeDataSourceContainerBuilder,
+  wireUpDataSourceContainer,
+} from "../applicationSetup";
 
 const debug = debugModule(`${APPLICATION_NAME}:clientCompaniesHouseUk`);
 
 const DATA_SOURCE = "CompaniesHouse-UK";
 
+// These are the publicly available API details for performing a company
+// search via the UK Companies House (that API does require an authentication
+// token though...).
 const companiesHouseUkEndpointRoot =
   "https://api.company-information.service.gov.uk/";
 const companiesHouseUkEndpointSearchCompanyById = `${companiesHouseUkEndpointRoot}search/companies?q={{COMPANY_ID}}`;
@@ -116,14 +122,24 @@ export function companiesHouseUkTransformCompany(
   if (companySearchResults === null) {
     return result;
   }
-  const { dataSourceContainerIri } = wireUpDataSourceContainer(
-    DATA_SOURCE,
-    credential
+  const wiring = wireUpDataSourceContainer(DATA_SOURCE, credential);
+
+  // Create a container for all the resources we will be adding from this data
+  // source.
+  const dataSourceContainerBuilder = makeDataSourceContainerBuilder(
+    wiring.dataSourceContainerIri,
+    DATA_SOURCE
   );
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any, @typescript-eslint/explicit-module-boundary-types
   companySearchResults.items.forEach((companyData: any) => {
-    const searchResultIri = `${dataSourceContainerIri}${companyData.company_number}/`;
+    const searchResultIri = `${wiring.dataSourceContainerIri}CompanyID-${companyData.company_number}/`;
+
+    // Add a reference to this instance to our data source container.
+    dataSourceContainerBuilder.addIri(
+      INRUPT_3RD_PARTY_COMPANIES_HOUSE_UK.searchResult,
+      searchResultIri
+    );
 
     // It seems Companies House UK can have empty 'country' values (e.g., as
     // of Feb 2022, Unilever (the largest company in the UK)).
@@ -175,6 +191,12 @@ export function companiesHouseUkTransformCompany(
 
     result.rdfResources.push(company);
     result.rdfResources.push(address);
+
+    // Add the wiring-up resources to our result.
+    result.rdfResources.push(...wiring.resources);
+
+    // Now build our data source container, and add it to our result resources.
+    result.rdfResources.push(dataSourceContainerBuilder.build());
 
     const resourceText = pluralize("resource", result.rdfResources);
     const blobText = pluralize("Blob", result.blobsWithMetadata);

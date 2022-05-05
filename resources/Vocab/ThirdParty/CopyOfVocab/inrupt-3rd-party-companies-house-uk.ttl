@@ -88,6 +88,14 @@ inrupt_3rd_party_companies_house_uk:status a rdf:Property, owl:ObjectProperty ;
     rdfs:comment "Company status (e.g., active, in liquidation, in the course of dissolution, in receivership, or dissolved)."@en ;
     rdfs:comment "Estado de la empresa (por ejemplo, activa, en liquidación, en proceso de disolución, en suspensión de pagos o disuelta)."@es .
 
+
+inrupt_3rd_party_companies_house_uk:searchResult a rdf:Property, owl:ObjectProperty ;
+    rdfs:isDefinedBy inrupt_3rd_party_companies_house_uk: ;
+    rdfs:label "Search result"@en ;
+    rdfs:label "Resultado de búsqueda"@es ;
+    rdfs:comment "Company search result (via our search API)."@en ;
+    rdfs:comment "Resultado de búsqueda de la empresa (a través de nuestra API de búsqueda)."@es .
+
 #
 #inrupt_3rd_party_companies_house_uk: a rdf:Property, owl:ObjectProperty ;
 #    rdfs:isDefinedBy inrupt_3rd_party_companies_house_uk: ;

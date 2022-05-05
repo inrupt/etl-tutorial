@@ -125,7 +125,7 @@ export function getStringNoLocaleMandatoryOne(
   if (values.length === 0) {
     const message = `Mandatory request for only one no-locale string value for predicate [${toIriString(
       predicate
-    )}]), but we couldn't find any values at all.`;
+    )}]), but we couldn't find any values at all (you may be asking for a string when the datatype is actually something different, like an IRI).`;
     debug(message);
     throw Error(message);
   }
@@ -148,7 +148,7 @@ export function getIriMandatoryOne(
   if (values.length === 0) {
     const message = `Mandatory request for only one IRI value for predicate [${toIriString(
       predicate
-    )}]), but we couldn't find any values at all.`;
+    )}]), but we couldn't find any values at all (you may be asking for an IRI when the datatype is actually something different, like a string).`;
     debug(message);
     throw Error(message);
   }

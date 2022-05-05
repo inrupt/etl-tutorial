@@ -29,14 +29,14 @@ each of those vocabularies (which are all located in the
 [./resources/Vocab](./resources/Vocab) directory):
 
 ```script
-npx @inrupt/artifact-generator generate --vocabListFile "resources/Vocab/vocab-etl-tutorial-bundle-all.yml" --outputDirectory "./src/InruptTooling/Vocab/EtlTutorial" --noprompt --force --publish npmInstallAndBuild
+npx @inrupt/artifact-generator generate --vocabListFile "resources/Vocab/vocab-etl-tutorial-bundle-all.yml" --outputDirectory "./src/InruptTooling/Vocab/EtlTutorial" --noPrompt --force --publish npmInstallAndBuild
 ```
 
 **Note:** If you have the Artifact Generator installed locally (e.g., for faster
 execution), then you can run it directly:
 
 ```script
-node ../SDK/artifact-generator/src/index.js  generate --vocabListFile "resources/Vocab/vocab-etl-tutorial-bundle-all.yml" --outputDirectory "./src/InruptTooling/Vocab/EtlTutorial" --noprompt --force --publish npmInstallAndBuild
+node ../SDK/artifact-generator/src/index.js  generate --vocabListFile "resources/Vocab/vocab-etl-tutorial-bundle-all.yml" --outputDirectory "./src/InruptTooling/Vocab/EtlTutorial" --noPrompt --force --publish npmInstallAndBuild
 ```
 
 **Note**: during any ETL development, it's generally very common to continue
@@ -65,7 +65,7 @@ with 100% coverage across the board.
 npm test
 ```
 
-## Running full End-2-End tests (using 3rd-party APIs)
+## End-2-End tests
 
 We provide multiple forms of End-2-End tests to allow us demonstrate and test
 different aspects of the overall ETL process in isolation. This clear
@@ -78,37 +78,53 @@ various credentials needed.
 
 Note however, that all these End-2-End tests, and the ETL process itself, will
 also all 'pass' without any such environment file at all, as the ETL code
-treats loading into Pods or a triplestore as completely optional - so if no
-credentials are provided at all, everything will still pass.
+treats loading into Pods or a triplestore as completely optional. So if no
+credentials are provided at all, everything will still pass, but you'll see
+lots of console output saying Extraction and Loading are being ignored!
 
-The End-2-End tests we provide are below, which you can safely be run now too,
-without first creating the local environment file. You should see the console
-output telling you the steps being 'ignored' due to lack of credentials:
+### Overview of our End-2-End test suites
 
-1. Extract, Transform, and display to console.
+The End-2-End test suites we provide are described below, and you can safely
+run them now without first creating the local environment file. But without
+credentials, you should see the console output telling you various steps are
+being 'ignored':
+
+1. Extract, Transform, and display to console:
    ```script
    npm run e2e-test-node-ExtractTransform-display
    ```
-2. Load locally, Transform, and Load to Pods (and/or triplestore).
+   (Without any credentials, we'll see this test successfully Extract data
+   from local copies of 3rd-party data, successfully transform that data into
+   RDF, and then display that data to the console, but we'll see it ignore
+   Extraction from 3rd-parties for which we **require** credentials.)
+2. Load locally, Transform, and Load to Pods (and/or triplestore):
    ```script
    npm run e2e-test-node-localExtract-TransformLoad
    ```
+   (Without any credentials, we'll see this test successfully Extract data
+   from local copies of 3rd-party data, successfully transform that data into
+   RDF, but then ignore all attempts to Load those resources into any Pod or
+   triplestore.)
 
-#### Extract, Transform, and display to console.
+### Overview of test suites
 
-Tests that connect to each of our 3rd-party data sources to extract data,
-transform that extracted data into RDF, and then just outputs some of that
-data to the console. This is to demonstrate and test **_only_** the Extract
-and Transform stages of the ETL process, and so for this test we don't need
-to configure or setup anything to do with Solid Pods or triplestores (since
-we deliberately don't attempt to 'Load' this Extracted and Transformed data
-anywhere).
+Here we describe our test suites in a bit more detail...
 
-#### Load locally, Transform, and Load to Pods (and/or triplestore).
+#### 1. Extract, Transform, and display to console.
+
+Tests that connect to each of our 3rd-party data sources to Extract data,
+Transform that extracted data into RDF, and then just outputs some of that
+data to the console (rather than Loading it anywhere!). This is to demonstrate
+and test **_only_** the Extract and Transform stages of the ETL process, and
+so for these tests we don't need to configure or setup anything to do with
+Solid Pods or triplestores (since we deliberately don't attempt to 'Load' this
+Extracted and Transformed data anywhere).
+
+#### 2. Load locally, Transform, and Load to Pods (and/or triplestore).
 
 Tests that read local copies of 3rd-party data (so in this case, we are
 deliberately avoiding the need for any credentials to connect to any of our
-3rd-party data sources). These tests transform that local data into RDF, and
+3rd-party data sources). These tests Transform that local data into RDF, and
 attempt to Load that data into a Solid Pod (and optionally a triplestore). In
 other words, this is for demonstrating and testing **_only_** the
 Transformation and Loading stages of the ETL process.
@@ -116,7 +132,7 @@ Transformation and Loading stages of the ETL process.
 ### Create a local-only environment file
 
 To run our ETL Tutorial or execute our End-2-End tests for 'real' (i.e., where
-we attempt to Extract real data from actual 3rd parties, and/or Load data into
+we attempt to Extract real data from actual 3rd-parties, and/or Load data into
 real Solid Pods or a triplestore), we need to provide real, valid credentials,
 i.e., to allow our application to authenticate with the real APIs of our
 3rd-party data sources, and/or to allow our application to write RDF data to
@@ -131,24 +147,87 @@ local environment file, as follows:
    values, depending on what we wish to do (i.e., run one or more of the
    End-2-End tests, and/or the full ETL process itself).
 
-We have a number of End-2-End tests, to test in various ways.
+We can now configure this local environment file in various ways, and re-run
+our End-2-End test suites to understand all the variations of ETL possible.
+
+### Loading into a triplestore
+
+If you are already familiar with triplestores, then perhaps the easiest option
+initially is to simply create a new repository in your favorite triplestore
+and provide that repository's SPARQL update endpoint to our local environment
+file.
+
+If you are not already familiar with triplestores, you can safely ignore this
+entire section (although registering, downloading, and running a free
+triplestore can literally take less than 10 minutes - see detailed
+instructions [here](./docs/VisualizePodData/VisualizePodData.md)).
+
+#### Configuring your triplestore
+
+For example, if your favored triplestore was
+[Ontotext's GraphDB](https://www.ontotext.com/products/graphdb/), and you
+created a default repository named `inrupt-etl-tutorial`, then you'd simply
+need to add the following value to your `.env.test.local` environment file:
+
+```
+INRUPT_TRIPLESTORE_ENDPOINT_UPDATE="http://localhost:7200/repositories/inrupt-etl-tutorial/statements"
+```
+
+Now when you run the End-2-End tests to Load (there's little point in
+re-running the 'only-display-to-console' test suite, since it deliberately
+never attempts to Load any data anywhere anyway)...
+
+```script
+npm run e2e-test-node-localExtract-TransformLoad
+```
+
+...you should see console output informing you that our ETL process
+successfully Loaded resources into your triplestore repository. If your
+triplestore is not running, or you provided an incorrect SPARQL Update
+endpoint, then this test suite should fail (for example, with
+`connect ECONNREFUSED` errors).
+
+Assuming the test suite passes, you should now be able to see and query the
+Loaded data using your familiar triplestore tools (for example, simply running
+a `select * where { ?s ?p ?o . }` SPARQL query (with inferred data turned OFF)
+should show all our ETL'ed data.
+
+**Note**: At this stage (i.e., by only configuring our triplestore via the ETL
+environment file), all triples will be added directly to the `default` Named
+Graph. For more information on how to populate Named Graphs-per-user Pod, see
+later in this documentation.
+
+If your triplestore supports visualizing triples (such as GraphDB), then our
+data can already be intuitively inspected and navigated by starting at the
+following test node, generated by default by our test suite if no Solid Pod
+storage root was configured:
+`https://different.domain.example.com/testStorageRoot/private/inrupt/etl-tutorial/etl-run-1/`
+
+**Note**: One thing you might notice is that the triplestore does not any
+Linked Data Platform (LDP) containment triples (e.g., `ldp:contains` or
+`ldp:BasicContainer`, etc.), since this test specifically Loaded data into a
+raw triplestore, which has no inherent notion of LDP containment. We'll see
+later that Loading the same resources into a Solid Pod does result in these
+containment triples, since they'll have been created by virtue of Solid
+servers also being LDP servers (as currently defined in the Solid
+specification).
 
 ### Running just Extract and Transform
 
-The first End-2-End test suite to run is `e2e/node/ExtractTransform-display.test.ts`.
-This suite tests the extraction of data from 3rd-party data sources,
-transforms that retrieved data into Linked Data, and then displays it to the
-console for manual, visual verification (i.e., it deliberately does **_not_**
-attempt to Load this data anywhere, like a Solid Pod or a triplestore).
+The test suite `e2e/node/ExtractTransform-display.test.ts` tests the
+Extraction of data from each of our 3rd-party data sources; Transforms that
+Extracted data into Linked Data, and then displays it to the console for
+manual, visual verification (i.e., it deliberately does **_not_** attempt to
+Load this Transformed data anywhere, such as a Solid Pod or a triplestore).
 
-To run these tests, run this script from the root directory:
+To execute this test suite, run this script from the root directory:
 
 ```script
 npm run e2e-test-node-ExtractTransform-display
 ```
 
-Note: We can still run these tests without any environment file at all, but
-the code simply won't attempt any Extraction or Loading.
+**Note**: We can still run these tests without any environment file at all,
+but the code simply won't attempt any Extraction or Loading.
 
 If the supplied credentials are all valid, you should see data displayed
 on-screen, with colorful console output via the [debug](https://www.npmjs.com/package/debug)
@@ -164,29 +243,32 @@ and populating real Solid Pods (and optionally also a triplestore)), we run
 the application from the command-line, and drive it via credential resources
 stored as Linked Data.
 
-For example, we can have local Turtle files, one per user, configured with
-that user's API credentials for each of the 3rd-party data sources, and
-their Solid Pod credentials (such as WebID and storage root, and also the ETL
+For example, we can have user credential resources as local Turtle files, one
+per user, configured with that user's API credentials for each of the
+3rd-party data sources that user has access to, and also having their Solid
+Pod credentials (such as their WebID and storage root, and also the ETL
 process registration credentials (see
 [below](#registering_the_etl_process_for_each_user))).
 
-**_Note:_** We can provide within this credential resource a SPARQL Update
-endpoint URL for a triplestore, and a Named Graph IRI to use for that user's
-Pod in that triplestore. This allows us to populate multiple user's data in a
-single triplestore instance. If no Named Graph value is provided, that user's
-data will be loaded into the 'default' graph of the triplestore, which would
-only be useful if running the ETL for a single user (as loading multiple users
-would just result in each one overwriting the data of the previous one).
+**_Note:_** We can also provide within this credential resource a SPARQL
+Update endpoint URL for a triplestore, and also a Named Graph IRI to use as
+that user's Pod in that triplestore. This allows us to populate multiple
+user's data in a single triplestore instance, with each user's Pod isolated by
+having its data in its own Named Graph. If no Named Graph value is provided,
+then that user's data will be loaded into the 'default' graph of the
+triplestore, which would only be useful if running the ETL for a single user
+(as loading multiple users would just result in each user overwriting the data
+of the previously ETL'ed user).
 
 ## ETL Process
 
 ### Registering the ETL process for each user
 
-In order for the ETL process to populate a user's Pod, the ETL process must
+In order for the ETL process to populate any user's Pod, the ETL process must
 first be registered. This simple registration process will generate standard
 OAuth Client ID and Client Secret values that our ETL tool will use to
-authenticate itself to allow it access user Pod's to load their respective
-data:
+authenticate itself to allow it access individual user Pod's to load their
+respective data:
 
 1. Go to the user's Identity Provider URL. For example, the Pod Spaces
    deployment would be:

@@ -56,14 +56,13 @@ const debug = debugModule(`${APPLICATION_NAME}:applicationSetup`);
 
 // These default values can be useful if we wanted to populate a triplestore
 // even if no Solid Pod details are provided at all.
-const DEFAULT_WEBID =
-  "https://example.com/pod/defaultStorageRoot/profile/card#me";
+const DEFAULT_WEBID = "https://test.example.com/test-user/profile/card#me";
 export const DEFAULT_STORAGE_ROOT =
-  "https://different.domain.example.com/defaultStorageRootElsewhere/";
+  "https://different.domain.example.com/testStorageRoot/";
 
 // For users that do not provide a Pod storage root, we need to generate user-unique
 // values.
-let generatedStorageRootId = 1;
+let generatedUserId = 1;
 
 // Object used to return wiring-up information for Data Source containers.
 export interface DataSourceContainerObject {
@@ -255,7 +254,7 @@ export function makeDataSourceContainerBuilder(
     .addStringEnglish(RDFS.label, `${dataSource} container`)
     .addStringEnglish(
       RDFS.comment,
-      `Detailed data extracted from ${dataSource}.`
+      `Detailed data extracted from [${dataSource}].`
     );
 }
 
@@ -280,9 +279,9 @@ export function wireUpDataSourceContainer(
   const storageRoot = getCredentialStringOptional(
     credential,
     SOLID.storageRoot,
-    `https://example.com/storageRoot/etl/generated-${generatedStorageRootId}/`
+    `https://example.com/generatedUser-${generatedUserId}/storageRoot/`
   );
-  generatedStorageRootId += 1;
+  generatedUserId += 1;
 
   // Based on the Pod root, we can know where our app is, and where this
   // ETL run should store its data.

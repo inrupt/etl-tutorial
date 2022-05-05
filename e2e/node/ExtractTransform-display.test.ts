@@ -22,13 +22,18 @@
 import { describe, expect, it } from "@jest/globals";
 
 import {
+  getIri,
   getIriAll,
   getStringNoLocale,
   getStringNoLocaleAll,
   SolidDataset,
   Thing,
 } from "@inrupt/solid-client";
-import { CRED, SCHEMA_INRUPT } from "@inrupt/vocab-common-rdf-rdfdatafactory";
+import {
+  CRED,
+  RDF,
+  SCHEMA_INRUPT,
+} from "@inrupt/vocab-common-rdf-rdfdatafactory";
 
 import debugModule from "debug";
 
@@ -48,7 +53,10 @@ import {
   passportLocalExtract,
   passportTransform,
 } from "../../src/dataSource/clientPassportLocal";
-import { getStringNoLocaleMandatoryOne } from "../../src/solidDatasetUtil";
+import {
+  getIriMandatoryOne,
+  getStringNoLocaleMandatoryOne,
+} from "../../src/solidDatasetUtil";
 
 // Load environment variables from .env.test.local if available:
 config({
@@ -80,21 +88,35 @@ describe("All data sources", () => {
           credential,
           response
         );
-        expect(resourceDetails.rdfResources).toHaveLength(1);
+        expect(resourceDetails.rdfResources).toHaveLength(3);
 
-        const passport = resourceDetails.rdfResources[0];
+        const passportResource = resourceDetails.rdfResources.find(
+          (resource) => {
+            return (
+              getIri(resource, RDF.type) ===
+              INRUPT_3RD_PARTY_PASSPORT_OFFICE_UK.Passport.value
+            );
+          }
+        );
+        expect(passportResource).not.toBeUndefined();
 
         const passportNumber = getStringNoLocaleMandatoryOne(
-          passport,
+          passportResource as Thing,
           INRUPT_3RD_PARTY_PASSPORT_OFFICE_UK.passportNumber
         );
-        const issuer = getStringNoLocaleMandatoryOne(passport, CRED.issuer);
-        const tags = getIriAll(passport, INRUPT_3RD_PARTY_UNILEVER.tag);
+        const issuer = getIriMandatoryOne(
+          passportResource as Thing,
+          CRED.issuer
+        );
+        const tags = getIriAll(
+          passportResource as Thing,
+          INRUPT_3RD_PARTY_UNILEVER.tag
+        );
 
         debug(
-          `Passport details: passport number [${passportNumber}], issuer [${issuer}], tags [${tags.join(
-            ", "
-          )}].`
+          `Passport details: passport number [${passportNumber}], issuer [${
+            issuer.value
+          }], tags [${tags.join(", ")}].`
         );
 
         expect(passportNumber).toBe("PII-123123213");

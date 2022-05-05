@@ -1,15 +1,14 @@
 {
   "name": "@inrupt/etl-tutorial",
-  "description": "A template repo for Inrupt TypeScript projects",
-  "version": "0.0.3",
+  "description": "ETL Tutorial for Extracting data, Transforming to RDF, and Loading into Solid Pods.",
+  "version": "0.9.0",
   "license": "MIT",
   "scripts": {
     "build": "rollup --config rollup.config.js",
     "lint": "eslint src",
     "test": "jest src",
-    "test-all": "npm test && npm run e2e-ExtractTransform-display && npm run e2e-local-TransformLoad",
+    "test-all": "npm test && npm run e2e-test-node-ExtractTransform-display && npm run e2e-test-node-localExtract-TransformLoad",
     "e2e-test-node": "jest --config=jest.e2e.config.js e2e/node",
-    "e2e-test-browser": "testcafe",
     "e2e-test-node-ExtractTransform-display": "jest --config=jest.e2e.config.js e2e/node/ExtractTransform-display.test.ts",
     "e2e-test-node-localExtract-TransformLoad": "jest --config=jest.e2e.config.js e2e/node/localExtract-TransformLoad.test.ts",
     "list-licenses": "license-checker --production --csv --out LICENSE_DEPENDENCIES_ALL",
@@ -21,7 +20,8 @@
     "rdf",
     "solid",
     "linked data",
-    "turtle"
+    "turtle",
+    "etl"
   ],
   "homepage": "https://docs.inrupt.com/client-libraries/etl-tutorial/",
   "bugs": "https://github.com/inrupt/etl-tutorial/issues",

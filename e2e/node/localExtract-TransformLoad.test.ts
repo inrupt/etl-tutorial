@@ -53,6 +53,7 @@ import {
   passportLocalExtract,
   passportTransform,
 } from "../../src/dataSource/clientPassportLocal";
+import { DEFAULT_STORAGE_ROOT } from "../../src/applicationSetup";
 
 // Load environment variables from .env.test.local if available:
 config({
@@ -77,6 +78,20 @@ describe("All data sources", () => {
   beforeAll(async () => {
     credential = createCredentialResourceFromEnvironmentVariables();
 
+    // Check if we're configured with a storage root, and if not use a
+    // default one. This is useful in the case where we want to populate a
+    // triplestore out-of-the-box without configuring any user credentials,
+    // yet we want all tests in this suite to operate with the same default
+    // storage (so we can subsequently visualize our loaded data).
+    const storageRoot = getCredentialStringOptional(
+      credential,
+      SOLID.storageRoot
+    );
+    if (!storageRoot) {
+      process.env["SOLID_STORAGE_ROOT"] = DEFAULT_STORAGE_ROOT;
+      credential = createCredentialResourceFromEnvironmentVariables();
+    }
+
     const etlClientId = getCredentialStringOptional(
       credential,
       INRUPT_COMMON.clientId
@@ -95,7 +110,7 @@ describe("All data sources", () => {
       etlOidcIssuer === null
     ) {
       debug(
-        `Ignoring Solid login - we need credentials for this ETL process to authenticate with a Solid Pod to load into (whereas we got 'clientId' [${etlClientId}], 'clientSecret' [${etlClientSecret}], and 'oidcIssuer' [${etlOidcIssuer}]).`
+        `Ignoring Solid login - we need credentials for this ETL process to authenticate with a Solid Pod before loading data into it (we got 'clientId' [${etlClientId}], 'clientSecret' [${etlClientSecret}], and 'oidcIssuer' [${etlOidcIssuer}]).`
       );
     } else {
       await session.login({
@@ -125,7 +140,7 @@ describe("All data sources", () => {
         SOLID.storageRoot
       );
 
-      if (storageRoot !== null) {
+      if (storageRoot !== null && storageRoot !== DEFAULT_STORAGE_ROOT) {
         const url = `${storageRoot}private/`;
         const dataset = await getSolidDataset(url, { fetch: session.fetch });
         expect(dataset).toBeDefined();
@@ -133,12 +148,11 @@ describe("All data sources", () => {
     }, 10000);
   });
 
-  describe("Passport office", () => {
+  describe("Passport (local)", () => {
     it("should transform and load", async () => {
-      const resources = await passportTransform(
-        credential,
-        await passportLocalExtract()
-      );
+      const passportData = await passportLocalExtract();
+
+      const resources = await passportTransform(credential, passportData);
 
       let response = await insertIntoTriplestoreResources(
         credential,
@@ -155,9 +169,6 @@ describe("All data sources", () => {
         resources.rdfResources,
         resources.blobsWithMetadata
       );
-      debug(
-        `Response from loading passport details into Pod: [${responsePod}]`
-      );
       expect(responsePod).not.toBeNull();
     }, 60000);
   });
@@ -168,28 +179,6 @@ describe("All data sources", () => {
         credential,
         companiesHouseUkSearchCompanyIdExample
       );
-
-      let response = await insertIntoTriplestoreResources(
-        credential,
-        resources.rdfResources,
-        resources.blobsWithMetadata
-      );
-      expect(response).not.toBeNull();
-
-      const responsePod = await updateOrInsertResourceInSolidPod(
-        session,
-        resources.rdfResources,
-        resources.blobsWithMetadata
-      );
-      expect(responsePod).not.toBeNull();
-    }, 60000);
-  });
-
-  describe("Passport (local)", () => {
-    it("should transform and load", async () => {
-      const passportData = await passportLocalExtract();
-
-      const resources = await passportTransform(credential, passportData);
 
       let response = await insertIntoTriplestoreResources(
         credential,

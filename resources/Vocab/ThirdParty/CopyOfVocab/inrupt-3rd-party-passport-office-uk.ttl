@@ -50,6 +50,14 @@ inrupt_3rd_party_passport_office_uk:Passport a rdfs:Class, owl:Class ;
     rdfs:comment """The class of passports."""@en ;
     rdfs:comment """La clase de pasaportes."""@es .
 
+inrupt_3rd_party_passport_office_uk:passport a rdf:Property, owl:ObjectProperty ;
+    rdfs:isDefinedBy inrupt_3rd_party_passport_office_uk: ;
+    rdfs:label "Passport"@en ;
+    rdfs:label "Pasaporte"@es ;
+    rdfs:comment """Passport for international travel."""@en ;
+    rdfs:comment """Pasaporte para viajes internacionales."""@es .
+
+
 inrupt_3rd_party_passport_office_uk:passportNumber a rdf:Property, owl:ObjectProperty ;
     rdfs:isDefinedBy inrupt_3rd_party_passport_office_uk: ;
     rdfs:label "Passport number"@en ;

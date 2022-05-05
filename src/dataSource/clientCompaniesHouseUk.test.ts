@@ -17,11 +17,12 @@
 // OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
 // SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
-import { SolidDataset } from "@inrupt/solid-client";
+import { getIri, SolidDataset, Thing } from "@inrupt/solid-client";
 
 import { fetch as crossFetch } from "cross-fetch";
 import { config } from "dotenv-flow";
-import { SCHEMA_INRUPT } from "@inrupt/vocab-common-rdf-rdfdatafactory";
+import { RDF, SCHEMA_INRUPT } from "@inrupt/vocab-common-rdf-rdfdatafactory";
+import { INRUPT_3RD_PARTY_PASSPORT_OFFICE_UK } from "@inrupt/vocab-etl-tutorial-bundle-all-rdfdatafactory";
 import { createCredentialResourceFromEnvironmentVariables } from "../credentialUtil";
 import { getStringNoLocaleMandatoryOne } from "../solidDatasetUtil";
 
@@ -97,11 +98,16 @@ describe("Companies House UK", () => {
         responseJson
       );
       expect(responseRdf).toBeDefined();
-      expect(responseRdf.rdfResources).toHaveLength(2);
+      expect(responseRdf.rdfResources).toHaveLength(4);
+
+      const addressResource = responseRdf.rdfResources.find((resource) => {
+        return getIri(resource, RDF.type) === SCHEMA_INRUPT.PostalAddress.value;
+      });
+      expect(addressResource).not.toBeUndefined();
 
       expect(
         getStringNoLocaleMandatoryOne(
-          responseRdf.rdfResources[1],
+          addressResource as Thing,
           SCHEMA_INRUPT.addressRegion
         )
       ).toEqual("Wirral");
