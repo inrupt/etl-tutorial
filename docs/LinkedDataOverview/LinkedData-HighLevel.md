@@ -1,12 +1,12 @@
 # How Solid Stores Data
 
-This presentation is about one of the cornerstones of the ENTIRE Solid
-proposition - which is, quite simply, how we represent and store data in
-Pods.
+This presentation is about the most fundamental cornerstone of the ENTIRE
+Solid proposition - which is, quite simply, how we represent and store data
+in Pods.
 
-So Solid actually uses a VERY mature, fully W3C-standardized technology called
-LINKED DATA, and here I'm specifically going to talk about Linked Data's
-GENERAL applicability in Enterprises environments.
+So Solid actually uses a VERY mature, fully W3C-standardized technology to do
+that, called LINKED DATA. And here I'm specifically going to talk about Linked
+Data's GENERAL applicability in Enterprises environments.
 
 So, what is "Linked Data"?
 
@@ -21,9 +21,9 @@ Tim begins his talk by explaining how he was driven to invent the World
 Wide Web ITSELF by his ongoing frustrations with NON-INTEROPERABLE systems, and
 NON-STANDARD data formats, while working at CERN.
 
-In other words, from his having to deal with lots and lots of DIFFERENT SILOES.
-And that's something that I hope sounds at least VAGUELY familiar even today,
-some 33 years later!
+In other words, from his having to deal with lots and lots of VERY DIFFERENT
+SILOS. And that's something that I hope sounds at least VAGUELY familiar to
+everyone here even today, some 33 years later!
 
 In fact, recently ([Feb 2022](https://twitter.com/elonmusk/status/1495901654872383499)),
 ELON MUSK posted a tweet complaining about the NIGHTMARE of usernames,
@@ -32,8 +32,8 @@ passwords, and 2FA for all the TV streaming services available today.
       <CLICK ON LINK>
 
 But of course, Elon's nightmare is really just down to each of today's streaming
-services CONTINUING to be its own silo - basically it's a reflection of Tim's
-same frustrations 33 years ago.
+services CONTINUING to be its own silo - basically it's just a reflection of
+Tim's same frustrations 33 years ago.
 
 Anyway, in this TED talk, Tim goes on to explain that his original vision
 for the Web was always to make INDIVIDUAL PIECES OF DATA interoperable and
@@ -41,8 +41,8 @@ shareable on the Web - and not the more coarse-grained DOCUMENTS, or WEB PAGES,
 that have made up the bulk of the Web to-date.
 
 And so, in 2006, Tim coined the phrase "Linked Data" as a way to try and
-re-frame his original vision, back to his original INTENT of sharing, and
-linking together individual PIECES OF DATA.
+re-frame his original vision, back to his original INTENT of being able to
+share and linking together individual PIECES OF DATA.
 
 Tim continues his talk by describing some VERY SIMPLE RULES to allow exactly
 that - i.e., to allow DATA to be inter-linked across the entire Web, all the
@@ -50,12 +50,14 @@ while being based on open, interoperable STANDARDS (which of course REMAINS
 one of the fundamental principles that led to the phenomenal success of the
 Web in the first place).
 
-So in effect, the term "Linked Data" simply refers to ANY data that is
-expressed following these simple set of rules - rules that, in effect, define
-"Graph data on the Web". And I've included a link here to a nice description
-of those rules, which have become known as the "5-stars of Linked Data".
+And I've included a link here to a nice description of those rules, which have
+become known as the "5-stars of Linked Data".
 
         <CLICK ON LINK>
+
+So in effect, the term "Linked Data" simply refers to ANY data that is
+expressed following this simple set of rules - rules that, in effect, define
+"Graph data on the Web".
 
 And so that's Linked Data really - it's just "Graph data on the web".
 
@@ -76,10 +78,10 @@ and more ubiquitous today, as I'd hope you'd all agree - and, I'd argue, for
 VERY good reason.
 
 In the bottom right here, we show a simple IMAGE search, JUST for the single
-word - 'NETWORK'. But the even bigger image to the left is a search for the
-single word "TECHNOLOGY", which I think shows just how ubiquitous this image of
-"CIRCLES WITH LINES LINKING THEM" has become in modern life - I mean, it's
-literally everywhere now, right?
+word 'NETWORK', and we see that motif in every image. But the even bigger
+image to the left is a search for the single word "TECHNOLOGY", which I think
+shows just how ubiquitous this image of "CIRCLES WITH LINES LINKING THEM" has
+become in modern life - I mean, it's literally everywhere now, right?
 
 And I believe that the main REASON for this is simply because EVERYONE (and I
 mean corporations, governments, and individuals alike) are becoming
