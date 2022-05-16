@@ -32,7 +32,6 @@ coverage
 dist
 umd
 .eslintcache
-whitesource/
 LICENSE_DEPENDENCIES
 LICENSE_DEPENDENCIES_ALL
 docs/api/build/

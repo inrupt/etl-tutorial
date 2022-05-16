@@ -35,20 +35,20 @@ But of course, Elon's nightmare is really just down to each of today's streaming
 services CONTINUING to be its own silo - basically it's just a reflection of
 Tim's same frustrations 33 years ago.
 
-Anyway, in this TED talk, Tim goes on to explain that his original vision
-for the Web was always to make INDIVIDUAL PIECES OF DATA interoperable and
-shareable on the Web - and not the more coarse-grained DOCUMENTS, or WEB PAGES,
-that have made up the bulk of the Web to-date.
+Anyway, in his TED talk, Tim goes on to explain that his original vision
+for the Web was ALWAYS to try and address this endless data silo problem.
+What he REALLY wanted to do was make INDIVIDUAL PIECES OF DATA interoperable
+and shareable over the Internet - and not the more coarse-grained DOCUMENTS,
+or WEB PAGES, that have made up the bulk of the Web to-date.
 
 And so, in 2006, Tim coined the phrase "Linked Data" as a way to try and
 re-frame his original vision, back to his original INTENT of being able to
-share and linking together individual PIECES OF DATA.
+share and link together individual PIECES OF DATA.
 
-Tim continues his talk by describing some VERY SIMPLE RULES to allow exactly
-that - i.e., to allow DATA to be inter-linked across the entire Web, all the
-while being based on open, interoperable STANDARDS (which of course REMAINS
-one of the fundamental principles that led to the phenomenal success of the
-Web in the first place).
+Tim then continues by describing a set of 5 VERY SIMPLE RULES to allow
+exactly that, all the while being based on open, interoperable STANDARDS (which of
+course REMAINS one of the fundamental principles that led to the phenomenal
+success of the Web in the first place).
 
 And I've included a link here to a nice description of those rules, which have
 become known as the "5-stars of Linked Data".
@@ -164,11 +164,11 @@ But D&B make their MONEY from selling reports on companies, detailing things
 like a company's creditworthiness, or it's risk of going out-of-business, etc.
 
 Now, I had the honour of being the Technical Architect for D&B's first ever
-product for the Corporate Compliance market, and I used that opportunity to
-introduce Linked Data and graph databases to demonstrate just how DRASTICALLY
-MORE efficient graphs can represent "Corporate Ownership" information, which
-is simply what companies own what companies own what companies, etc. - in
-other words, all of a company's subsidiaries, and all of its parents.
+product in the Corporate Compliance marketplace, and I used that opportunity
+to introduce Linked Data to demonstrate just how DRASTICALLY MORE efficient
+graphs can represent "Corporate Ownership" information, which is simply what
+companies own what companies own what companies, etc. - in other words, all of
+a company's subsidiaries, and all of its parents.
 
 And that's what we see visualized here by Open Corporates. This is the
 Corporate Ownership structure of JP Morgan from the perspective of a single
@@ -277,12 +277,12 @@ This time, 6 of the world's biggest NGO's collectively approached Mastercard
 for assistance with their well-worn, well-understood 'personal
 RE-registration' problem.
 
-This is where a refugee, or any victim in a natural disaster, needs to
-register and re-register and re-register again and again with multiple NGOs
-individually. Each registration process requires the individual to provide
-basically THE SAME INFORMATION during, on average, a 90-minute interview
-process, all of which results in literally millions of wasted man-hours
-annually.
+This is where a refugee, or any victim in a natural disaster, who may have no
+formal form of identity whatsoever, needs to register and re-register and
+re-register again and again with multiple NGOs individually. Each registration
+process requires the individual to provide basically THE SAME INFORMATION
+during, on average, a 90-minute interview process, all of which results in
+literally millions of wasted man-hours annually.
 
 Initially the solution was assumed to be just the standard, traditional one -
 i.e., Mastercard would host a great big database in the cloud, and all the
@@ -296,13 +296,13 @@ the refugees?'.
 Now, it took a bit of pestering on my part, but long story short, by the
 Thursday afternoon of that week the idea of giving each individual refugee
 their OWN personal database (i.e., a Solid Pod) really began to take hold, as
-it sank in that those user-centric Pods would allow those refugees to grant
-not only ANY NGO, but also ANY shopkeeper, or ANY micro-finance provider, etc.
-access to all the data they needed to provide their services.
+it sank in that user-centric Pods would allow those refugees to grant not only
+ANY NGO, but also ANY shopkeeper, or ANY micro-finance provider, etc., access
+to all the data they needed to provide their services.
 
 This idea became the Pamoja project (meaning 'Altogether' in Swahili), and
 the idea REALLY took off within the NGO's themselves (as it so clearly fit
-their remit to serve individuals).
+their remit to serve the individual).
 
 Separate pilots were then agreed with the Red Cross, and then jointly with
 Oxfam and WorldVision, but then, again long story short, but basically I left
