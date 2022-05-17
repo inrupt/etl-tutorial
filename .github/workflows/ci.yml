@@ -33,7 +33,7 @@ jobs:
       # We generate our vocab bundle from all the vocabs at runtime,
       # since normally vocab bundles are expected to be published somewhere,
       # but in our case, we want to keep everything together for now.
-    - run: npx @inrupt/artifact-generator generate --vocabListFile "resources/Vocab/vocab-etl-tutorial-bundle-all.yml" --outputDirectory "./src/InruptTooling/Vocab/EtlTutorial" --noPrompt --publish npmInstallAndBuild
+    - run: npx @inrupt/artifact-generator generate --vocabListFile "resources/Vocab/vocab-etl-tutorial-bundle-all.yml" --outputDirectory "./src/InruptTooling/Vocab/EtlTutorial" --noprompt --publish npmInstallAndBuild
 
     - run: npm ci
     - run: npm run build
