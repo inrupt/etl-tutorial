@@ -71,7 +71,7 @@ const COMPANY_ID_UNILEVER = "00041424";
 const COMPANY_ID_MYSTERY = "02216369";
 
 // Which company do we wish to search for...
-const COMPANY_ID_TO_SEARCH = COMPANY_ID_MYSTERY;
+const COMPANY_ID_TO_SEARCH = COMPANY_ID_UNILEVER;
 
 describe("All data sources", () => {
   // Construct a dataset of credentials from our environment.
