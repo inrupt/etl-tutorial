@@ -12,6 +12,9 @@ The following changes have been implemented but not released yet:
 - Created a 'Public API response' resource folder.
 - Removed TestCafe and dependencies (as it wasn't used, and was causing npm
   warnings on install).
+- Added Hobby vocabs.
+- New util function to find mandatory Thing of specific type from resource
+  collection.
 
 ## [0.0.1] - 2022-02-01
 
