@@ -34,9 +34,10 @@ import { APPLICATION_NAME } from "./applicationConstant";
 
 const debug = debugModule(`${APPLICATION_NAME}:solidPod`);
 
-// Type that collects a binary Blob along with it's URL and optionally an associated metadata
-// resource that describes that Blob (e.g., the Blog might be an image file, or audio track, with
-// the metadata resource describing aspects of that image or audio track).
+// Type that collects a binary Blob along with its URL and optionally an
+// associated metadata resource that describes that Blob (e.g., the Blog might
+// be an image file, or audio track, with the metadata resource describing
+// aspects of that image or audio track).
 export type BlobWithMetadata = {
   url: string;
   blob: Blob;
@@ -44,8 +45,9 @@ export type BlobWithMetadata = {
   metadata?: Thing;
 };
 
-// Type that represents a collection of resources. This collection can consist of RDF resources
-// and/or binary Blob resource that may optionally have associated RDF metadata.
+// Type that represents a collection of resources. This collection can consist
+// of RDF resources and/or binary Blob resource that may optionally have
+// associated RDF metadata.
 export type CollectionOfResources = {
   rdfResources: Thing[];
   blobsWithMetadata: BlobWithMetadata[] | null;
@@ -306,9 +308,9 @@ export async function updateOrInsertResourceInSolidPod(
       }
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (error: any) {
-      debug(
-        `Error writing leaf resource to [${resource.url}]: [${error.message}].`
-      );
+      const message = `Error writing leaf resource to [${resource.url}]: [${error.message}].`;
+      debug(message);
+      // throw new Error(message);
     }
   }
   //     })
@@ -338,7 +340,9 @@ export async function updateOrInsertResourceInSolidPod(
         debug(`Saved raw Blob to [${url}]`);
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
       } catch (error: any) {
-        debug(`Error writing raw Blob to [${url}]. Error: ${error}`);
+        const message = `Error writing raw Blob to [${url}]. Error: ${error}`;
+        debug(message);
+        // throw new Error(message);
       }
     }
   }

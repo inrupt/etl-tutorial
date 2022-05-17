@@ -123,7 +123,7 @@ function rdfResourcesAsStreamLocal(
     ? ` (while ignoring [${argv.localUserCredentialResourceGlobIgnore}])`
     : "";
   debug(
-    `Looking for local RDF resources matching pattern [${argv.localUserCredentialResourceGlob}]${ignoringMessage}...`
+    `Looking for local RDF resources matching glob pattern [${argv.localUserCredentialResourceGlob}]${ignoringMessage}...`
   );
   const matchingResourceFiles = glob
     .sync(

@@ -26,7 +26,6 @@ import {
 import {
   INRUPT_3RD_PARTY_UNILEVER,
   INRUPT_3RD_PARTY_PASSPORT_OFFICE_UK,
-  INRUPT_3RD_PARTY_COMPANIES_HOUSE_UK,
 } from "@inrupt/vocab-etl-tutorial-bundle-all-rdfdatafactory";
 import { buildThing, SolidDataset } from "@inrupt/solid-client";
 import { APPLICATION_NAME } from "../applicationConstant";

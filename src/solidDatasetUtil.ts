@@ -52,6 +52,7 @@ import Dataset from "@rdfjs/dataset";
 import rdfParser from "rdf-parse";
 import { ReadStream } from "fs";
 import { APPLICATION_NAME } from "./applicationConstant";
+import { CollectionOfResources } from "./solidPod";
 
 const factory: RDFJS.DataFactory = new DataFactory();
 const debug = debugModule(`${APPLICATION_NAME}:solidDatasetUtil`);
@@ -76,6 +77,21 @@ export interface GetThingOptions {
    * [[SolidDataset]].
    */
   scope?: Url | UrlString;
+}
+
+export function getThingOfTypeFromCollectionMandatoryOne(
+  resourceDetails: CollectionOfResources,
+  type: NamedNode
+): Thing {
+  const resultset = resourceDetails.rdfResources.filter((resource) => {
+    return getIri(resource, RDF.type) === type.value;
+  });
+  if (resultset.length !== 1) {
+    throw new Error(
+      `Collection of resources had [${resultset.length}] Things of type [${type.value}]`
+    );
+  }
+  return resultset[0];
 }
 
 export function getThingAllOfType(
@@ -270,7 +286,7 @@ export function mergeSolidDataset(
 
   // // Working with RDF/JS Datasets won't work for updates, as we need the
   // // SolidDataset 'changelog' to be updated (so that when saving back to the
-  // // Pod it knows to do a PATCH, and not a PUT - and I don't think we can do a
+  // // Pod it knows to do a PATCH, and not a PUT - and I'm not sure we can do a
   // // PUT due to the containment triples (which need to be managed
   // // server-side))...
   // const thingsToAdd = getThingAll(second);

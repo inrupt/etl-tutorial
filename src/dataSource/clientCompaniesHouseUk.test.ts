@@ -22,7 +22,6 @@ import { getIri, SolidDataset, Thing } from "@inrupt/solid-client";
 import { fetch as crossFetch } from "cross-fetch";
 import { config } from "dotenv-flow";
 import { RDF, SCHEMA_INRUPT } from "@inrupt/vocab-common-rdf-rdfdatafactory";
-import { INRUPT_3RD_PARTY_PASSPORT_OFFICE_UK } from "@inrupt/vocab-etl-tutorial-bundle-all-rdfdatafactory";
 import { createCredentialResourceFromEnvironmentVariables } from "../credentialUtil";
 import { getStringNoLocaleMandatoryOne } from "../solidDatasetUtil";
 

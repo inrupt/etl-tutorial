@@ -29,6 +29,10 @@ import { getSolidDataset, SolidDataset } from "@inrupt/solid-client";
 
 import { Session } from "@inrupt/solid-client-authn-node";
 
+// We just need this to allow us to increase the default connection timeout
+// (default is 3.5 seconds).
+import { custom } from "openid-client";
+
 import debugModule from "debug";
 
 import { config } from "dotenv-flow";
@@ -74,6 +78,7 @@ debugModule.enable("etl-tutorial:*");
 describe("All data sources", () => {
   let credential: SolidDataset;
   const session = new Session();
+  let storageRoot: string | null;
 
   beforeAll(async () => {
     credential = createCredentialResourceFromEnvironmentVariables();
@@ -83,10 +88,7 @@ describe("All data sources", () => {
     // triplestore out-of-the-box without configuring any user credentials,
     // yet we want all tests in this suite to operate with the same default
     // storage (so we can subsequently visualize our loaded data).
-    const storageRoot = getCredentialStringOptional(
-      credential,
-      SOLID.storageRoot
-    );
+    storageRoot = getCredentialStringOptional(credential, SOLID.storageRoot);
     if (!storageRoot) {
       process.env["SOLID_STORAGE_ROOT"] = DEFAULT_STORAGE_ROOT;
       credential = createCredentialResourceFromEnvironmentVariables();
@@ -104,15 +106,23 @@ describe("All data sources", () => {
       credential,
       SOLID.oidcIssuer
     );
+
+    storageRoot = getCredentialStringOptional(credential, SOLID.storageRoot);
+
     if (
       etlClientId === null ||
       etlClientSecret === null ||
       etlOidcIssuer === null
     ) {
       debug(
-        `Ignoring Solid login - we need credentials for this ETL process to authenticate with a Solid Pod before loading data into it (we got 'clientId' [${etlClientId}], 'clientSecret' [${etlClientSecret}], and 'oidcIssuer' [${etlOidcIssuer}]).`
+        `Ignoring ETL Tutorial login - we need credentials for this ETL process to authenticate with it's own Solid Pod before it can load data into user Pod's (we got 'clientId' [${etlClientId}], 'clientSecret' [${etlClientSecret}], and 'oidcIssuer' [${etlOidcIssuer}]).`
       );
     } else {
+      // Just set a higher timeout for our Pod login attempts...
+      custom.setHttpOptionsDefaults({
+        timeout: 10000,
+      });
+
       await session.login({
         clientId: etlClientId,
         clientSecret: etlClientSecret,
@@ -120,7 +130,7 @@ describe("All data sources", () => {
       });
       expect(session.info.isLoggedIn).toBe(true);
       debug(
-        `Successfully logged into Solid Pod - WebID: [${session.info.webId}]`
+        `Successfully logged into ETL Tutorial's Pod (to get an access token) - WebID: [${session.info.webId}]`
       );
     }
 
@@ -135,15 +145,20 @@ describe("All data sources", () => {
 
   describe("Test Pod connectivity", () => {
     it("should read private resource from Pod", async () => {
-      const storageRoot = getCredentialStringOptional(
-        credential,
-        SOLID.storageRoot
-      );
-
-      if (storageRoot !== null && storageRoot !== DEFAULT_STORAGE_ROOT) {
-        const url = `${storageRoot}private/`;
-        const dataset = await getSolidDataset(url, { fetch: session.fetch });
+      if (storageRoot === null || storageRoot === DEFAULT_STORAGE_ROOT) {
+        debug(
+          `No storage root (or just our default one for triplestore population), so not attempting to access a private resource on the ETL Tutorial Pod.`
+        );
+      } else {
+        const resourceIri = `${storageRoot}private/`;
+        debug(`Attempting to read PRIVATE resource [${resourceIri}]...`);
+        const dataset = await getSolidDataset(resourceIri, {
+          fetch: session.fetch,
+        });
         expect(dataset).toBeDefined();
+        debug(
+          `Successfully read a PRIVATE resource in the ETL Tutorial's Pod (meaning we know we have a valid access token)!`
+        );
       }
     }, 10000);
   });
@@ -159,17 +174,22 @@ describe("All data sources", () => {
         resources.rdfResources,
         resources.blobsWithMetadata
       );
-      debug(
-        `Response from loading passport details into Triplestore: [${response}]`
-      );
       expect(response).not.toBeNull();
 
-      const responsePod = await updateOrInsertResourceInSolidPod(
-        session,
-        resources.rdfResources,
-        resources.blobsWithMetadata
-      );
-      expect(responsePod).not.toBeNull();
+      if (storageRoot === null || storageRoot === DEFAULT_STORAGE_ROOT) {
+        debug(
+          `No storage root (or just our default one for triplestore population), so not attempting to insert into user Pods.`
+        );
+      } else {
+        const responsePod = await updateOrInsertResourceInSolidPod(
+          session,
+          resources.rdfResources,
+          resources.blobsWithMetadata
+        );
+        debug(`RESPONSE Passport data Load: [${responsePod}].`);
+        expect(responsePod).not.toBeNull();
+        expect(responsePod).toContain("Successfully");
+      }
     }, 60000);
   });
 
@@ -187,12 +207,20 @@ describe("All data sources", () => {
       );
       expect(response).not.toBeNull();
 
-      const responsePod = await updateOrInsertResourceInSolidPod(
-        session,
-        resources.rdfResources,
-        resources.blobsWithMetadata
-      );
-      expect(responsePod).not.toBeNull();
+      if (storageRoot === null || storageRoot === DEFAULT_STORAGE_ROOT) {
+        debug(
+          `No storage root (or just our default one for triplestore population), so not attempting to insert into user Pods.`
+        );
+      } else {
+        const responsePod = await updateOrInsertResourceInSolidPod(
+          session,
+          resources.rdfResources,
+          resources.blobsWithMetadata
+        );
+        debug(`RESPONSE Companies House data Load: [${responsePod}].`);
+        expect(responsePod).not.toBeNull();
+        expect(responsePod).toContain("Successfully");
+      }
     }, 60000);
   });
 });

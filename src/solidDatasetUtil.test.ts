@@ -55,7 +55,9 @@ import {
   removeTypeTriples,
   deleteRecursively,
   parseStreamIntoSolidDataset,
+  getThingOfTypeFromCollectionMandatoryOne,
 } from "./solidDatasetUtil";
+import { CollectionOfResources } from "./solidPod";
 
 jest.mock("@inrupt/solid-client", () => {
   // TypeScript can't infer the type of modules imported via Jest;
@@ -103,6 +105,67 @@ describe("Solid dataset util functions", () => {
           scope: "https://non-existent-graph",
         })
       ).toHaveLength(0);
+    });
+  });
+
+  describe("get mandatory things of type from collection of resources", () => {
+    it("should throw if no Thing of type", async () => {
+      const resourceDetails: CollectionOfResources = {
+        rdfResources: [],
+        blobsWithMetadata: null,
+      };
+
+      expect(() =>
+        getThingOfTypeFromCollectionMandatoryOne(
+          resourceDetails,
+          SCHEMA_INRUPT.Person
+        )
+      ).toThrow("had [0] Things of type");
+    });
+
+    it("should throw if more than one Thing of type", async () => {
+      const resourceDetails: CollectionOfResources = {
+        rdfResources: [
+          buildThing()
+            .addIri(RDF.type, SCHEMA_INRUPT.Person)
+            .addStringEnglish(SCHEMA_INRUPT.familyName, "Bloggs")
+            .build(),
+          buildThing()
+            .addIri(RDF.type, SCHEMA_INRUPT.Person)
+            .addStringEnglish(SCHEMA_INRUPT.familyName, "Simpson")
+            .build(),
+        ],
+        blobsWithMetadata: null,
+      };
+
+      expect(() =>
+        getThingOfTypeFromCollectionMandatoryOne(
+          resourceDetails,
+          SCHEMA_INRUPT.Person
+        )
+      ).toThrow("had [2] Things of type");
+    });
+
+    it("should get Thing of type from collection of resources", async () => {
+      const resourceDetails: CollectionOfResources = {
+        rdfResources: [
+          buildThing()
+            .addIri(RDF.type, SCHEMA_INRUPT.Person)
+            .addStringEnglish(SCHEMA_INRUPT.familyName, "Bloggs")
+            .build(),
+        ],
+        blobsWithMetadata: null,
+      };
+
+      expect(
+        getStringEnglish(
+          getThingOfTypeFromCollectionMandatoryOne(
+            resourceDetails,
+            SCHEMA_INRUPT.Person
+          ),
+          SCHEMA_INRUPT.familyName
+        )
+      ).toEqual("Bloggs");
     });
   });
 
