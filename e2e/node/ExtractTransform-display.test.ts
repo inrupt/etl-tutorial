@@ -66,9 +66,12 @@ config({
 const debug = debugModule("etl-tutorial:ExtractTransform-display");
 debugModule.enable("etl-tutorial:*");
 
-// For testing, we hard-code a UK company search for the biggest company in
-// the UK - Unilever.
+// For testing, we hard-code a couple of big-name UK companies...
 const COMPANY_ID_UNILEVER = "00041424";
+const COMPANY_ID_MYSTERY = "02216369";
+
+// Which company do we wish to search for...
+const COMPANY_ID_TO_SEARCH = COMPANY_ID_MYSTERY;
 
 describe("All data sources", () => {
   // Construct a dataset of credentials from our environment.
@@ -79,7 +82,7 @@ describe("All data sources", () => {
     it("extracts and transforms as expected", async () => {
       const response = await companiesHouseUkExtractCompanyById(
         credential,
-        COMPANY_ID_UNILEVER
+        COMPANY_ID_TO_SEARCH
       );
       expect(response).toBeDefined();
 
@@ -128,7 +131,7 @@ describe("All data sources", () => {
           `Company address: address [${streetAddress}], region [${region}], locality [${locality}], country [${country}], post code [${postCode}].`
         );
 
-        expect(name).toBe("UNILEVER PLC");
+        expect(response.items[0].company_number).toBe(COMPANY_ID_TO_SEARCH);
       }
     }, 20000);
   });
