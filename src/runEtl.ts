@@ -123,7 +123,7 @@ function rdfResourcesAsStreamLocal(
     ? ` (while ignoring [${argv.localUserCredentialResourceGlobIgnore}])`
     : "";
   debug(
-    `Looking for local RDF resources matching pattern [${argv.localUserCredentialResourceGlob}]${ignoringMessage}...`
+    `Looking for local RDF resources matching glob pattern [${argv.localUserCredentialResourceGlob}]${ignoringMessage}...`
   );
   const matchingResourceFiles = glob
     .sync(
@@ -254,7 +254,7 @@ async function etlDataSourcesForUser(
   }
 }
 
-async function processUserCredentials(
+async function etlAllUsers(
   session: Session,
   parsedCredentials: { name: string; dataset: SolidDataset }[]
 ): Promise<number> {
@@ -347,16 +347,16 @@ export async function loginAsRegisteredApp(argv: Arguments): Promise<Session> {
 
 export async function runEtl(argv: Arguments): Promise<number> {
   try {
-    const session = await loginAsRegisteredApp(argv);
+    const etlSession = await loginAsRegisteredApp(argv);
 
     const userCredentialDatasets = await parseUserCredentialResources(argv);
 
-    const successfullyProcessed = await processUserCredentials(
-      session,
+    const successfullyProcessed = await etlAllUsers(
+      etlSession,
       userCredentialDatasets
     );
 
-    await session.logout();
+    await etlSession.logout();
 
     const processedPlural = successfullyProcessed === 1 ? "" : "s";
     const userPlural = userCredentialDatasets.length === 1 ? "" : "s";

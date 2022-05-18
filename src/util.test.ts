@@ -94,12 +94,13 @@ describe("Util functions", () => {
 
   describe("pluralize", () => {
     it("should add 's'", async () => {
-      expect(pluralize("peep", 0)).toEqual("peeps");
-      expect(pluralize("peep", 2)).toEqual("peeps");
+      expect(pluralize("peep", [])).toEqual("peeps");
+      expect(pluralize("peep", [1, 2])).toEqual("peeps");
+      expect(pluralize("peep", null)).toEqual("peeps");
     });
 
     it("should not add 's'", async () => {
-      expect(pluralize("peep", 1)).toEqual("peep");
+      expect(pluralize("peep", [1])).toEqual("peep");
     });
   });
 });

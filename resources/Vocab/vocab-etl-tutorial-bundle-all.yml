@@ -468,3 +468,12 @@ vocabList:
   - inputResources:
       - ./EtlTutorial/Extension/inrupt-common-TEMP_COPY.ttl
       - ./EtlTutorial/Extension/inrupt-common-etl-tutorial-ext.ttl
+
+  - inputResources:
+      - ./Hobby/CopyOfVocab/Hobby.ttl
+
+  - inputResources:
+      - ./Hobby/CopyOfVocab/PetRock.ttl
+
+  - inputResources:
+      - ./Hobby/CopyOfVocab/Skydiving.ttl

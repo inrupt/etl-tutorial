@@ -52,6 +52,7 @@ import Dataset from "@rdfjs/dataset";
 import rdfParser from "rdf-parse";
 import { ReadStream } from "fs";
 import { APPLICATION_NAME } from "./applicationConstant";
+import { CollectionOfResources } from "./solidPod";
 
 const factory: RDFJS.DataFactory = new DataFactory();
 const debug = debugModule(`${APPLICATION_NAME}:solidDatasetUtil`);
@@ -76,6 +77,21 @@ export interface GetThingOptions {
    * [[SolidDataset]].
    */
   scope?: Url | UrlString;
+}
+
+export function getThingOfTypeFromCollectionMandatoryOne(
+  resourceDetails: CollectionOfResources,
+  type: NamedNode
+): Thing {
+  const resultset = resourceDetails.rdfResources.filter((resource) => {
+    return getIri(resource, RDF.type) === type.value;
+  });
+  if (resultset.length !== 1) {
+    throw new Error(
+      `Collection of resources had [${resultset.length}] Things of type [${type.value}]`
+    );
+  }
+  return resultset[0];
 }
 
 export function getThingAllOfType(
@@ -125,7 +141,7 @@ export function getStringNoLocaleMandatoryOne(
   if (values.length === 0) {
     const message = `Mandatory request for only one no-locale string value for predicate [${toIriString(
       predicate
-    )}]), but we couldn't find any values at all.`;
+    )}]), but we couldn't find any values at all (you may be asking for a string when the datatype is actually something different, like an IRI).`;
     debug(message);
     throw Error(message);
   }
@@ -148,7 +164,7 @@ export function getIriMandatoryOne(
   if (values.length === 0) {
     const message = `Mandatory request for only one IRI value for predicate [${toIriString(
       predicate
-    )}]), but we couldn't find any values at all.`;
+    )}]), but we couldn't find any values at all (you may be asking for an IRI when the datatype is actually something different, like a string).`;
     debug(message);
     throw Error(message);
   }
@@ -270,7 +286,7 @@ export function mergeSolidDataset(
 
   // // Working with RDF/JS Datasets won't work for updates, as we need the
   // // SolidDataset 'changelog' to be updated (so that when saving back to the
-  // // Pod it knows to do a PATCH, and not a PUT - and I don't think we can do a
+  // // Pod it knows to do a PATCH, and not a PUT - and I'm not sure we can do a
   // // PUT due to the containment triples (which need to be managed
   // // server-side))...
   // const thingsToAdd = getThingAll(second);

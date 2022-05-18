@@ -22,15 +22,17 @@ yourself.
 
 ## Create a new repository
 
-- We'll now simply follow the introductory "_Welcome to GraphDB_" steps, which
-  we'll also walk through below:
-  - Create a new empty repository:
-  - From the main menu (on the left-hand-side), select "Setup | Repositories".
-  - Click the "_Create new repository_" button.
-  - Select the "_GraphDB Free_" option.
-  - Provide any name (without spaces!) for the "_Repository ID_" field, e.g.,
-    "inrupt-example".
-  - Click the "_Create_" button at the bottom of the page.
+We'll now simply follow the introductory "_Welcome to GraphDB_" steps, which
+we'll also walk through below:
+
+To create a new empty repository:
+
+- From the main menu (on the left-hand-side), select "Setup | Repositories".
+- Click the "_Create new repository_" button.
+- Select the "_GraphDB Free_" option.
+- Provide any name (without spaces!) for the "_Repository ID_" field, e.g.,
+  "inrupt-example".
+- Click the "_Create_" button at the bottom of the page.
 
 ## Load example Pod data:
 

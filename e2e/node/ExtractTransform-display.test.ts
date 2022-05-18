@@ -24,9 +24,7 @@ import { describe, expect, it } from "@jest/globals";
 import {
   getIriAll,
   getStringNoLocale,
-  getStringNoLocaleAll,
   SolidDataset,
-  Thing,
 } from "@inrupt/solid-client";
 import { CRED, SCHEMA_INRUPT } from "@inrupt/vocab-common-rdf-rdfdatafactory";
 
@@ -40,6 +38,7 @@ import {
   INRUPT_3RD_PARTY_COMPANIES_HOUSE_UK,
   INRUPT_3RD_PARTY_PASSPORT_OFFICE_UK,
 } from "@inrupt/vocab-etl-tutorial-bundle-all-rdfdatafactory";
+
 import {
   companiesHouseUkExtractCompanyById,
   companiesHouseUkTransformCompany,
@@ -48,7 +47,12 @@ import {
   passportLocalExtract,
   passportTransform,
 } from "../../src/dataSource/clientPassportLocal";
-import { getStringNoLocaleMandatoryOne } from "../../src/solidDatasetUtil";
+import {
+  getIriMandatoryOne,
+  getStringNoLocaleMandatoryOne,
+  getThingAllOfType,
+  getThingOfTypeFromCollectionMandatoryOne,
+} from "../../src/solidDatasetUtil";
 
 // Load environment variables from .env.test.local if available:
 config({
@@ -59,89 +63,66 @@ config({
   silent: process.env.CI === "true",
 });
 
-const debug = debugModule("etl-tutorial:extractTransform-test");
+const debug = debugModule("etl-tutorial:ExtractTransform-display");
 debugModule.enable("etl-tutorial:*");
 
-// For testing, we hard-code a UK company search for the biggest company in
-// the UK - Unilever.
+// For testing, we hard-code a couple of big-name UK companies...
 const COMPANY_ID_UNILEVER = "00041424";
+const COMPANY_ID_MYSTERY = "02216369";
+
+// Which company do we wish to search for...
+const COMPANY_ID_TO_SEARCH = COMPANY_ID_UNILEVER;
 
 describe("All data sources", () => {
+  // Construct a dataset of credentials from our environment.
   const credential: SolidDataset =
     createCredentialResourceFromEnvironmentVariables();
 
-  describe("Passport office", () => {
-    it("returns the expected value", async () => {
-      const response = await passportLocalExtract();
-      expect(response).toBeDefined();
-
-      if (response !== null) {
-        const resourceDetails: CollectionOfResources = passportTransform(
-          credential,
-          response
-        );
-        expect(resourceDetails.rdfResources).toHaveLength(1);
-
-        const passport = resourceDetails.rdfResources[0];
-
-        const passportNumber = getStringNoLocaleMandatoryOne(
-          passport,
-          INRUPT_3RD_PARTY_PASSPORT_OFFICE_UK.passportNumber
-        );
-        const issuer = getStringNoLocaleMandatoryOne(passport, CRED.issuer);
-        const tags = getIriAll(passport, INRUPT_3RD_PARTY_UNILEVER.tag);
-
-        debug(
-          `Passport details: passport number [${passportNumber}], issuer [${issuer}], tags [${tags.join(
-            ", "
-          )}].`
-        );
-
-        expect(passportNumber).toBe("PII-123123213");
-      }
-    });
-  });
-
   describe("Companies House UK", () => {
-    it("returns the expected value", async () => {
+    it("extracts and transforms as expected", async () => {
       const response = await companiesHouseUkExtractCompanyById(
         credential,
-        COMPANY_ID_UNILEVER
+        COMPANY_ID_TO_SEARCH
       );
       expect(response).toBeDefined();
 
       if (response !== null) {
         const resourceDetails: CollectionOfResources =
           companiesHouseUkTransformCompany(credential, response);
-        expect(resourceDetails.rdfResources).toHaveLength(2);
 
-        const company = resourceDetails.rdfResources[0];
-        const address = resourceDetails.rdfResources[1];
+        const companyResource = getThingOfTypeFromCollectionMandatoryOne(
+          resourceDetails,
+          SCHEMA_INRUPT.NS("Organization")
+        );
+        const addressResource = getThingOfTypeFromCollectionMandatoryOne(
+          resourceDetails,
+          SCHEMA_INRUPT.PostalAddress
+        );
 
-        const name = getStringNoLocale(company as Thing, SCHEMA_INRUPT.name);
+        const name = getStringNoLocale(companyResource, SCHEMA_INRUPT.name);
         const status = getStringNoLocale(
-          company as Thing,
+          companyResource,
           INRUPT_3RD_PARTY_COMPANIES_HOUSE_UK.status
         );
 
         const streetAddress = getStringNoLocale(
-          address as Thing,
+          addressResource,
           SCHEMA_INRUPT.streetAddress
         );
         const locality = getStringNoLocale(
-          address as Thing,
+          addressResource,
           SCHEMA_INRUPT.addressLocality
         );
         const region = getStringNoLocale(
-          address as Thing,
+          addressResource,
           SCHEMA_INRUPT.addressRegion
         );
         const country = getStringNoLocale(
-          address as Thing,
+          addressResource,
           SCHEMA_INRUPT.addressCountry
         );
         const postCode = getStringNoLocale(
-          address as Thing,
+          addressResource,
           SCHEMA_INRUPT.postalCode
         );
 
@@ -150,8 +131,43 @@ describe("All data sources", () => {
           `Company address: address [${streetAddress}], region [${region}], locality [${locality}], country [${country}], post code [${postCode}].`
         );
 
-        expect(name).toBe("UNILEVER PLC");
+        expect(response.items[0].company_number).toBe(COMPANY_ID_TO_SEARCH);
       }
     }, 20000);
+  });
+
+  describe("Passport office", () => {
+    it("extracts and transforms as expected", async () => {
+      const response = await passportLocalExtract();
+      expect(response).toBeDefined();
+
+      if (response !== null) {
+        const resourceDetails: CollectionOfResources = passportTransform(
+          credential,
+          response
+        );
+        expect(resourceDetails.rdfResources).toHaveLength(3);
+
+        const passportResource = getThingOfTypeFromCollectionMandatoryOne(
+          resourceDetails,
+          INRUPT_3RD_PARTY_PASSPORT_OFFICE_UK.Passport
+        );
+
+        const passportNumber = getStringNoLocaleMandatoryOne(
+          passportResource,
+          INRUPT_3RD_PARTY_PASSPORT_OFFICE_UK.passportNumber
+        );
+        const issuer = getIriMandatoryOne(passportResource, CRED.issuer);
+        const tags = getIriAll(passportResource, INRUPT_3RD_PARTY_UNILEVER.tag);
+
+        debug(
+          `Passport details: passport number [${passportNumber}], issuer [${
+            issuer.value
+          }], tags [${tags.join(", ")}].`
+        );
+
+        expect(passportNumber).toBe("PII-123123213");
+      }
+    });
   });
 });

@@ -28,6 +28,9 @@ inrupt_3rd_party_unilever: a owl:Ontology, inrupt_gen:Ontology  ;
      cc:attributionURL inrupt_3rd_party_unilever: ;
      cc:license <https://creativecommons.org/publicdomain/zero/1.0/> .
 
+#
+# THESE TERMS HAVE BEEN MOVED TO THE INRUPT COMMON VOCAB - REMOVE FROM HERE ONCE THAT'S PUBLISHED!
+#
 inrupt_3rd_party_unilever:Tag a rdfs:Class, owl:Class ;
     rdfs:isDefinedBy inrupt_3rd_party_unilever: ;
     rdfs:label "Tag"@en ;
@@ -42,6 +45,13 @@ inrupt_3rd_party_unilever:tag a rdf:Property, owl:ObjectProperty ;
     rdfs:comment "Property used to denote that an entity has a specific tag."@en ;
     rdfs:comment "Propiedad utilizada para indicar que una entidad tiene una etiqueta específica."@es .
 
+#
+# Here we just hypothetically suggest that Unilever defines terms for their
+# newly announced corporate structure (Jan 2022):
+#   https://www.unilever.com/news/press-and-media/press-releases/2022/unilever-simplifies-organisation/
+# Now they have 5 distinct business groups, so we associate simple tags:
+#   Beauty & Wellbeing, Personal Care, Home Care, Nutrition, and Ice Cream
+#
 inrupt_3rd_party_unilever:Tag_Travel a inrupt_3rd_party_unilever:Tag, owl:NamedIndividual ;
     rdfs:isDefinedBy inrupt_3rd_party_unilever: ;
     rdfs:label "Travel"@en ;

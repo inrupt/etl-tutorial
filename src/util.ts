@@ -72,6 +72,7 @@ export function reportHttpJsonResponseFailure(
  * @param value the string value ot pluralize by adding a single 's' if needed.
  * @param count the count to determine if the value should be pluralized or not.
  */
-export function pluralize(value: string, count: number) {
-  return count === 1 ? value : `${value}s`;
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export function pluralize(value: string, arr: Array<any> | null) {
+  return arr && arr.length === 1 ? value : `${value}s`;
 }

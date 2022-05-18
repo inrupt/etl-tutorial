@@ -30,32 +30,39 @@ import {
 import { buildThing, SolidDataset } from "@inrupt/solid-client";
 import { APPLICATION_NAME } from "../applicationConstant";
 import { CollectionOfResources } from "../solidPod";
-import { wireUpDataSourceContainer } from "../applicationSetup";
+import {
+  makeDataSourceContainerBuilder,
+  wireUpDataSourceContainer,
+} from "../applicationSetup";
+import { pluralize } from "../util";
 
-const debug = debugModule(`${APPLICATION_NAME}:clientPassport`);
+const debug = debugModule(`${APPLICATION_NAME}:clientPassportLocal`);
 
 const DATA_SOURCE = "PassportOffice-UK";
 
-const inputToEtlFromMl = {
-  [SCHEMA_INRUPT.familyName.value]: "Mr Customer",
-  [SCHEMA_INRUPT.name.value]: "Alexei",
-  [SCHEMA_INRUPT.NS("gender").value]: "male",
-  [SCHEMA_INRUPT.NS("birthDate").value]: "2001/04/27",
-
-  [CRED.issuer.value]: INRUPT_3RD_PARTY_PASSPORT_OFFICE_UK.PassportOffice.value,
-  [CRED.issuanceDate.value]: "2010/01/01",
-  [CRED.expirationDate.value]: "2020/01/01",
-  [INRUPT_3RD_PARTY_PASSPORT_OFFICE_UK.passportNumber.value]: "PII-123123213",
+// Here we just provide really simple in-line 'JSON', just to illustrate that
+// 3rd-party data can really come from anywhere, and it will typically have
+// its own completely proprietary naming scheme for its data fields (e.g., in
+// this example, the passport number field is simply named  "number", since
+// the source of this data is assuming you already know the 'context' within
+// which this data is being returned, i.e., it's specifically within the
+// context of a request for Passport data).
+const inputToEtlFrom3rdParty = {
+  surname: "Bloggs",
+  first_name: "Joe",
+  gender: "male",
+  date_of_birth: "2001/04/27",
+  issued_date: "2010/01/01",
+  expiry_date: "2020/01/01",
+  number: "PII-123123213",
 };
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export async function passportLocalExtract(): Promise<any> {
   debug(
-    `Successfully retrieved passport data from [${DATA_SOURCE}] for [${
-      inputToEtlFromMl[SCHEMA_INRUPT.familyName.value]
-    }].`
+    `Successfully extracted passport data from [${DATA_SOURCE}] for [${inputToEtlFrom3rdParty.surname}].`
   );
-  return Promise.resolve(inputToEtlFromMl);
+  return Promise.resolve(inputToEtlFrom3rdParty);
 }
 
 export function passportTransform(
@@ -67,8 +74,8 @@ export function passportTransform(
   // Our transformed result will be an array of RDF resources plus an array of
   // binary resources (i.e., Blobs), each of which can have associated RDF
   // metadata (e.g., a JPEG image (the Blob) with RDF metadata expressing the
-  // image resolution, the pixel width and height, maybe to location the photo
-  // was taken, etc.).
+  // image resolution, the pixel width and height, maybe the location
+  // coordinates of where the photo was taken, etc.).
   // Our particular example here doesn't yet need Blobs, but this code is very
   // generically applicable.
   const result: CollectionOfResources = {
@@ -79,16 +86,25 @@ export function passportTransform(
   if (passportData === null) {
     return result;
   }
-  const { dataSourceContainerIri } = wireUpDataSourceContainer(
-    DATA_SOURCE,
-    credential
+  const wiring = wireUpDataSourceContainer(DATA_SOURCE, credential);
+
+  // Create a container for all the resources we will be adding from this data
+  // source.
+  const dataSourceContainerBuilder = makeDataSourceContainerBuilder(
+    wiring.dataSourceContainerIri,
+    DATA_SOURCE
   );
 
   // Build our Pod resource IRI using our container and our incoming passport
   // identifier.
-  const passportIri = `${dataSourceContainerIri}passports/${
-    passportData[INRUPT_3RD_PARTY_PASSPORT_OFFICE_UK.passportNumber.value]
-  }/`;
+  const passportNumber = passportData.number;
+  const passportIri = `${wiring.dataSourceContainerIri}passport/${passportNumber}/`;
+
+  // Add a reference to this instance to our data source container.
+  dataSourceContainerBuilder.addIri(
+    INRUPT_3RD_PARTY_PASSPORT_OFFICE_UK.passport,
+    passportIri
+  );
 
   const passport = buildThing({
     url: `${passportIri}`,
@@ -96,29 +112,44 @@ export function passportTransform(
     // Denote the type of this resource.
     .addIri(RDF.type, INRUPT_3RD_PARTY_PASSPORT_OFFICE_UK.Passport)
 
+    // We know the issuer of this passport (since we're explicitly
+    // performing the Extraction from this data source), so we can add it
+    // explicitly ourselves (since 3rd-party data rarely identifies itself,
+    // instead assuming consumers only work within that data source's silo).
+    .addIri(CRED.issuer, INRUPT_3RD_PARTY_PASSPORT_OFFICE_UK.PassportOffice)
+
+    .addStringEnglish(SCHEMA_INRUPT.name, passportData.first_name)
+    .addStringEnglish(SCHEMA_INRUPT.familyName, passportData.surname)
+
+    .addStringNoLocale(
+      INRUPT_3RD_PARTY_PASSPORT_OFFICE_UK.passportNumber,
+      passportNumber
+    )
+    .addDate(CRED.issuanceDate, new Date(passportData.issued_date))
+    .addDate(CRED.expirationDate, new Date(passportData.expiry_date))
+
     // Tag this instance of a passport as being an 'ID', but also 'Travel'
     // (just to show multiple tags).
     .addIri(INRUPT_3RD_PARTY_UNILEVER.tag, INRUPT_3RD_PARTY_UNILEVER.Tag_Id)
     .addIri(INRUPT_3RD_PARTY_UNILEVER.tag, INRUPT_3RD_PARTY_UNILEVER.Tag_Travel)
-
-    .addStringNoLocale(
-      INRUPT_3RD_PARTY_PASSPORT_OFFICE_UK.passportNumber,
-      passportData[INRUPT_3RD_PARTY_PASSPORT_OFFICE_UK.passportNumber.value]
-    )
-    .addStringNoLocale(CRED.issuanceDate, passportData[CRED.issuanceDate.value])
-    .addStringNoLocale(
-      CRED.expirationDate,
-      passportData[CRED.expirationDate.value]
-    )
-    .addStringNoLocale(CRED.issuer, passportData[CRED.issuer.value])
     .build();
 
   result.rdfResources.push(passport);
 
+  // Add the wiring-up resources to our result.
+  result.rdfResources.push(...wiring.resources);
+
+  // Now build our data source container, and add it to our result resources.
+  result.rdfResources.push(dataSourceContainerBuilder.build());
+
+  const resourceText = pluralize("resource", result.rdfResources);
+  const blobText = pluralize("Blob", result.blobsWithMetadata);
   debug(
-    `...transformed passport data into [${
+    `Transformed passport data into [${
       result.rdfResources.length
-    }] RDF resources and [${(result.blobsWithMetadata as []).length}] Blobs.`
+    }] RDF ${resourceText} and [${
+      (result.blobsWithMetadata as []).length
+    }] ${blobText}.`
   );
 
   return result;

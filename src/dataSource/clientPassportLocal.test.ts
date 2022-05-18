@@ -17,13 +17,16 @@
 // OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
 // SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
-import { SolidDataset } from "@inrupt/solid-client";
-import { CRED } from "@inrupt/vocab-common-rdf-rdfdatafactory";
+import { getIri, SolidDataset, Thing } from "@inrupt/solid-client";
+import { CRED, RDF } from "@inrupt/vocab-common-rdf-rdfdatafactory";
 import { INRUPT_3RD_PARTY_PASSPORT_OFFICE_UK } from "@inrupt/vocab-etl-tutorial-bundle-all-rdfdatafactory";
 
 import { config } from "dotenv-flow";
 import { createCredentialResourceFromEnvironmentVariables } from "../credentialUtil";
-import { getStringNoLocaleMandatoryOne } from "../solidDatasetUtil";
+import {
+  getIriMandatoryOne,
+  getStringNoLocaleMandatoryOne,
+} from "../solidDatasetUtil";
 
 import { passportLocalExtract, passportTransform } from "./clientPassportLocal";
 
@@ -56,14 +59,22 @@ describe("Passport", () => {
 
       const responseRdf = passportTransform(credential, responseJson);
       expect(responseRdf).toBeDefined();
-      expect(responseRdf.rdfResources).toHaveLength(1);
+      expect(responseRdf.rdfResources).toHaveLength(3);
+
+      const passportResource = responseRdf.rdfResources.find((resource) => {
+        return (
+          getIri(resource, RDF.type) ===
+          INRUPT_3RD_PARTY_PASSPORT_OFFICE_UK.Passport.value
+        );
+      });
+      expect(passportResource).not.toBeUndefined();
 
       expect(
-        getStringNoLocaleMandatoryOne(responseRdf.rdfResources[0], CRED.issuer)
-      ).toEqual(INRUPT_3RD_PARTY_PASSPORT_OFFICE_UK.PassportOffice.value);
+        getIriMandatoryOne(passportResource as Thing, CRED.issuer)
+      ).toEqual(INRUPT_3RD_PARTY_PASSPORT_OFFICE_UK.PassportOffice);
       expect(
         getStringNoLocaleMandatoryOne(
-          responseRdf.rdfResources[0],
+          passportResource as Thing,
           INRUPT_3RD_PARTY_PASSPORT_OFFICE_UK.passportNumber
         )
       ).toEqual("PII-123123213");
