@@ -152,13 +152,20 @@ describe("All data sources", () => {
       } else {
         const resourceIri = `${storageRoot}private/`;
         debug(`Attempting to read PRIVATE resource [${resourceIri}]...`);
-        const dataset = await getSolidDataset(resourceIri, {
-          fetch: session.fetch,
-        });
-        expect(dataset).toBeDefined();
-        debug(
-          `Successfully read a PRIVATE resource in the ETL Tutorial's Pod (meaning we know we have a valid access token)!`
-        );
+        try {
+          const dataset = await getSolidDataset(resourceIri, {
+            fetch: session.fetch,
+          });
+          expect(dataset).toBeDefined();
+          debug(
+            `Successfully read PRIVATE resource [${resourceIri}] in the test user's Pod (meaning our ETL Tutorial has a valid access token, and has been granted access by the user).`
+          );
+        } catch (error) {
+          debug(
+            `FAILED TO READ PRIVATE RESOURCE [${resourceIri}] in test user's Pod (meaning our ETL Tutorial has not got a valid access token, or has not been granted access by the user) - error: ${error}`
+          );
+          throw new Error("Fail test!");
+        }
       }
     }, 10000);
   });
