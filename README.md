@@ -12,6 +12,14 @@ To aid in the understanding of Linked Data, which is the foundation for
 everything in Solid, we first recommend reading the
 [High-level overview of how Solid stores data](docs/LinkedDataOverview/LinkedData-HighLevel.md).
 
+## Quick-start Worksheet
+
+If you want a complete, start-to-finish run through of the entire process of
+installing, configuring, testing, and running the ETL Tutorial, then you can
+follow our detailed Worksheet instructions [here](./Worksheet.md).
+
+The following instructions provide more background and go into greater detail.
+
 ## Install and Run
 
 Since we may not yet wish to publicly publish any of the vocabularies we
