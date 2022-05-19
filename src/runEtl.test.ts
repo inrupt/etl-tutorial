@@ -240,7 +240,7 @@ describe("ETL process", () => {
           session,
           null
         )
-      ).resolves.toContain("No RDF resources or Blobs to load");
+      ).resolves.toContain("No Linked Data resources or Blobs to load");
     });
 
     it("should report no resources to load", async () => {

@@ -22,19 +22,17 @@ import {
   RDF,
   SCHEMA_INRUPT,
   CRED,
+  RDFS,
 } from "@inrupt/vocab-common-rdf-rdfdatafactory";
-import {
-  INRUPT_3RD_PARTY_UNILEVER,
-  INRUPT_3RD_PARTY_PASSPORT_OFFICE_UK,
-} from "@inrupt/vocab-etl-tutorial-bundle-all-rdfdatafactory";
-import { buildThing, SolidDataset } from "@inrupt/solid-client";
+import { INRUPT_3RD_PARTY_PASSPORT_OFFICE_UK } from "@inrupt/vocab-etl-tutorial-bundle-all-rdfdatafactory";
+import { buildThing, SolidDataset, Thing } from "@inrupt/solid-client";
 import { APPLICATION_NAME } from "../applicationConstant";
 import { CollectionOfResources } from "../solidPod";
 import {
   makeDataSourceContainerBuilder,
   wireUpDataSourceContainer,
 } from "../applicationSetup";
-import { pluralize } from "../util";
+import { describeCollectionOfResources } from "../util";
 
 const debug = debugModule(`${APPLICATION_NAME}:clientPassportLocal`);
 
@@ -55,6 +53,8 @@ const inputToEtlFrom3rdParty = {
   issued_date: "2010/01/01",
   expiry_date: "2020/01/01",
   number: "PII-123123213",
+  photo_image_file: "resources/test/DummyData/DummyPhoto/fake_passport.jpg",
+  exif: `{ "ColorModel": "RGB", "PixelHeight": 800, "PixelWidth": 532 }`,
 };
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -71,13 +71,13 @@ export function passportTransform(
   // eslint-disable-next-line @typescript-eslint/no-explicit-any, @typescript-eslint/explicit-module-boundary-types
   passportData: any
 ): CollectionOfResources {
-  // Our transformed result will be an array of RDF resources plus an array of
-  // binary resources (i.e., Blobs), each of which can have associated RDF
-  // metadata (e.g., a JPEG image (the Blob) with RDF metadata expressing the
-  // image resolution, the pixel width and height, maybe the location
-  // coordinates of where the photo was taken, etc.).
-  // Our particular example here doesn't yet need Blobs, but this code is very
-  // generically applicable.
+  // Our transformed result will be an array of Linked Data resources plus an
+  // array of binary resources (i.e., Blobs), each of which can have
+  // associated Linked Data metadata (e.g., a JPEG image (the Blob) with
+  // Linked Data metadata expressing the image resolution, the pixel width and
+  // height, maybe the location coordinates of where the photo was taken,
+  // etc.). Our particular example here doesn't yet need Blobs, but this code
+  // is very generically applicable.
   const result: CollectionOfResources = {
     rdfResources: [],
     blobsWithMetadata: [],
@@ -130,9 +130,54 @@ export function passportTransform(
 
     // Tag this instance of a passport as being an 'ID', but also 'Travel'
     // (just to show multiple tags).
-    .addIri(INRUPT_3RD_PARTY_UNILEVER.tag, INRUPT_3RD_PARTY_UNILEVER.Tag_Id)
-    .addIri(INRUPT_3RD_PARTY_UNILEVER.tag, INRUPT_3RD_PARTY_UNILEVER.Tag_Travel)
+    //  USE DPV-PD TERMS ONCE EITHER LATEST AG IS RELEASED OR VOCAB BUG FIXED
+    // .addIri(INRUPT_COMMON.tag, DPV_PD.Identifying)
+    // .addIri(INRUPT_COMMON.tag, DPV_PD.Picture)
     .build();
+
+  // This section of code was intended to simply read a local file
+  // (representing a passport photo), and treat it as a Blob for insertion
+  // into the user's Pod. But this project isn't setup to allow that, as we're
+  // configured to use 'jsdom' when we shouldn't be (as this project should be
+  // a pure Node.js project, and not a JS library).
+  // let fileData;
+  // try {
+  //   fileData = fs.readFileSync(passportData.photo_image_file);
+  // } catch (error) {
+  //   const message = `Failed to read local passport photo file [${passportData.photo_image_file}] for passport number [${passportNumber}] - error: ${error}]`;
+  //   debug(message);
+  //   throw new Error(message);
+  // }
+  //
+  // const passportPhoto = new Blob(
+  //   [fileData],
+  //   {
+  //     type: "image/jpeg",
+  //   }
+  // );
+  //
+  // const fileIri = `${passportIri}binary/passportPhoto`;
+  // const fileUrl = `${fileIri}.jpeg`;
+  //
+  // const blobMetadata: Thing = buildThing({
+  //   url: fileIri,
+  // })
+  //   .addIri(RDF.type, SCHEMA_INRUPT.NS("ImageObject"))
+  //   .addStringNoLocale(RDFS.label, passportData.photo_image)
+  //   .addStringNoLocale(SCHEMA_INRUPT.NS("exifData"), passportData.exif)
+  //   .addIri(SCHEMA_INRUPT.image, fileUrl)
+  //   .build();
+  //
+  // // Here can add the metadata resource to our collection of resources,
+  // // or add it to a simple structure that keeps blob and metadata
+  // // together (so a failure to write one can report its association
+  // // with the other).
+  // // @ts-ignore Value can't be null, we explicitly instantiate it above.
+  // result.blobsWithMetadata.push({
+  //   url: fileUrl,
+  //   blob: passportPhoto,
+  //   metadata: blobMetadata,
+  // });
 
   result.rdfResources.push(passport);
 
@@ -142,14 +187,8 @@ export function passportTransform(
   // Now build our data source container, and add it to our result resources.
   result.rdfResources.push(dataSourceContainerBuilder.build());
 
-  const resourceText = pluralize("resource", result.rdfResources);
-  const blobText = pluralize("Blob", result.blobsWithMetadata);
   debug(
-    `Transformed passport data into [${
-      result.rdfResources.length
-    }] RDF ${resourceText} and [${
-      (result.blobsWithMetadata as []).length
-    }] ${blobText}.`
+    describeCollectionOfResources("Transformed passport data into", result)
   );
 
   return result;

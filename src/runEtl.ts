@@ -50,7 +50,7 @@ import {
 import {
   passportLocalExtract,
   passportTransform,
-} from "./dataSource/clientPassportLocal";
+} from "./dataSource/clientPassportInMemory";
 
 const debug = debugModule(`${APPLICATION_NAME}:runEtl`);
 
@@ -80,7 +80,7 @@ export async function loadResources(
     if (session.info.isLoggedIn) {
       const blobs = blobsWithMetadata ? `[${blobsWithMetadata.length}]` : `no`;
       debug(
-        `Loading [${resources.length}] RDF resources and ${blobs} Blobs into user Pod with WebID [${session.info.webId}]...`
+        `Loading [${resources.length}] Linked Data resources and ${blobs} Blobs into user Pod with WebID [${session.info.webId}]...`
       );
       result = await updateOrInsertResourceInSolidPod(
         session,
@@ -102,7 +102,7 @@ export async function loadResourcesAndBlobs(
   resourceCollection: CollectionOfResources | null
 ): Promise<string> {
   if (resourceCollection === null) {
-    const message = `No RDF resources or Blobs to load from data source [${dataSource}]`;
+    const message = `No Linked Data resources or Blobs to load from data source [${dataSource}]`;
     debug(message);
     return message;
   }
@@ -123,7 +123,7 @@ function rdfResourcesAsStreamLocal(
     ? ` (while ignoring [${argv.localUserCredentialResourceGlobIgnore}])`
     : "";
   debug(
-    `Looking for local RDF resources matching glob pattern [${argv.localUserCredentialResourceGlob}]${ignoringMessage}...`
+    `Looking for local Linked Data resources matching file pattern [${argv.localUserCredentialResourceGlob}]${ignoringMessage}...`
   );
   const matchingResourceFiles = glob
     .sync(
@@ -140,7 +140,7 @@ function rdfResourcesAsStreamLocal(
 
   if (matchingResourceFiles.length === 0) {
     debug(
-      `No local RDF resources found to match pattern [${argv.localUserCredentialResourceGlob}]${ignoringMessage}.`
+      `No local Linked Data resources found to match pattern [${argv.localUserCredentialResourceGlob}]${ignoringMessage}.`
     );
   }
 

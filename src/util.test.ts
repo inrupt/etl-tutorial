@@ -22,7 +22,9 @@
 // re-defining a global - d'oh!
 import { Response as CrossFetchResponse } from "cross-fetch";
 
+import { buildThing } from "@inrupt/solid-client";
 import {
+  describeCollectionOfResources,
   handleResponseBlob,
   handleResponseJson,
   pluralize,
@@ -101,6 +103,26 @@ describe("Util functions", () => {
 
     it("should not add 's'", async () => {
       expect(pluralize("peep", [1])).toEqual("peep");
+    });
+  });
+
+  describe("Describe collection", () => {
+    it("should describe empty", async () => {
+      expect(
+        describeCollectionOfResources("prelude", {
+          rdfResources: [],
+          blobsWithMetadata: [],
+        })
+      ).toEqual("prelude [0] Linked Data resources and [0] Blobs.");
+    });
+
+    it("should describe singular", async () => {
+      expect(
+        describeCollectionOfResources("prelude", {
+          rdfResources: [buildThing().build()],
+          blobsWithMetadata: [{ url: "https://test.com", blob: new Blob() }],
+        })
+      ).toEqual("prelude [1] Linked Data resource and [1] Blob.");
     });
   });
 });

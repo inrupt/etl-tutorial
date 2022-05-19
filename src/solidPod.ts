@@ -46,8 +46,8 @@ export type BlobWithMetadata = {
 };
 
 // Type that represents a collection of resources. This collection can consist
-// of RDF resources and/or binary Blob resource that may optionally have
-// associated RDF metadata.
+// of Linked Data resources and/or binary Blob resource that may optionally
+// have associated Linked Data metadata.
 export type CollectionOfResources = {
   rdfResources: Thing[];
   blobsWithMetadata: BlobWithMetadata[] | null;

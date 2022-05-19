@@ -56,8 +56,12 @@ import { updateOrInsertResourceInSolidPod } from "../../src/solidPod";
 import {
   passportLocalExtract,
   passportTransform,
-} from "../../src/dataSource/clientPassportLocal";
+} from "../../src/dataSource/clientPassportInMemory";
 import { DEFAULT_STORAGE_ROOT } from "../../src/applicationSetup";
+import {
+  hobbyLocalExtract,
+  hobbyTransform,
+} from "../../src/dataSource/clientHobbyFile";
 
 // Load environment variables from .env.test.local if available:
 config({
@@ -194,6 +198,36 @@ describe("All data sources", () => {
           resources.blobsWithMetadata
         );
         debug(`RESPONSE Passport data Load: [${responsePod}].`);
+        expect(responsePod).not.toBeNull();
+        expect(responsePod).toContain("Successfully");
+      }
+    }, 60000);
+  });
+
+  describe("Hobby (local)", () => {
+    it("should transform and load", async () => {
+      const hobbyData = await hobbyLocalExtract();
+
+      const resources = await hobbyTransform(credential, hobbyData);
+
+      let response = await insertIntoTriplestoreResources(
+        credential,
+        resources.rdfResources,
+        resources.blobsWithMetadata
+      );
+      expect(response).not.toBeNull();
+
+      if (storageRoot === null || storageRoot === DEFAULT_STORAGE_ROOT) {
+        debug(
+          `No storage root (or just our default one for triplestore population), so not attempting to insert into user Pods.`
+        );
+      } else {
+        const responsePod = await updateOrInsertResourceInSolidPod(
+          session,
+          resources.rdfResources,
+          resources.blobsWithMetadata
+        );
+        debug(`RESPONSE Hobby data Load: [${responsePod}].`);
         expect(responsePod).not.toBeNull();
         expect(responsePod).toContain("Successfully");
       }

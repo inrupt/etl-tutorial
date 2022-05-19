@@ -477,3 +477,14 @@ vocabList:
 
   - inputResources:
       - ./Hobby/CopyOfVocab/Skydiving.ttl
+
+  # This will be included in the next release of the 'Common RDF' bundle from
+  # Inrupt, but including it here shows how flexible and powerful the Artifact
+  # Generator is - in that we could choose to cherry-pick individual terms, or
+  # extend terms with extra `rdfs:label` or `rdfs:comment` translations, etc.
+#  - inputResources:
+#      - https://w3id.org/dpv/dpv-pd#
+#    # Seems like a small bug to me, but the vann:preferredNamespaceUri value
+#    # from this vocab seems to be missing it's trailing hash. So I provide it
+#    # here... (as of 2022/05/16)
+#    namespaceOverride: https://w3id.org/dpv/dpv-pd#

@@ -18,7 +18,11 @@
 // SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 import { getIri, SolidDataset, Thing } from "@inrupt/solid-client";
-import { CRED, RDF } from "@inrupt/vocab-common-rdf-rdfdatafactory";
+import {
+  CRED,
+  RDF,
+  SCHEMA_INRUPT,
+} from "@inrupt/vocab-common-rdf-rdfdatafactory";
 import { INRUPT_3RD_PARTY_PASSPORT_OFFICE_UK } from "@inrupt/vocab-etl-tutorial-bundle-all-rdfdatafactory";
 
 import { config } from "dotenv-flow";
@@ -26,9 +30,13 @@ import { createCredentialResourceFromEnvironmentVariables } from "../credentialU
 import {
   getIriMandatoryOne,
   getStringNoLocaleMandatoryOne,
+  getThingOfTypeFromCollectionMandatoryOne,
 } from "../solidDatasetUtil";
 
-import { passportLocalExtract, passportTransform } from "./clientPassportLocal";
+import {
+  passportLocalExtract,
+  passportTransform,
+} from "./clientPassportInMemory";
 
 // Load environment variables from .env.test.local if available:
 config({
@@ -49,29 +57,26 @@ describe("Passport", () => {
     });
 
     it("should ignore null input for transformation", async () => {
-      const resources = passportTransform(credential, null);
-      expect(resources.rdfResources).toHaveLength(0);
-      expect(resources.blobsWithMetadata).toHaveLength(0);
+      const resourceDetails = passportTransform(credential, null);
+      expect(resourceDetails.rdfResources).toHaveLength(0);
+      expect(resourceDetails.blobsWithMetadata).toHaveLength(0);
     });
 
     it("should extract and transform passport", async () => {
       const responseJson = await passportLocalExtract();
 
-      const responseRdf = passportTransform(credential, responseJson);
-      expect(responseRdf).toBeDefined();
-      expect(responseRdf.rdfResources).toHaveLength(3);
+      const resourceDetails = passportTransform(credential, responseJson);
+      expect(resourceDetails).toBeDefined();
+      expect(resourceDetails.rdfResources).toHaveLength(3);
 
-      const passportResource = responseRdf.rdfResources.find((resource) => {
-        return (
-          getIri(resource, RDF.type) ===
-          INRUPT_3RD_PARTY_PASSPORT_OFFICE_UK.Passport.value
-        );
-      });
-      expect(passportResource).not.toBeUndefined();
+      const passportResource = getThingOfTypeFromCollectionMandatoryOne(
+        resourceDetails,
+        INRUPT_3RD_PARTY_PASSPORT_OFFICE_UK.Passport
+      );
 
-      expect(
-        getIriMandatoryOne(passportResource as Thing, CRED.issuer)
-      ).toEqual(INRUPT_3RD_PARTY_PASSPORT_OFFICE_UK.PassportOffice);
+      expect(getIriMandatoryOne(passportResource, CRED.issuer)).toEqual(
+        INRUPT_3RD_PARTY_PASSPORT_OFFICE_UK.PassportOffice
+      );
       expect(
         getStringNoLocaleMandatoryOne(
           passportResource as Thing,

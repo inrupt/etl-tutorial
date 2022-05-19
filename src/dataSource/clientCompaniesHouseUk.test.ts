@@ -23,7 +23,10 @@ import { fetch as crossFetch } from "cross-fetch";
 import { config } from "dotenv-flow";
 import { RDF, SCHEMA_INRUPT } from "@inrupt/vocab-common-rdf-rdfdatafactory";
 import { createCredentialResourceFromEnvironmentVariables } from "../credentialUtil";
-import { getStringNoLocaleMandatoryOne } from "../solidDatasetUtil";
+import {
+  getStringNoLocaleMandatoryOne,
+  getThingOfTypeFromCollectionMandatoryOne,
+} from "../solidDatasetUtil";
 
 // For our tests, we have example API responses as JSON, so this is fine.
 /* eslint-disable import/extensions */
@@ -76,9 +79,12 @@ describe("Companies House UK", () => {
     });
 
     it("should ignore null input for transformation", async () => {
-      const resources = companiesHouseUkTransformCompany(credential, null);
-      expect(resources.rdfResources).toHaveLength(0);
-      expect(resources.blobsWithMetadata).toHaveLength(0);
+      const resourceDetails = companiesHouseUkTransformCompany(
+        credential,
+        null
+      );
+      expect(resourceDetails.rdfResources).toHaveLength(0);
+      expect(resourceDetails.blobsWithMetadata).toHaveLength(0);
     });
 
     it("should extract company", async () => {
@@ -92,21 +98,21 @@ describe("Companies House UK", () => {
       );
       expect(responseJson.items[0].title).toBe("UNILEVER PLC");
 
-      const responseRdf = companiesHouseUkTransformCompany(
+      const resourceDetails = companiesHouseUkTransformCompany(
         credential,
         responseJson
       );
-      expect(responseRdf).toBeDefined();
-      expect(responseRdf.rdfResources).toHaveLength(4);
+      expect(resourceDetails).toBeDefined();
+      expect(resourceDetails.rdfResources).toHaveLength(4);
 
-      const addressResource = responseRdf.rdfResources.find((resource) => {
-        return getIri(resource, RDF.type) === SCHEMA_INRUPT.PostalAddress.value;
-      });
-      expect(addressResource).not.toBeUndefined();
+      const addressResource = getThingOfTypeFromCollectionMandatoryOne(
+        resourceDetails,
+        SCHEMA_INRUPT.PostalAddress
+      );
 
       expect(
         getStringNoLocaleMandatoryOne(
-          addressResource as Thing,
+          addressResource,
           SCHEMA_INRUPT.addressRegion
         )
       ).toEqual("Wirral");

@@ -33,7 +33,11 @@ import {
   getStringNoLocaleOptionalOne,
   getThingOfTypeMandatoryOne,
 } from "../solidDatasetUtil";
-import { handleResponseJson, pluralize } from "../util";
+import {
+  describeCollectionOfResources,
+  handleResponseJson,
+  pluralize,
+} from "../util";
 import { APPLICATION_NAME } from "../applicationConstant";
 import { CollectionOfResources } from "../solidPod";
 import {
@@ -107,13 +111,13 @@ export function companiesHouseUkTransformCompany(
   // eslint-disable-next-line @typescript-eslint/no-explicit-any, @typescript-eslint/explicit-module-boundary-types
   companySearchResults: any
 ): CollectionOfResources {
-  // Our transformed result will be an array of RDF resources plus an array of
-  // binary resources (i.e., Blobs), each of which can have associated RDF
-  // metadata (e.g., a JPEG image (the Blob) with RDF metadata expressing the
-  // image resolution, the pixel width and height, maybe to location the photo
-  // was taken, etc.).
-  // Our particular example here doesn't yet need Blobs, but this code is very
-  // generically applicable.
+  // Our transformed result will be an array of Linked Data resources plus an
+  // array of binary resources (i.e., Blobs), each of which can have
+  // associated Linked Data metadata (e.g., a JPEG image (the Blob) with
+  // Linked Data metadata expressing the image resolution, the pixel width and
+  // height, maybe the location coordinates of where the photo was taken,
+  // etc.). Our particular example here doesn't yet need Blobs, but this code
+  // is very generically applicable.
   const result: CollectionOfResources = {
     rdfResources: [],
     blobsWithMetadata: [],
@@ -198,14 +202,11 @@ export function companiesHouseUkTransformCompany(
     // Now build our data source container, and add it to our result resources.
     result.rdfResources.push(dataSourceContainerBuilder.build());
 
-    const resourceText = pluralize("resource", result.rdfResources);
-    const blobText = pluralize("Blob", result.blobsWithMetadata);
     debug(
-      `Transformed Companies House UK company data into [${
-        result.rdfResources.length
-      }] RDF ${resourceText} and [${
-        (result.blobsWithMetadata as []).length
-      }] ${blobText}.`
+      describeCollectionOfResources(
+        "Transformed Companies House UK company data into",
+        result
+      )
     );
   });
 
