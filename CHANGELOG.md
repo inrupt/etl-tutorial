@@ -15,6 +15,8 @@ The following changes have been implemented but not released yet:
 - Added Hobby vocabs.
 - New util function to find mandatory Thing of specific type from resource
   collection.
+- Added Hobby vocabs and ETL.
+- Added util functions for describing a collection of resources.
 
 ## [0.0.1] - 2022-02-01
 
