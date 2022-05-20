@@ -56,6 +56,7 @@ export async function clearTriplestore(
     INRUPT_COMMON.triplestoreNamedGraph,
     "default"
   ) as string;
+
   const command =
     namedGraph === "default" ? "CLEAR ALL" : `CLEAR GRAPH <${namedGraph}>`;
 
