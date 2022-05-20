@@ -18,6 +18,7 @@
 // SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 import debugModule from "debug";
+import fs from "fs";
 import { RDF, SCHEMA_INRUPT } from "@inrupt/vocab-common-rdf-rdfdatafactory";
 import { HOBBY } from "@inrupt/vocab-etl-tutorial-bundle-all-rdfdatafactory";
 import { buildThing, SolidDataset } from "@inrupt/solid-client";
@@ -29,25 +30,25 @@ import {
 } from "../applicationSetup";
 import { describeCollectionOfResources } from "../util";
 
-const debug = debugModule(`${APPLICATION_NAME}:clientPassportLocal`);
+const debug = debugModule(`${APPLICATION_NAME}:clientHobbyFile`);
 
 const DATA_SOURCE = "Hobby";
 
-const hobbyDetails = {
-  id: "Joe_Bloggs",
-  club: "Irish Parachute Club",
-  web_site: "https://skydive.ie/",
-  address_details: "Clonbullogue Airfield, Edenderry, Co. Offaly, Ireland",
-  membership_id: "998877",
-  kind_of_hobby: "sport",
-};
-
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-export async function hobbyLocalExtract(): Promise<any> {
+export async function hobbyLocalExtract(source: string): Promise<any> {
+  let fileData;
+  try {
+    fileData = fs.readFileSync(source, "utf8");
+  } catch (error) {
+    const message = `Failed to extract local Hobby file [${source}] - error: ${error}]`;
+    debug(message);
+    throw new Error(message);
+  }
+
   debug(
-    `Successfully extracted passport data from [${DATA_SOURCE}] for [${hobbyDetails.id}].`
+    `Successfully extracted hobby data for [${DATA_SOURCE}] from [${source}].`
   );
-  return Promise.resolve(hobbyDetails);
+  return Promise.resolve(JSON.parse(fileData));
 }
 
 export function hobbyTransform(

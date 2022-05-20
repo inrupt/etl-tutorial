@@ -50,18 +50,19 @@ config({
   silent: process.env.CI === "true",
 });
 
-describe("Companies House UK", () => {
+describe("Companies House UK data source", () => {
   const credential: SolidDataset =
     createCredentialResourceFromEnvironmentVariables();
 
-  describe("Company search", () => {
+  describe("Company search API", () => {
     it("should return null if no auth token", async () => {
       const credentialNoToken =
         createCredentialResourceFromEnvironmentVariables([
           "INRUPT_SOURCE_COMPANIES_HOUSE_UK_HTTP_BASIC_TOKEN",
         ]);
+
       await expect(
-        companiesHouseUkExtractCompanyById(credentialNoToken, "Does not matter")
+        companiesHouseUkExtractCompanyById(credentialNoToken, "Doesn't matter")
       ).resolves.toBeNull();
     });
 
@@ -74,7 +75,7 @@ describe("Companies House UK", () => {
       );
 
       await expect(
-        companiesHouseUkExtractCompanyById(credential, "Does not matter")
+        companiesHouseUkExtractCompanyById(credential, "Doesn't matter")
       ).rejects.toThrow("Exception searching ");
     });
 

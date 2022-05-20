@@ -38,36 +38,43 @@ config({
   silent: process.env.CI === "true",
 });
 
-describe("Hobby", () => {
+const hobbySource =
+  "resources/test/DummyData/DummyDataSource/DummyHobby/JoeBloggs-Skydive.json";
+
+describe("Hobby data source", () => {
   const credential: SolidDataset =
     createCredentialResourceFromEnvironmentVariables();
 
-  describe("Hobby", () => {
-    it("should return, always", async () => {
-      await expect(hobbyLocalExtract()).resolves.not.toBeNull();
-    });
+  it("should return", async () => {
+    await expect(hobbyLocalExtract(hobbySource)).resolves.not.toBeNull();
+  });
 
-    it("should ignore null input for transformation", async () => {
-      const resourceDetails = hobbyTransform(credential, null);
-      expect(resourceDetails.rdfResources).toHaveLength(0);
-      expect(resourceDetails.blobsWithMetadata).toHaveLength(0);
-    });
+  it("should fail to extract from source", async () => {
+    await expect(hobbyLocalExtract("non-existent-source")).rejects.toThrow(
+      "Failed to extract"
+    );
+  });
 
-    it("should extract and transform hobby", async () => {
-      const responseJson = await hobbyLocalExtract();
+  it("should ignore null input for transformation", async () => {
+    const resourceDetails = hobbyTransform(credential, null);
+    expect(resourceDetails.rdfResources).toHaveLength(0);
+    expect(resourceDetails.blobsWithMetadata).toHaveLength(0);
+  });
 
-      const resourceDetails = hobbyTransform(credential, responseJson);
-      expect(resourceDetails).toBeDefined();
-      expect(resourceDetails.rdfResources).toHaveLength(3);
+  it("should extract and transform hobby", async () => {
+    const responseJson = await hobbyLocalExtract(hobbySource);
 
-      const hobbyResource = getThingOfTypeFromCollectionMandatoryOne(
-        resourceDetails,
-        HOBBY.Hobby
-      );
+    const resourceDetails = hobbyTransform(credential, responseJson);
+    expect(resourceDetails).toBeDefined();
+    expect(resourceDetails.rdfResources).toHaveLength(3);
 
-      expect(
-        getStringNoLocaleMandatoryOne(hobbyResource as Thing, HOBBY.kind)
-      ).toEqual("sport");
-    });
+    const hobbyResource = getThingOfTypeFromCollectionMandatoryOne(
+      resourceDetails,
+      HOBBY.Hobby
+    );
+
+    expect(
+      getStringNoLocaleMandatoryOne(hobbyResource as Thing, HOBBY.kind)
+    ).toEqual("sport");
   });
 });

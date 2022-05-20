@@ -33,7 +33,7 @@ import {
 } from "../applicationSetup";
 import { describeCollectionOfResources } from "../util";
 
-const debug = debugModule(`${APPLICATION_NAME}:clientPassportLocal`);
+const debug = debugModule(`${APPLICATION_NAME}:clientPassportInMemory`);
 
 const DATA_SOURCE = "PassportOffice-UK";
 
@@ -127,9 +127,10 @@ export function passportTransform(
     .addDate(CRED.issuanceDate, new Date(passportDataAsJson.issued_date))
     .addDate(CRED.expirationDate, new Date(passportDataAsJson.expiry_date))
 
-    // Tag this instance of a passport as being an 'ID', but also 'Travel'
+    // Tag this instance of a passport as being an 'Identifying', and also
+    // as containing a 'Picture' (since we have a passport photo included).
     // (just to show multiple tags).
-    //  USE DPV-PD TERMS ONCE EITHER LATEST AG IS RELEASED OR VOCAB BUG FIXED
+    // USE DPV-PD TERMS ONCE EITHER LATEST AG IS RELEASED, OR VOCAB BUG FIXED.
     // .addIri(INRUPT_COMMON.tag, DPV_PD.Identifying)
     // .addIri(INRUPT_COMMON.tag, DPV_PD.Picture)
     .build();

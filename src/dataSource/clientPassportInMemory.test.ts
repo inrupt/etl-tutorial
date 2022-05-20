@@ -43,42 +43,40 @@ config({
   silent: process.env.CI === "true",
 });
 
-describe("Passport", () => {
+describe("Passport data source", () => {
   const credential: SolidDataset =
     createCredentialResourceFromEnvironmentVariables();
 
-  describe("Passport", () => {
-    it("should return, always", async () => {
-      await expect(passportLocalExtract()).resolves.not.toBeNull();
-    });
+  it("should return, always", async () => {
+    await expect(passportLocalExtract()).resolves.not.toBeNull();
+  });
 
-    it("should ignore null input for transformation", async () => {
-      const resourceDetails = passportTransform(credential, null);
-      expect(resourceDetails.rdfResources).toHaveLength(0);
-      expect(resourceDetails.blobsWithMetadata).toHaveLength(0);
-    });
+  it("should ignore null input for transformation", async () => {
+    const resourceDetails = passportTransform(credential, null);
+    expect(resourceDetails.rdfResources).toHaveLength(0);
+    expect(resourceDetails.blobsWithMetadata).toHaveLength(0);
+  });
 
-    it("should extract and transform passport", async () => {
-      const responseJson = await passportLocalExtract();
+  it("should extract and transform passport", async () => {
+    const responseJson = await passportLocalExtract();
 
-      const resourceDetails = passportTransform(credential, responseJson);
-      expect(resourceDetails).toBeDefined();
-      expect(resourceDetails.rdfResources).toHaveLength(3);
+    const resourceDetails = passportTransform(credential, responseJson);
+    expect(resourceDetails).toBeDefined();
+    expect(resourceDetails.rdfResources).toHaveLength(3);
 
-      const passportResource = getThingOfTypeFromCollectionMandatoryOne(
-        resourceDetails,
-        INRUPT_3RD_PARTY_PASSPORT_OFFICE_UK.Passport
-      );
+    const passportResource = getThingOfTypeFromCollectionMandatoryOne(
+      resourceDetails,
+      INRUPT_3RD_PARTY_PASSPORT_OFFICE_UK.Passport
+    );
 
-      expect(getIriMandatoryOne(passportResource, CRED.issuer)).toEqual(
-        INRUPT_3RD_PARTY_PASSPORT_OFFICE_UK.PassportOffice
-      );
-      expect(
-        getStringNoLocaleMandatoryOne(
-          passportResource as Thing,
-          INRUPT_3RD_PARTY_PASSPORT_OFFICE_UK.passportNumber
-        )
-      ).toEqual("PII-123123213");
-    });
+    expect(getIriMandatoryOne(passportResource, CRED.issuer)).toEqual(
+      INRUPT_3RD_PARTY_PASSPORT_OFFICE_UK.PassportOffice
+    );
+    expect(
+      getStringNoLocaleMandatoryOne(
+        passportResource as Thing,
+        INRUPT_3RD_PARTY_PASSPORT_OFFICE_UK.passportNumber
+      )
+    ).toEqual("PII-123123213");
   });
 });

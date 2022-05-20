@@ -103,7 +103,7 @@ describe("triplestore", () => {
   describe("Insert N-Triples into triplestore", () => {
     it("should ignore insertion if no endpoint", async () => {
       expect(
-        await insertIntoTriplestoreNTriples(null, "default", "Does not matter")
+        await insertIntoTriplestoreNTriples(null, "default", "Doesn't matter")
       ).toContain("ignoring request to write triples");
     });
   });
