@@ -19,6 +19,7 @@
 
 import debugModule from "debug";
 import { APPLICATION_NAME } from "./applicationConstant";
+import { CollectionOfResources } from "./solidPod";
 
 const debug = debugModule(`${APPLICATION_NAME}:util`);
 
@@ -75,4 +76,18 @@ export function reportHttpJsonResponseFailure(
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export function pluralize(value: string, arr: Array<any> | null) {
   return arr && arr.length === 1 ? value : `${value}s`;
+}
+
+export function describeCollectionOfResources(
+  prelude: string,
+  collection: CollectionOfResources
+): string {
+  const resourceText = pluralize("resource", collection.rdfResources);
+  const blobText = pluralize("Blob", collection.blobsWithMetadata);
+
+  return `${prelude} [${
+    collection.rdfResources.length
+  }] Linked Data ${resourceText} and [${
+    (collection.blobsWithMetadata as []).length
+  }] ${blobText}.`;
 }

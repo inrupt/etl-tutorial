@@ -98,19 +98,19 @@ export default async function processCommandLine<T>(
             .alias("e", "etlCredentialResource")
             .describe(
               "etlCredentialResource",
-              "A glob pattern for local RDF resources containing user credentials for the 3rd-party APIs to ETL from."
+              "A glob pattern for local Linked Data resources containing user credentials for the 3rd-party APIs to ETL from."
             )
 
             .alias("l", "localUserCredentialResourceGlob")
             .describe(
               "localUserCredentialResourceGlob",
-              "A glob pattern for local RDF resources containing user credentials for the 3rd-party APIs to ETL from."
+              "A glob pattern for local Linked Data resources containing user credentials for the 3rd-party APIs to ETL from."
             )
 
             .alias("i", "localUserCredentialResourceGlobIgnore")
             .describe(
               "localUserCredentialResourceGlobIgnore",
-              "A comma-separated list of local RDF resources to ignore."
+              "A comma-separated list of local Linked Data resources to ignore."
             )
 
             .alias("o", "outputDirectory")

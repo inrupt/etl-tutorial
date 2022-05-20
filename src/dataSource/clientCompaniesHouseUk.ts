@@ -33,7 +33,7 @@ import {
   getStringNoLocaleOptionalOne,
   getThingOfTypeMandatoryOne,
 } from "../solidDatasetUtil";
-import { handleResponseJson, pluralize } from "../util";
+import { describeCollectionOfResources, handleResponseJson } from "../util";
 import { APPLICATION_NAME } from "../applicationConstant";
 import { CollectionOfResources } from "../solidPod";
 import {
@@ -105,21 +105,21 @@ export function companiesHouseUkTransformCompany(
   credential: SolidDataset,
   // This 3rd-party APIs doesn't provide type information for responses...
   // eslint-disable-next-line @typescript-eslint/no-explicit-any, @typescript-eslint/explicit-module-boundary-types
-  companySearchResults: any
+  companySearchResultsAsJson: any
 ): CollectionOfResources {
-  // Our transformed result will be an array of RDF resources plus an array of
-  // binary resources (i.e., Blobs), each of which can have associated RDF
-  // metadata (e.g., a JPEG image (the Blob) with RDF metadata expressing the
-  // image resolution, the pixel width and height, maybe to location the photo
-  // was taken, etc.).
-  // Our particular example here doesn't yet need Blobs, but this code is very
-  // generically applicable.
+  // Our transformed result will be an array of Linked Data resources plus an
+  // array of binary resources (i.e., Blobs), each of which can have
+  // associated Linked Data metadata (e.g., a JPEG image (the Blob) with
+  // Linked Data metadata expressing the image resolution, the pixel width and
+  // height, maybe the location coordinates of where the photo was taken,
+  // etc.). Our particular example here doesn't yet need Blobs, but this code
+  // is very generically applicable.
   const result: CollectionOfResources = {
     rdfResources: [],
     blobsWithMetadata: [],
   };
 
-  if (companySearchResults === null) {
+  if (companySearchResultsAsJson === null) {
     return result;
   }
   const wiring = wireUpDataSourceContainer(DATA_SOURCE, credential);
@@ -132,8 +132,8 @@ export function companiesHouseUkTransformCompany(
   );
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any, @typescript-eslint/explicit-module-boundary-types
-  companySearchResults.items.forEach((companyData: any) => {
-    const searchResultIri = `${wiring.dataSourceContainerIri}CompanyID-${companyData.company_number}/`;
+  companySearchResultsAsJson.items.forEach((companyDataAsJson: any) => {
+    const searchResultIri = `${wiring.dataSourceContainerIri}CompanyID-${companyDataAsJson.company_number}/`;
 
     // Add a reference to this instance to our data source container.
     dataSourceContainerBuilder.addIri(
@@ -143,7 +143,8 @@ export function companiesHouseUkTransformCompany(
 
     // It seems Companies House UK can have empty 'country' values (e.g., as
     // of Feb 2022, Unilever (the largest company in the UK)).
-    const countryValue = companyData.address.country || "<Unspecified Country>";
+    const countryValue =
+      companyDataAsJson.address.country || "<Unspecified Country>";
 
     // Here we've chosen to model the company address as its own separate
     // resource.
@@ -154,19 +155,19 @@ export function companiesHouseUkTransformCompany(
       .addStringEnglish(RDFS.label, "Address")
       .addStringNoLocale(
         SCHEMA_INRUPT.streetAddress,
-        companyData.address_snippet
+        companyDataAsJson.address_snippet
       )
       .addStringNoLocale(
         SCHEMA_INRUPT.addressLocality,
-        companyData.address.locality
+        companyDataAsJson.address.locality
       )
       .addStringNoLocale(
         SCHEMA_INRUPT.addressRegion,
-        companyData.address.address_line_1
+        companyDataAsJson.address.address_line_1
       )
       .addStringNoLocale(
         SCHEMA_INRUPT.postalCode,
-        companyData.address.postal_code
+        companyDataAsJson.address.postal_code
       )
       .addStringNoLocale(SCHEMA_INRUPT.addressCountry, countryValue)
       .build();
@@ -181,12 +182,15 @@ export function companiesHouseUkTransformCompany(
       // Link our company to its address.
       .addIri(SCHEMA_INRUPT.address, address)
 
-      .addStringNoLocale(SCHEMA_INRUPT.name, companyData.title)
+      .addStringNoLocale(SCHEMA_INRUPT.name, companyDataAsJson.title)
       .addStringNoLocale(
         INRUPT_3RD_PARTY_COMPANIES_HOUSE_UK.status,
-        companyData.company_status
+        companyDataAsJson.company_status
       )
-      .addDate(SCHEMA_INRUPT.startDate, new Date(companyData.date_of_creation))
+      .addDate(
+        SCHEMA_INRUPT.startDate,
+        new Date(companyDataAsJson.date_of_creation)
+      )
       .build();
 
     result.rdfResources.push(company);
@@ -198,14 +202,11 @@ export function companiesHouseUkTransformCompany(
     // Now build our data source container, and add it to our result resources.
     result.rdfResources.push(dataSourceContainerBuilder.build());
 
-    const resourceText = pluralize("resource", result.rdfResources);
-    const blobText = pluralize("Blob", result.blobsWithMetadata);
     debug(
-      `Transformed Companies House UK company data into [${
-        result.rdfResources.length
-      }] RDF ${resourceText} and [${
-        (result.blobsWithMetadata as []).length
-      }] ${blobText}.`
+      describeCollectionOfResources(
+        "Transformed Companies House UK company data into",
+        result
+      )
     );
   });
 

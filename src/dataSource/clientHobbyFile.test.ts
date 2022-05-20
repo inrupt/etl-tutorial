@@ -17,18 +17,17 @@
 // OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
 // SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
-import { getIri, SolidDataset, Thing } from "@inrupt/solid-client";
-import { CRED, RDF } from "@inrupt/vocab-common-rdf-rdfdatafactory";
-import { INRUPT_3RD_PARTY_PASSPORT_OFFICE_UK } from "@inrupt/vocab-etl-tutorial-bundle-all-rdfdatafactory";
+import { SolidDataset, Thing } from "@inrupt/solid-client";
+import { HOBBY } from "@inrupt/vocab-etl-tutorial-bundle-all-rdfdatafactory";
 
 import { config } from "dotenv-flow";
 import { createCredentialResourceFromEnvironmentVariables } from "../credentialUtil";
 import {
-  getIriMandatoryOne,
   getStringNoLocaleMandatoryOne,
+  getThingOfTypeFromCollectionMandatoryOne,
 } from "../solidDatasetUtil";
 
-import { passportLocalExtract, passportTransform } from "./clientPassportLocal";
+import { hobbyLocalExtract, hobbyTransform } from "./clientHobbyFile";
 
 // Load environment variables from .env.test.local if available:
 config({
@@ -39,45 +38,43 @@ config({
   silent: process.env.CI === "true",
 });
 
-describe("Passport", () => {
+const hobbySource =
+  "resources/test/DummyData/DummyDataSource/DummyHobby/JoeBloggs-Skydive.json";
+
+describe("Hobby data source", () => {
   const credential: SolidDataset =
     createCredentialResourceFromEnvironmentVariables();
 
-  describe("Passport", () => {
-    it("should return, always", async () => {
-      await expect(passportLocalExtract()).resolves.not.toBeNull();
-    });
+  it("should return", async () => {
+    await expect(hobbyLocalExtract(hobbySource)).resolves.not.toBeNull();
+  });
 
-    it("should ignore null input for transformation", async () => {
-      const resources = passportTransform(credential, null);
-      expect(resources.rdfResources).toHaveLength(0);
-      expect(resources.blobsWithMetadata).toHaveLength(0);
-    });
+  it("should fail to extract from source", async () => {
+    await expect(hobbyLocalExtract("non-existent-source")).rejects.toThrow(
+      "Failed to extract"
+    );
+  });
 
-    it("should extract and transform passport", async () => {
-      const responseJson = await passportLocalExtract();
+  it("should ignore null input for transformation", async () => {
+    const resourceDetails = hobbyTransform(credential, null);
+    expect(resourceDetails.rdfResources).toHaveLength(0);
+    expect(resourceDetails.blobsWithMetadata).toHaveLength(0);
+  });
 
-      const responseRdf = passportTransform(credential, responseJson);
-      expect(responseRdf).toBeDefined();
-      expect(responseRdf.rdfResources).toHaveLength(3);
+  it("should extract and transform hobby", async () => {
+    const responseJson = await hobbyLocalExtract(hobbySource);
 
-      const passportResource = responseRdf.rdfResources.find((resource) => {
-        return (
-          getIri(resource, RDF.type) ===
-          INRUPT_3RD_PARTY_PASSPORT_OFFICE_UK.Passport.value
-        );
-      });
-      expect(passportResource).not.toBeUndefined();
+    const resourceDetails = hobbyTransform(credential, responseJson);
+    expect(resourceDetails).toBeDefined();
+    expect(resourceDetails.rdfResources).toHaveLength(3);
 
-      expect(
-        getIriMandatoryOne(passportResource as Thing, CRED.issuer)
-      ).toEqual(INRUPT_3RD_PARTY_PASSPORT_OFFICE_UK.PassportOffice);
-      expect(
-        getStringNoLocaleMandatoryOne(
-          passportResource as Thing,
-          INRUPT_3RD_PARTY_PASSPORT_OFFICE_UK.passportNumber
-        )
-      ).toEqual("PII-123123213");
-    });
+    const hobbyResource = getThingOfTypeFromCollectionMandatoryOne(
+      resourceDetails,
+      HOBBY.Hobby
+    );
+
+    expect(
+      getStringNoLocaleMandatoryOne(hobbyResource as Thing, HOBBY.kind)
+    ).toEqual("sport");
   });
 });

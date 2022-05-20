@@ -17,13 +17,16 @@
 // OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
 // SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
-import { getIri, SolidDataset, Thing } from "@inrupt/solid-client";
+import { SolidDataset } from "@inrupt/solid-client";
 
 import { fetch as crossFetch } from "cross-fetch";
 import { config } from "dotenv-flow";
-import { RDF, SCHEMA_INRUPT } from "@inrupt/vocab-common-rdf-rdfdatafactory";
+import { SCHEMA_INRUPT } from "@inrupt/vocab-common-rdf-rdfdatafactory";
 import { createCredentialResourceFromEnvironmentVariables } from "../credentialUtil";
-import { getStringNoLocaleMandatoryOne } from "../solidDatasetUtil";
+import {
+  getStringNoLocaleMandatoryOne,
+  getThingOfTypeFromCollectionMandatoryOne,
+} from "../solidDatasetUtil";
 
 // For our tests, we have example API responses as JSON, so this is fine.
 /* eslint-disable import/extensions */
@@ -47,18 +50,19 @@ config({
   silent: process.env.CI === "true",
 });
 
-describe("Companies House UK", () => {
+describe("Companies House UK data source", () => {
   const credential: SolidDataset =
     createCredentialResourceFromEnvironmentVariables();
 
-  describe("Company search", () => {
+  describe("Company search API", () => {
     it("should return null if no auth token", async () => {
       const credentialNoToken =
         createCredentialResourceFromEnvironmentVariables([
           "INRUPT_SOURCE_COMPANIES_HOUSE_UK_HTTP_BASIC_TOKEN",
         ]);
+
       await expect(
-        companiesHouseUkExtractCompanyById(credentialNoToken, "Does not matter")
+        companiesHouseUkExtractCompanyById(credentialNoToken, "Doesn't matter")
       ).resolves.toBeNull();
     });
 
@@ -71,14 +75,17 @@ describe("Companies House UK", () => {
       );
 
       await expect(
-        companiesHouseUkExtractCompanyById(credential, "Does not matter")
+        companiesHouseUkExtractCompanyById(credential, "Doesn't matter")
       ).rejects.toThrow("Exception searching ");
     });
 
     it("should ignore null input for transformation", async () => {
-      const resources = companiesHouseUkTransformCompany(credential, null);
-      expect(resources.rdfResources).toHaveLength(0);
-      expect(resources.blobsWithMetadata).toHaveLength(0);
+      const resourceDetails = companiesHouseUkTransformCompany(
+        credential,
+        null
+      );
+      expect(resourceDetails.rdfResources).toHaveLength(0);
+      expect(resourceDetails.blobsWithMetadata).toHaveLength(0);
     });
 
     it("should extract company", async () => {
@@ -92,21 +99,21 @@ describe("Companies House UK", () => {
       );
       expect(responseJson.items[0].title).toBe("UNILEVER PLC");
 
-      const responseRdf = companiesHouseUkTransformCompany(
+      const resourceDetails = companiesHouseUkTransformCompany(
         credential,
         responseJson
       );
-      expect(responseRdf).toBeDefined();
-      expect(responseRdf.rdfResources).toHaveLength(4);
+      expect(resourceDetails).toBeDefined();
+      expect(resourceDetails.rdfResources).toHaveLength(4);
 
-      const addressResource = responseRdf.rdfResources.find((resource) => {
-        return getIri(resource, RDF.type) === SCHEMA_INRUPT.PostalAddress.value;
-      });
-      expect(addressResource).not.toBeUndefined();
+      const addressResource = getThingOfTypeFromCollectionMandatoryOne(
+        resourceDetails,
+        SCHEMA_INRUPT.PostalAddress
+      );
 
       expect(
         getStringNoLocaleMandatoryOne(
-          addressResource as Thing,
+          addressResource,
           SCHEMA_INRUPT.addressRegion
         )
       ).toEqual("Wirral");

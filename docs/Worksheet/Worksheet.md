@@ -98,7 +98,7 @@ npm run e2e-test-node-localExtract-TransformLoad
 - This data is Transformed into 3 Resources.
 - We haven't configured a user Pod's storage, so there's nowhere to Load our 3 Resources yet.
 
-## PHASE 2- Creating our environment file, and (optionally) loading data into a triplestore, and visualizing it.
+## PHASE 2 - Creating our environment file, and (optionally) loading data into a triplestore, and visualizing it.
 
 Now create a copy of the local file `/e2e/node/.env.example`, and name it
 `/e2e/node/.env.test.local`:
@@ -108,8 +108,20 @@ cd ./e2e/node/
 cp .env.example .env.test.local
 ```
 
-If you have a triplestore running locally, then you can populate that right
-now by editing your local `.env` file:
+## PHASE 2.5 - Optional - load data into a triplestore and visualizing it.
+
+It can be **_extremely_** helpful to visualize the data we are Loading, and
+one of the best ways to do this is using a triplestore (see
+[here](../VisualizePodData/VisualizeExamplePodData.png) for a screenshot of a
+sample Pod with lots of data.
+
+If you don't already have a triplestore, you can follow the very simple
+instructions [here](../VisualizePodData/VisualizePodData.md) to install and
+configure a free triplestore locally in **_less than 10 minutes_**.
+
+Once you have a triplestore running (locally or remotely), you can populate
+that right away by simply editing just one line of your new local `.env`
+file.
 
 ```
 # Or use vim, or VSCode, or whatever
@@ -117,11 +129,11 @@ gedit .env.test.local
 ```
 
 ...and just uncommenting this line (assuming you're running GraphDB locally,
-on its default port of `7200`, and you've created a new repository named
+on its default port of `7200`, and that you've created a new repository named
 `inrupt-etl-tutorial`):
 
 ```
-INRUPT_TRIPLESTORE_ENDPOINT_UPDATE=...
+INRUPT_TRIPLESTORE_ENDPOINT_UPDATE="http://localhost:7200/repositories/inrupt-etl-tutorial/statements"
 ```
 
 Now re-run the End-2-End load test from our project root:
@@ -131,23 +143,31 @@ cd ../..
 npm run e2e-test-node-localExtract-TransformLoad
 ```
 
-- Now we should see local data Extracted, Transformed to Linked Data as before.
+- Now our console output should show local data being Extracted, Transformed
+  to Linked Data as before.
 - **_But now_** we should see that data Loaded as Resources from both the
   Passport and Companies House data sources into the triplestore.
 - Open GraphDB:
-  - Select the `inrupt-etl-tutorial` repository.
+  - Make sure you select the `inrupt-etl-tutorial` repository (i.e., or
+    whichever repository you configured your `.env.test.local` to Load data
+    into).
   - Simply visualize this node:
     `https://different.domain.example.com/testStorageRoot/private/inrupt/etl-tutorial/etl-run-1/`
   - You should be able to intuitively navigate through the ETL-ed data.
 
 Make a change to the local Passport data (e.g., in the JSON in
-`src/dataSource/clientPassportLocal.ts`), and re-run the test:
+`src/dataSource/clientPassportInMemory.ts`), and re-run the test:
 
 ```
 npm run e2e-test-node-localExtract-TransformLoad
 ```
 
 ...and you should see your change when you refresh the visualization.
+
+**_Note:_** This test loads Companies House data from a local, hard-coded
+JSON response (and not via the live API, which our other End-2-End test uses),
+so we can't simply update the company ID to search for to Load those results
+into our triplestore!
 
 ## PHASE 3 - Configuring our UK Companies House API auth token, and Extracting data from that API.
 
@@ -244,6 +264,9 @@ npm run e2e-test-node-localExtract-TransformLoad
 
 It should fail because our test user has not yet granted permission to the ETL
 Tutorial process to write to their Pod.
+
+See screenshot of how we're going to grant this permission
+[here](docs/Worksheet/GivingEtlTutorialPermission.png).
 
 Now use PodBrowser to login as your test user, and navigate to their
 `/private` folder.

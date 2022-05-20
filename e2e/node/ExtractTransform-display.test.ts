@@ -46,7 +46,7 @@ import {
 import {
   passportLocalExtract,
   passportTransform,
-} from "../../src/dataSource/clientPassportLocal";
+} from "../../src/dataSource/clientPassportInMemory";
 import {
   getIriMandatoryOne,
   getStringNoLocaleMandatoryOne,

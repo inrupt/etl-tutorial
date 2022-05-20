@@ -71,10 +71,6 @@ export function createCredentialResourceEmpty(): SolidDataset {
   return setThing(createSolidDataset(), builder.build());
 }
 
-export function createCredentialResourceBuilder(): ThingBuilder<ThingLocal> {
-  return buildThing().addIri(RDF.type, INRUPT_COMMON.CredentialResource);
-}
-
 export function buildCredentialResourceFromEnvironmentVariables(
   builder: ThingBuilder<ThingLocal>,
   ignoreArray?: string[]
@@ -135,7 +131,11 @@ export function buildCredentialResourceFromEnvironmentVariables(
 export function createCredentialResourceFromEnvironmentVariables(
   ignoreArray?: string[]
 ): SolidDataset {
-  const builder = createCredentialResourceBuilder();
+  const builder = buildThing().addIri(
+    RDF.type,
+    INRUPT_COMMON.CredentialResource
+  );
+
   buildCredentialResourceFromEnvironmentVariables(builder, ignoreArray);
 
   return setThing(createSolidDataset(), builder.build());
