@@ -45,6 +45,8 @@ import {
 /* eslint-disable import/extensions */
 import companiesHouseUkSearchCompanyIdExample from "../../resources/test/RealData/PublicApiResponse/api-uk-companieshouse-search-companyid-unilever.json";
 /* eslint-enable import/extensions */
+const hobbyExample =
+  "resources/test/DummyData/DummyDataSource/DummyHobby/JoeBloggs-Skydive.json";
 
 import {
   clearTriplestore,
@@ -206,7 +208,7 @@ describe("All data sources", () => {
 
   describe("Hobby (local)", () => {
     it("should transform and load", async () => {
-      const hobbyData = await hobbyLocalExtract();
+      const hobbyData = await hobbyLocalExtract(hobbyExample);
 
       const resources = await hobbyTransform(credential, hobbyData);
 
