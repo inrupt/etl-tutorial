@@ -17,12 +17,8 @@
 // OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
 // SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
-import { getIri, SolidDataset, Thing } from "@inrupt/solid-client";
-import {
-  CRED,
-  RDF,
-  SCHEMA_INRUPT,
-} from "@inrupt/vocab-common-rdf-rdfdatafactory";
+import { SolidDataset, Thing } from "@inrupt/solid-client";
+import { CRED } from "@inrupt/vocab-common-rdf-rdfdatafactory";
 import { INRUPT_3RD_PARTY_PASSPORT_OFFICE_UK } from "@inrupt/vocab-etl-tutorial-bundle-all-rdfdatafactory";
 
 import { config } from "dotenv-flow";

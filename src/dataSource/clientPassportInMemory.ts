@@ -22,10 +22,9 @@ import {
   RDF,
   SCHEMA_INRUPT,
   CRED,
-  RDFS,
 } from "@inrupt/vocab-common-rdf-rdfdatafactory";
 import { INRUPT_3RD_PARTY_PASSPORT_OFFICE_UK } from "@inrupt/vocab-etl-tutorial-bundle-all-rdfdatafactory";
-import { buildThing, SolidDataset, Thing } from "@inrupt/solid-client";
+import { buildThing, SolidDataset } from "@inrupt/solid-client";
 import { APPLICATION_NAME } from "../applicationConstant";
 import { CollectionOfResources } from "../solidPod";
 import {
@@ -69,7 +68,7 @@ export function passportTransform(
   credential: SolidDataset,
   // This 3rd-party APIs doesn't provide type information for responses...
   // eslint-disable-next-line @typescript-eslint/no-explicit-any, @typescript-eslint/explicit-module-boundary-types
-  passportData: any
+  passportDataAsJson: any
 ): CollectionOfResources {
   // Our transformed result will be an array of Linked Data resources plus an
   // array of binary resources (i.e., Blobs), each of which can have
@@ -83,7 +82,7 @@ export function passportTransform(
     blobsWithMetadata: [],
   };
 
-  if (passportData === null) {
+  if (passportDataAsJson === null) {
     return result;
   }
   const wiring = wireUpDataSourceContainer(DATA_SOURCE, credential);
@@ -97,7 +96,7 @@ export function passportTransform(
 
   // Build our Pod resource IRI using our container and our incoming passport
   // identifier.
-  const passportNumber = passportData.number;
+  const passportNumber = passportDataAsJson.number;
   const passportIri = `${wiring.dataSourceContainerIri}passport/${passportNumber}/`;
 
   // Add a reference to this instance to our data source container.
@@ -118,15 +117,15 @@ export function passportTransform(
     // instead assuming consumers only work within that data source's silo).
     .addIri(CRED.issuer, INRUPT_3RD_PARTY_PASSPORT_OFFICE_UK.PassportOffice)
 
-    .addStringEnglish(SCHEMA_INRUPT.name, passportData.first_name)
-    .addStringEnglish(SCHEMA_INRUPT.familyName, passportData.surname)
+    .addStringEnglish(SCHEMA_INRUPT.name, passportDataAsJson.first_name)
+    .addStringEnglish(SCHEMA_INRUPT.familyName, passportDataAsJson.surname)
 
     .addStringNoLocale(
       INRUPT_3RD_PARTY_PASSPORT_OFFICE_UK.passportNumber,
       passportNumber
     )
-    .addDate(CRED.issuanceDate, new Date(passportData.issued_date))
-    .addDate(CRED.expirationDate, new Date(passportData.expiry_date))
+    .addDate(CRED.issuanceDate, new Date(passportDataAsJson.issued_date))
+    .addDate(CRED.expirationDate, new Date(passportDataAsJson.expiry_date))
 
     // Tag this instance of a passport as being an 'ID', but also 'Travel'
     // (just to show multiple tags).

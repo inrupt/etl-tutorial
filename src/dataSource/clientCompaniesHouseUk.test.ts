@@ -17,11 +17,11 @@
 // OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
 // SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
-import { getIri, SolidDataset, Thing } from "@inrupt/solid-client";
+import { SolidDataset } from "@inrupt/solid-client";
 
 import { fetch as crossFetch } from "cross-fetch";
 import { config } from "dotenv-flow";
-import { RDF, SCHEMA_INRUPT } from "@inrupt/vocab-common-rdf-rdfdatafactory";
+import { SCHEMA_INRUPT } from "@inrupt/vocab-common-rdf-rdfdatafactory";
 import { createCredentialResourceFromEnvironmentVariables } from "../credentialUtil";
 import {
   getStringNoLocaleMandatoryOne,

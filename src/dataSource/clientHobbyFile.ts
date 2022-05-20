@@ -18,18 +18,9 @@
 // SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 import debugModule from "debug";
-import {
-  RDF,
-  SCHEMA_INRUPT,
-  CRED,
-  RDFS,
-} from "@inrupt/vocab-common-rdf-rdfdatafactory";
-import {
-  HOBBY,
-  INRUPT_3RD_PARTY_PASSPORT_OFFICE_UK,
-} from "@inrupt/vocab-etl-tutorial-bundle-all-rdfdatafactory";
-import { buildThing, SolidDataset, Thing } from "@inrupt/solid-client";
-import fs from "fs";
+import { RDF, SCHEMA_INRUPT } from "@inrupt/vocab-common-rdf-rdfdatafactory";
+import { HOBBY } from "@inrupt/vocab-etl-tutorial-bundle-all-rdfdatafactory";
+import { buildThing, SolidDataset } from "@inrupt/solid-client";
 import { APPLICATION_NAME } from "../applicationConstant";
 import { CollectionOfResources } from "../solidPod";
 import {
@@ -63,7 +54,7 @@ export function hobbyTransform(
   credential: SolidDataset,
   // This 3rd-party APIs doesn't provide type information for responses...
   // eslint-disable-next-line @typescript-eslint/no-explicit-any, @typescript-eslint/explicit-module-boundary-types
-  hobbyData: any
+  hobbyDataAsJson: any
 ): CollectionOfResources {
   // Our transformed result will be an array of Linked Data resources plus an
   // array of binary resources (i.e., Blobs), each of which can have
@@ -77,7 +68,7 @@ export function hobbyTransform(
     blobsWithMetadata: [],
   };
 
-  if (hobbyData === null) {
+  if (hobbyDataAsJson === null) {
     return result;
   }
   const wiring = wireUpDataSourceContainer(DATA_SOURCE, credential);
@@ -89,16 +80,16 @@ export function hobbyTransform(
     DATA_SOURCE
   );
 
-  // Build our Pod resource IRI using our container and our incoming passport
-  // identifier.
-  const hobbyId = `${hobbyData.id}-${hobbyData.membership_id}`;
+  // Build our Pod resource IRI using our container and our incoming hobby
+  // data to build up the identifier.
+  const hobbyId = `${hobbyDataAsJson.id}-${hobbyDataAsJson.membership_id}`;
   const hobbyIri = `${wiring.dataSourceContainerIri}${hobbyId}/`;
 
   // Add a reference to this instance to our data source container.
   dataSourceContainerBuilder.addIri(HOBBY.hasHobby, hobbyIri);
 
   // Very simplistic address processing...
-  const addressComponents = hobbyData.address_details.split(",");
+  const addressComponents = hobbyDataAsJson.address_details.split(",");
 
   const hobby = buildThing({
     url: `${hobbyIri}`,
@@ -106,9 +97,9 @@ export function hobbyTransform(
     // Denote the type of this resource.
     .addIri(RDF.type, HOBBY.Hobby)
 
-    .addStringNoLocale(SCHEMA_INRUPT.name, hobbyData.club)
-    .addStringNoLocale(HOBBY.kind, hobbyData.kind_of_hobby)
-    .addIri(SCHEMA_INRUPT.NS("member"), hobbyData.web_site)
+    .addStringEnglish(SCHEMA_INRUPT.name, hobbyDataAsJson.club)
+    .addStringNoLocale(HOBBY.kind, hobbyDataAsJson.kind_of_hobby)
+    .addIri(SCHEMA_INRUPT.NS("member"), hobbyDataAsJson.web_site)
     .addStringNoLocale(SCHEMA_INRUPT.streetAddress, addressComponents[0].trim())
     .addStringNoLocale(
       SCHEMA_INRUPT.addressLocality,
