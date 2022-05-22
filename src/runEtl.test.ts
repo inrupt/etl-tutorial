@@ -143,6 +143,44 @@ describe("ETL process", () => {
       expect(successfullyProcessed).toBe(1);
     });
 
+    it("should fail ETL from data source fails", async () => {
+      jest.requireMock(
+        "@inrupt/solid-client-authn-node"
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      ) as { Session: any };
+
+      const dataset = mockSolidDatasetFrom("https://test.com/dataset");
+      jest
+        .spyOn(
+          jest.requireMock("@inrupt/solid-client") as {
+            getSolidDataset: typeof getSolidDataset;
+          },
+          "getSolidDataset"
+        )
+        .mockResolvedValueOnce(dataset);
+
+      jest
+        .spyOn(
+          jest.requireMock("@inrupt/solid-client") as {
+            deleteSolidDataset: typeof deleteSolidDataset;
+          },
+          "deleteSolidDataset"
+        )
+        .mockResolvedValueOnce();
+
+      const validArguments = {
+        _: ["runEtl"],
+        $0: "",
+        etlCredentialResource:
+          "resources/test/DummyData/DummyRegisteredAppCredentialResource/dummy-registered-app-credential-resource.ttl",
+        localUserCredentialResourceGlob:
+          "resources/test/DummyData/DummyUserCredentialResource/dummy-user-credential-user-with-etl-credential.ttl",
+      };
+
+      const successfullyProcessed = await runEtl(validArguments);
+      expect(successfullyProcessed).toBe(0);
+    });
+
     it("should fail if looking for existing application resources throws", async () => {
       jest.requireMock(
         "@inrupt/solid-client-authn-node"
@@ -351,7 +389,7 @@ describe("ETL process", () => {
         loadResources("data source", createCredentialResourceEmpty(), session, [
           thing,
         ])
-      ).resolves.toContain("Not logged into Pod");
+      ).resolves.toContain("Not logged in");
     });
 
     it("should load resource, logged into Pod", async () => {

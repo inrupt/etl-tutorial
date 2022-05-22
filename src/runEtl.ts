@@ -32,7 +32,7 @@ import {
 import { getCredentialStringOptional } from "./credentialUtil";
 import { insertIntoTriplestoreResources } from "./triplestore";
 import {
-  createWebIdProfileDocument,
+  createWebIdProfileDocumentIfNeeded,
   initiateApplication,
   createApplicationResources,
 } from "./applicationSetup";
@@ -51,12 +51,18 @@ import {
   passportLocalExtract,
   passportTransform,
 } from "./dataSource/clientPassportInMemory";
+import { hobbyFileExtract, hobbyTransform } from "./dataSource/clientHobbyFile";
+import { pluralize } from "./util";
 
 const debug = debugModule(`${APPLICATION_NAME}:runEtl`);
 
 // For tutorial purposes, we hard-code a UK company search for the biggest
 // registered company in the UK - Unilever.
 const COMPANY_ID_TO_SEARCH_FOR = "00041424";
+
+// For tutorial purposes, we hard-code a Hobby.
+const HOBBY_SOURCE_FILE =
+  "resources/test/DummyData/DummyDataSource/DummyHobby/JoeBloggs-Skydive.json";
 
 export async function loadResources(
   dataSource: string,
@@ -88,7 +94,7 @@ export async function loadResources(
         blobsWithMetadata
       );
     } else {
-      result = `Not logged into Pod, so nothing written for [${dataSource}].`;
+      result = `Not logged in, so nothing written to Pod for data source [${dataSource}].`;
     }
   }
 
@@ -117,22 +123,23 @@ export async function loadResourcesAndBlobs(
 }
 
 function rdfResourcesAsStreamLocal(
-  argv: Arguments
+  resourceDescription: string,
+  resourceGlob: string,
+  resourceGlobIgnore: string
 ): { name: string; stream: ReadStream }[] {
-  const ignoringMessage = argv.localUserCredentialResourceGlobIgnore
-    ? ` (while ignoring [${argv.localUserCredentialResourceGlobIgnore}])`
+  const ignoringMessage = resourceGlobIgnore
+    ? ` (while ignoring [${resourceGlobIgnore}])`
     : "";
   debug(
-    `Looking for local Linked Data resources matching file pattern [${argv.localUserCredentialResourceGlob}]${ignoringMessage}...`
+    `Looking for [${resourceDescription}] matching file pattern [${resourceGlob}]${ignoringMessage}...`
   );
+
   const matchingResourceFiles = glob
     .sync(
-      argv.localUserCredentialResourceGlob as string,
-      argv.localUserCredentialResourceGlobIgnore
+      resourceGlob,
+      resourceGlobIgnore
         ? {
-            ignore: (
-              argv.localUserCredentialResourceGlobIgnore as string
-            ).split(","),
+            ignore: resourceGlobIgnore.split(","),
           }
         : {}
     )
@@ -140,7 +147,7 @@ function rdfResourcesAsStreamLocal(
 
   if (matchingResourceFiles.length === 0) {
     debug(
-      `No local Linked Data resources found to match pattern [${argv.localUserCredentialResourceGlob}]${ignoringMessage}.`
+      `No [${resourceDescription}] found to match file pattern [${resourceGlob}]${ignoringMessage}.`
     );
   }
 
@@ -154,10 +161,11 @@ export async function parseUserCredentialResources(
 ): Promise<{ name: string; dataset: SolidDataset }[]> {
   let resources: { name: string; stream: ReadStream }[] = [];
 
-  debug(
-    `Scan for user credential resources (we expect to find 1 per user to ETL)...`
+  const localResources = rdfResourcesAsStreamLocal(
+    "local user credential resources (we expect to find 1 per user to ETL)",
+    argv.localUserCredentialResourceGlob as string,
+    argv.localUserCredentialResourceGlobIgnore as string
   );
-  const localResources = rdfResourcesAsStreamLocal(argv);
   resources = resources.concat(localResources);
 
   // Future work - also read RDF credential resources directly from remote
@@ -168,11 +176,15 @@ export async function parseUserCredentialResources(
   //   const webIdResources = rdfResourcesAsStreamWebId(argv);
   //   resources = resources.concat(webIdResources);
 
+  debug(
+    `Found [${resources.length}] matching user credentials ${pluralize(
+      "resource",
+      resources
+    )} for ETL.`
+  );
+
   const parsedDatasets = resources.map(
     (details): Promise<{ name: string; dataset: SolidDataset }> => {
-      debug(
-        `Found matching user credentials resource for ETL: [${details.name}]`
-      );
       return parseStreamIntoSolidDataset(details.name, details.stream);
     }
   );
@@ -180,13 +192,13 @@ export async function parseUserCredentialResources(
   return Promise.all(parsedDatasets);
 }
 
-async function etlDataSourcesForUser(
+async function initializeAppResourcesForUser(
   session: Session,
   credentialDetails: {
     name: string;
     dataset: SolidDataset;
   }
-): Promise<number> {
+): Promise<boolean> {
   try {
     // Prepare where we're going to load.
     const applicationEntrypointIri = await initiateApplication(
@@ -196,20 +208,20 @@ async function etlDataSourcesForUser(
 
     // Create a WebID profile document if needed (e.g., if we're loading into
     // a triplestore, as opposed to a Solid Pod).
-    let result = await loadResources(
+    const loadWebIdProfileDocument = await loadResources(
       "WebID profile document (only if needed, e.g., if writing to a non-Pod destination, such as a triplestore)",
       credentialDetails.dataset,
       session,
-      await createWebIdProfileDocument(
+      await createWebIdProfileDocumentIfNeeded(
         credentialDetails.dataset,
         session,
         applicationEntrypointIri
       )
     );
-    debug(result);
+    debug(loadWebIdProfileDocument);
 
     // Create our application-specific resources.
-    result = await loadResources(
+    const loadAppResources = await loadResources(
       `${APPLICATION_LABEL}`,
       credentialDetails.dataset,
       session,
@@ -218,11 +230,27 @@ async function etlDataSourcesForUser(
         applicationEntrypointIri
       )
     );
-    debug(result);
+    debug(loadAppResources);
 
-    //
-    // Now ETL from each of our data sources...
-    //
+    return true;
+  } catch (error) {
+    // Report our failure, but keep processing users - i.e., do not throw...
+    const message = `Failed to setup application resources (before attempting any data source ETL) for user credentials from [${credentialDetails.name}] - error: [${error}]`;
+    debug(message);
+    return false;
+  }
+}
+
+async function etlDataSourcesForUser(
+  session: Session,
+  credentialDetails: {
+    name: string;
+    dataset: SolidDataset;
+  }
+): Promise<number> {
+  let result;
+
+  try {
     result = await loadResourcesAndBlobs(
       "Companies House UK - Search",
       credentialDetails.dataset,
@@ -245,10 +273,21 @@ async function etlDataSourcesForUser(
     );
     debug(result);
 
+    result = await loadResourcesAndBlobs(
+      "Hobby",
+      credentialDetails.dataset,
+      session,
+      hobbyTransform(
+        credentialDetails.dataset,
+        await hobbyFileExtract(HOBBY_SOURCE_FILE)
+      )
+    );
+    debug(result);
+
     return 1;
   } catch (error) {
     // Report our failure, but keep processing users - i.e., do not throw...
-    const message = `Failed to complete ETL using credentials from [${credentialDetails.name}] - error: [${error}]`;
+    const message = `Failed to complete ETL (partial load may have succeeded) using user credentials from [${credentialDetails.name}] - error: [${error}]`;
     debug(message);
     return 0;
   }
@@ -258,12 +297,6 @@ async function etlAllUsers(
   session: Session,
   parsedCredentials: { name: string; dataset: SolidDataset }[]
 ): Promise<number> {
-  const plural = parsedCredentials.length === 1 ? "" : "s";
-  debug(``);
-  debug(
-    `Found [${parsedCredentials.length}] user credential resource${plural} - running ETL for each user...`
-  );
-
   // We deliberately want to run our ETL serially (for ease of debugging and
   // reporting).
   let successfullyProcessed = 0;
@@ -276,9 +309,15 @@ async function etlAllUsers(
       }] user credentials resource: [${credentials.name}]...`
     );
 
-    // Do ETL for each data source...
     // eslint-disable-next-line no-await-in-loop
-    successfullyProcessed += await etlDataSourcesForUser(session, credentials);
+    if (await initializeAppResourcesForUser(session, credentials)) {
+      // Do ETL for each data source...
+      // eslint-disable-next-line no-await-in-loop
+      successfullyProcessed += await etlDataSourcesForUser(
+        session,
+        credentials
+      );
+    }
   }
 
   return Promise.resolve(successfullyProcessed);
@@ -289,7 +328,7 @@ export async function loginAsRegisteredApp(argv: Arguments): Promise<Session> {
 
   const etlCredentialResource = argv.etlCredentialResource as string;
   debug(
-    `Attempting to login as ETL tool using credentials from resource [${etlCredentialResource}] (to get an access token that should (if users consented) allow us write to user Pods)...`
+    `Attempting to login as ETL tool using registered application credentials from resource [${etlCredentialResource}] (to get an access token that should allow this ETL tool write to user Pods (if those users explicitly granted this ETL tool write permission))...`
   );
 
   let etlCredentialDetails: { name: string; dataset: SolidDataset };
@@ -323,7 +362,7 @@ export async function loginAsRegisteredApp(argv: Arguments): Promise<Session> {
     etlOidcIssuer === null
   ) {
     debug(
-      `Ignoring Solid login - as our credential resource [${etlCredentialResource}] didn't contain all the information we need to authenticate with our ETL tool's Solid Pod (we got clientId [${etlClientId}], clientSecret [${etlClientSecret}], and oidcIssuer [${etlOidcIssuer}]).`
+      `Ignoring Solid login - as our registered application credential resource [${etlCredentialResource}] didn't contain all the information we need to automatically (i.e., without human intervention) log into our ETL tool's Solid Pod (we got 'clientId' [${etlClientId}], 'clientSecret' [${etlClientSecret}], and 'oidcIssuer' [${etlOidcIssuer}], all of which are required).`
     );
   } else {
     try {

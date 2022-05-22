@@ -35,18 +35,18 @@ const debug = debugModule(`${APPLICATION_NAME}:clientHobbyFile`);
 const DATA_SOURCE = "Hobby";
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-export async function hobbyLocalExtract(source: string): Promise<any> {
+export async function hobbyFileExtract(sourceFile: string): Promise<any> {
   let fileData;
   try {
-    fileData = fs.readFileSync(source, "utf8");
+    fileData = fs.readFileSync(sourceFile, "utf8");
   } catch (error) {
-    const message = `Failed to extract local Hobby file [${source}] - error: ${error}]`;
+    const message = `Failed to extract local Hobby file [${sourceFile}] - error: ${error}]`;
     debug(message);
     throw new Error(message);
   }
 
   debug(
-    `Successfully extracted hobby data for [${DATA_SOURCE}] from [${source}].`
+    `Successfully extracted hobby data for [${DATA_SOURCE}] from [${sourceFile}].`
   );
   return Promise.resolve(JSON.parse(fileData));
 }
