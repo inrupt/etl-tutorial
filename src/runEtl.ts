@@ -23,7 +23,7 @@ import { Arguments } from "yargs";
 
 import debugModule from "debug";
 import { Session } from "@inrupt/solid-client-authn-node";
-import { SolidDataset, Thing } from "@inrupt/solid-client";
+import { SolidDataset } from "@inrupt/solid-client";
 import {
   INRUPT_COMMON,
   SOLID,
@@ -68,7 +68,7 @@ export async function loadResources(
   dataSource: string,
   credential: SolidDataset,
   session: Session,
-  resources: Thing[] | null,
+  resources: SolidDataset[] | null,
   blobsWithMetadata: BlobWithMetadata[] | null = null
 ): Promise<string> {
   let result;

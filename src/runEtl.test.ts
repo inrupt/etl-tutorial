@@ -37,6 +37,7 @@ import {
   loginAsRegisteredApp,
   loadResourcesAndBlobs,
 } from "./runEtl";
+import { buildDataset } from "./solidDatasetUtil";
 
 // Ideally we'd have a mock WebID per test suite, but it causes conflicts when
 // running all test suites. Would like to refactor to remove the duplication
@@ -337,19 +338,21 @@ describe("ETL process", () => {
           Buffer.from("whatever") as Buffer & WithResourceInfo
         );
 
-      const thing = buildThing()
-        .addStringNoLocale(
-          INRUPT_TEST.somePredicate,
-          INRUPT_TEST.hashSomeObject
-        )
-        .build();
+      const dataset = buildDataset(
+        buildThing()
+          .addStringNoLocale(
+            INRUPT_TEST.somePredicate,
+            INRUPT_TEST.hashSomeObject
+          )
+          .build()
+      );
 
       await expect(
         loadResources(
           "data source",
           createCredentialResourceEmpty(),
           session,
-          [thing],
+          [dataset],
           [{ url: "https://example.com/test", blob: new Blob() }]
         )
       ).resolves.toContain("and [1] Blob");
@@ -379,26 +382,30 @@ describe("ETL process", () => {
       ) as { Session: any };
       const session = new authnModule.Session(false);
 
-      const thing = buildThing()
-        .addStringNoLocale(
-          INRUPT_TEST.somePredicate,
-          INRUPT_TEST.hashSomeObject
-        )
-        .build();
+      const dataset = buildDataset(
+        buildThing()
+          .addStringNoLocale(
+            INRUPT_TEST.somePredicate,
+            INRUPT_TEST.hashSomeObject
+          )
+          .build()
+      );
       await expect(
         loadResources("data source", createCredentialResourceEmpty(), session, [
-          thing,
+          dataset,
         ])
       ).resolves.toContain("Not logged in");
     });
 
     it("should load resource, logged into Pod", async () => {
-      const thing = buildThing()
-        .addStringNoLocale(
-          INRUPT_TEST.somePredicate,
-          INRUPT_TEST.hashSomeObject
-        )
-        .build();
+      const dataset = buildDataset(
+        buildThing()
+          .addStringNoLocale(
+            INRUPT_TEST.somePredicate,
+            INRUPT_TEST.hashSomeObject
+          )
+          .build()
+      );
 
       const authnModule = jest.requireMock(
         "@inrupt/solid-client-authn-node"
@@ -408,7 +415,7 @@ describe("ETL process", () => {
 
       await expect(
         loadResources("data source", createCredentialResourceEmpty(), session, [
-          thing,
+          dataset,
         ])
       ).resolves.toContain("Successfully inserted or updated [1] resource");
     });

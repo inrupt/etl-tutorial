@@ -29,6 +29,7 @@ import {
   wireUpDataSourceContainer,
 } from "../applicationSetup";
 import { describeCollectionOfResources } from "../util";
+import { buildDataset } from "../solidDatasetUtil";
 
 const debug = debugModule(`${APPLICATION_NAME}:clientHobbyFile`);
 
@@ -113,13 +114,15 @@ export function hobbyTransform(
     )
     .build();
 
-  result.rdfResources.push(hobby);
+  result.rdfResources.push(buildDataset(hobby));
 
   // Add the wiring-up resources to our result.
-  result.rdfResources.push(...wiring.resources);
+  result.rdfResources.push(
+    ...wiring.resources.map((thing) => buildDataset(thing))
+  );
 
   // Now build our data source container, and add it to our result resources.
-  result.rdfResources.push(dataSourceContainerBuilder.build());
+  result.rdfResources.push(buildDataset(dataSourceContainerBuilder.build()));
 
   debug(describeCollectionOfResources("Transformed hobby data into", result));
 

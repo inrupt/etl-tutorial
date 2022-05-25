@@ -40,6 +40,7 @@ import {
   getCredentialStringOptional,
 } from "./credentialUtil";
 import {
+  buildDataset,
   deleteRecursively,
   getThingOfTypeMandatoryOne,
 } from "./solidDatasetUtil";
@@ -146,7 +147,7 @@ export async function createWebIdProfileDocumentIfNeeded(
   credential: SolidDataset,
   session: Session,
   applicationEntrypointIri: string
-): Promise<Thing[]> {
+): Promise<SolidDataset[]> {
   const resources = [];
 
   // We only need to create a WebID profile document if the user has not
@@ -167,14 +168,16 @@ export async function createWebIdProfileDocumentIfNeeded(
     const description = `No Solid Pod credentials were provided, so generating profile document for test user (with WebID [${webId}]).`;
 
     resources.push(
-      buildThing({ url: webId })
-        .addIri(RDF.type, FOAF.Person)
-        .addStringEnglish(RDFS.label, "Generated test user")
-        .addStringEnglish(RDFS.comment, description)
-        // Wire up this user's profile document to our application's data
-        // entrypoint...
-        .addIri(ETL_TUTORIAL.etlTutorial, applicationEntrypointIri)
-        .build()
+      buildDataset(
+        buildThing({ url: webId })
+          .addIri(RDF.type, FOAF.Person)
+          .addStringEnglish(RDFS.label, "Generated test user")
+          .addStringEnglish(RDFS.comment, description)
+          // Wire up this user's profile document to our application's data
+          // entrypoint...
+          .addIri(ETL_TUTORIAL.etlTutorial, applicationEntrypointIri)
+          .build()
+      )
     );
     debug(description);
   }
@@ -185,7 +188,7 @@ export async function createWebIdProfileDocumentIfNeeded(
 export async function createApplicationResources(
   credential: SolidDataset,
   applicationEntrypointIri: string
-): Promise<Thing[]> {
+): Promise<SolidDataset[]> {
   const resources = [];
 
   debug(`Creating resources specific to [${APPLICATION_LABEL}]...`);
@@ -200,11 +203,13 @@ export async function createApplicationResources(
   const etlRunContainer = `${applicationEntrypointIri}${APPLICATION_FIRST_LEVEL_OF_HIERARCHY}etl-run-1/`;
 
   resources.push(
-    buildThing({ url: applicationEntrypointIri })
-      .addIri(RDF.type, ETL_TUTORIAL.EtlTutorial)
-      // Wire up this instance to it's container...
-      .addIri(INRUPT_COMMON.dataHierarchyFirst, etlRunContainer)
-      .build()
+    buildDataset(
+      buildThing({ url: applicationEntrypointIri })
+        .addIri(RDF.type, ETL_TUTORIAL.EtlTutorial)
+        // Wire up this instance to it's container...
+        .addIri(INRUPT_COMMON.dataHierarchyFirst, etlRunContainer)
+        .build()
+    )
   );
 
   const etlRunContainerBuilder = buildThing({ url: etlRunContainer })
@@ -222,20 +227,22 @@ export async function createApplicationResources(
     etlRunContainerBuilder.addLiteral(RDFS.comment, literal)
   );
 
-  resources.push(etlRunContainerBuilder.build());
+  resources.push(buildDataset(etlRunContainerBuilder.build()));
 
   // Create a container for all notifications for our application (regardless
   // of ETL run instance, or data source).
   const notificationContainerIri = `${applicationEntrypointIri}notification/`;
   resources.push(
-    buildThing({ url: notificationContainerIri })
-      .addIri(RDF.type, INRUPT_COMMON.NotificationContainer)
-      .addStringEnglish(RDFS.label, `Notification container`)
-      .addStringEnglish(
-        RDFS.comment,
-        `Container for all notifications for ${APPLICATION_LABEL}, regardless of ETL run or data source.`
-      )
-      .build()
+    buildDataset(
+      buildThing({ url: notificationContainerIri })
+        .addIri(RDF.type, INRUPT_COMMON.NotificationContainer)
+        .addStringEnglish(RDFS.label, `Notification container`)
+        .addStringEnglish(
+          RDFS.comment,
+          `Container for all notifications for ${APPLICATION_LABEL}, regardless of ETL run or data source.`
+        )
+        .build()
+    )
   );
 
   const resourceText = pluralize("resource", resources);

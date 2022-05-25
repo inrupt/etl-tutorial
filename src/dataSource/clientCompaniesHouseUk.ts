@@ -30,6 +30,7 @@ import {
 } from "@inrupt/vocab-etl-tutorial-bundle-all-rdfdatafactory";
 import { buildThing, SolidDataset } from "@inrupt/solid-client";
 import {
+  buildDataset,
   getStringNoLocaleOptionalOne,
   getThingOfTypeMandatoryOne,
 } from "../solidDatasetUtil";
@@ -174,35 +175,39 @@ export function companiesHouseUkTransformCompany(
       .addStringNoLocale(SCHEMA_INRUPT.addressCountry, countryValue)
       .build();
 
-    const company = buildThing({
-      url: searchResultIri,
-    })
-      // Here we are saying that we consider this company to be of type
-      // 'Schema.org Organization' (i.e., literally of type
-      // 'http://schema.org/Organization').
-      .addIri(RDF.type, SCHEMA_INRUPT.NS("Organization"))
-      // Link our company to its address.
-      .addIri(SCHEMA_INRUPT.address, address)
+    const company = buildDataset(
+      buildThing({
+        url: searchResultIri,
+      })
+        // Here we are saying that we consider this company to be of type
+        // 'Schema.org Organization' (i.e., literally of type
+        // 'http://schema.org/Organization').
+        .addIri(RDF.type, SCHEMA_INRUPT.NS("Organization"))
+        // Link our company to its address.
+        .addIri(SCHEMA_INRUPT.address, address.url)
 
-      .addStringNoLocale(SCHEMA_INRUPT.name, companyDataAsJson.title)
-      .addStringNoLocale(
-        INRUPT_3RD_PARTY_COMPANIES_HOUSE_UK.status,
-        companyDataAsJson.company_status
-      )
-      .addDate(
-        SCHEMA_INRUPT.startDate,
-        new Date(companyDataAsJson.date_of_creation)
-      )
-      .build();
+        .addStringNoLocale(SCHEMA_INRUPT.name, companyDataAsJson.title)
+        .addStringNoLocale(
+          INRUPT_3RD_PARTY_COMPANIES_HOUSE_UK.status,
+          companyDataAsJson.company_status
+        )
+        .addDate(
+          SCHEMA_INRUPT.startDate,
+          new Date(companyDataAsJson.date_of_creation)
+        )
+        .build()
+    );
 
     result.rdfResources.push(company);
-    result.rdfResources.push(address);
+    result.rdfResources.push(buildDataset(address));
 
     // Add the wiring-up resources to our result.
-    result.rdfResources.push(...wiring.resources);
+    result.rdfResources.push(
+      ...wiring.resources.map((thing) => buildDataset(thing))
+    );
 
     // Now build our data source container, and add it to our result resources.
-    result.rdfResources.push(dataSourceContainerBuilder.build());
+    result.rdfResources.push(buildDataset(dataSourceContainerBuilder.build()));
 
     debug(
       describeCollectionOfResources(

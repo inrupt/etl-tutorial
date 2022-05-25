@@ -20,7 +20,7 @@
 import debugModule from "debug";
 import { fetch as crossFetch } from "cross-fetch";
 
-import { SolidDataset, Thing } from "@inrupt/solid-client";
+import { SolidDataset } from "@inrupt/solid-client";
 import { INRUPT_COMMON } from "@inrupt/vocab-etl-tutorial-bundle-all-rdfdatafactory";
 import { toNTriples } from "./solidDatasetUtil";
 import { getCredentialStringOptional } from "./credentialUtil";
@@ -145,7 +145,7 @@ ${graphWrappedInsertStatement}
 export async function insertIntoTriplestoreResource(
   repoEndpointUpdate: string,
   namedGraph: string,
-  resource: Thing
+  resource: SolidDataset
 ): Promise<string> {
   return insertIntoTriplestoreNTriples(
     repoEndpointUpdate,
@@ -156,7 +156,7 @@ export async function insertIntoTriplestoreResource(
 
 export async function insertIntoTriplestoreResources(
   credential: SolidDataset,
-  resources: Thing[],
+  resources: SolidDataset[],
   blobsWithMetadata: BlobWithMetadata[] | null = null
 ): Promise<string> {
   let repoEndpointUpdate: string | null;

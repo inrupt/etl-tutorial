@@ -126,14 +126,18 @@ describe("Solid dataset util functions", () => {
     it("should throw if more than one Thing of type", async () => {
       const resourceDetails: CollectionOfResources = {
         rdfResources: [
-          buildThing()
-            .addIri(RDF.type, SCHEMA_INRUPT.Person)
-            .addStringEnglish(SCHEMA_INRUPT.familyName, "Bloggs")
-            .build(),
-          buildThing()
-            .addIri(RDF.type, SCHEMA_INRUPT.Person)
-            .addStringEnglish(SCHEMA_INRUPT.familyName, "Simpson")
-            .build(),
+          buildDataset(
+            buildThing()
+              .addIri(RDF.type, SCHEMA_INRUPT.Person)
+              .addStringEnglish(SCHEMA_INRUPT.familyName, "Bloggs")
+              .build()
+          ),
+          buildDataset(
+            buildThing()
+              .addIri(RDF.type, SCHEMA_INRUPT.Person)
+              .addStringEnglish(SCHEMA_INRUPT.familyName, "Simpson")
+              .build()
+          ),
         ],
         blobsWithMetadata: null,
       };
@@ -149,10 +153,12 @@ describe("Solid dataset util functions", () => {
     it("should get Thing of type from collection of resources", async () => {
       const resourceDetails: CollectionOfResources = {
         rdfResources: [
-          buildThing()
-            .addIri(RDF.type, SCHEMA_INRUPT.Person)
-            .addStringEnglish(SCHEMA_INRUPT.familyName, "Bloggs")
-            .build(),
+          buildDataset(
+            buildThing()
+              .addIri(RDF.type, SCHEMA_INRUPT.Person)
+              .addStringEnglish(SCHEMA_INRUPT.familyName, "Bloggs")
+              .build()
+          ),
         ],
         blobsWithMetadata: null,
       };
@@ -459,7 +465,7 @@ describe("Solid dataset util functions", () => {
         .addDecimal(SCHEMA_INRUPT.serialNumber, 123.456)
         .build();
 
-      const result = toNTriples(thing);
+      const result = toNTriples(buildDataset(thing));
       expect(result).toContain(
         `"Magoo"^^<http://www.w3.org/2001/XMLSchema#string>`
       );
@@ -477,7 +483,9 @@ describe("Solid dataset util functions", () => {
         .addStringNoLocale(SCHEMA_INRUPT.familyName, null)
         .build();
 
-      expect(() => toNTriples(thing)).toThrow("Literal value was not provided");
+      expect(() => toNTriples(buildDataset(thing))).toThrow(
+        "Literal value was not provided"
+      );
     });
 
     it("should throw if triple has undefined Object value", () => {
@@ -489,7 +497,9 @@ describe("Solid dataset util functions", () => {
         .addStringNoLocale(SCHEMA_INRUPT.familyName, undefined)
         .build();
 
-      expect(() => toNTriples(thing)).toThrow("Literal value was not provided");
+      expect(() => toNTriples(buildDataset(thing))).toThrow(
+        "Literal value was not provided"
+      );
     });
   });
 
@@ -502,7 +512,7 @@ describe("Solid dataset util functions", () => {
         .addDecimal(SCHEMA_INRUPT.serialNumber, 123.456)
         .build();
 
-      const dataset1 = setThing(createSolidDataset(), thing);
+      const dataset1 = buildDataset(thing);
       const dataset2 = createSolidDataset();
 
       expect(
@@ -575,7 +585,7 @@ describe("Solid dataset util functions", () => {
         .addDecimal(SCHEMA_INRUPT.serialNumber, 123.456)
         .build();
 
-      const dataset = setThing(createSolidDataset(), thing);
+      const dataset = buildDataset(thing);
 
       const datasetRemoved = removeTypeTriples(dataset, RDF.type, [
         LDP.BasicContainer,
@@ -596,7 +606,7 @@ describe("Solid dataset util functions", () => {
         .addDecimal(SCHEMA_INRUPT.serialNumber, 123.456)
         .build();
 
-      const dataset = setThing(createSolidDataset(), thing);
+      const dataset = buildDataset(thing);
 
       // We stipulate an rdf:type that doesn't exist in our thing - should
       // remove all occurrences of the stipulated predicate.
@@ -625,7 +635,7 @@ describe("Solid dataset util functions", () => {
         .addDecimal(SCHEMA_INRUPT.serialNumber, 123.456)
         .build();
 
-      const dataset = setThing(createSolidDataset(), thing);
+      const dataset = buildDataset(thing);
 
       const datasetRemoved = removeTypeTriples(
         dataset,

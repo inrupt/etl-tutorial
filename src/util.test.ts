@@ -30,6 +30,7 @@ import {
   pluralize,
   reportHttpJsonResponseFailure,
 } from "./util";
+import { buildDataset } from "./solidDatasetUtil";
 
 describe("Util functions", () => {
   const dataSource = "test-source";
@@ -119,7 +120,7 @@ describe("Util functions", () => {
     it("should describe singular", async () => {
       expect(
         describeCollectionOfResources("prelude", {
-          rdfResources: [buildThing().build()],
+          rdfResources: [buildDataset(buildThing().build())],
           blobsWithMetadata: [{ url: "https://test.com", blob: new Blob() }],
         })
       ).toEqual("prelude [1] Linked Data resource and [1] Blob.");

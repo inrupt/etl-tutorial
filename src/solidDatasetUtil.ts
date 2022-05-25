@@ -83,14 +83,20 @@ export function getThingOfTypeFromCollectionMandatoryOne(
   resourceDetails: CollectionOfResources,
   type: NamedNode
 ): Thing {
-  const resultset = resourceDetails.rdfResources.filter((resource) => {
+  const firstThingOfEachDataset = resourceDetails.rdfResources.map(
+    (resource) => getThingAll(resource)[0]
+  );
+
+  const resultset = firstThingOfEachDataset.filter((resource) => {
     return getIri(resource, RDF.type) === type.value;
   });
+
   if (resultset.length !== 1) {
     throw new Error(
       `Collection of resources had [${resultset.length}] Things of type [${type.value}]`
     );
   }
+
   return resultset[0];
 }
 
@@ -220,8 +226,8 @@ export function getIriOptionalOne(
   return factory.namedNode(values[0]);
 }
 
-export function toNTriples(thing: Thing): string {
-  const rdfjsDataset = toRdfJsDataset(setThing(createSolidDataset(), thing));
+export function toNTriples(solidDataset: SolidDataset): string {
+  const rdfjsDataset = toRdfJsDataset(solidDataset);
 
   let thingAsNTriples = "";
   for (const quad of rdfjsDataset) {

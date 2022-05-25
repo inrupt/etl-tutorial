@@ -57,6 +57,15 @@ describe("Passport data source", () => {
     expect(resourceDetails.blobsWithMetadata).toHaveLength(0);
   });
 
+  it("should fail if passport image not found", async () => {
+    const responseJson = await passportLocalExtract();
+    responseJson.photo_image_file = "non-existent-image.jpeg";
+
+    expect(() => passportTransform(credential, responseJson)).toThrow(
+      "Failed to read"
+    );
+  });
+
   it("should extract and transform passport", async () => {
     const responseJson = await passportLocalExtract();
 
