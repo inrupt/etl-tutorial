@@ -18,6 +18,7 @@ The following changes have been implemented but not released yet:
 - Added Hobby vocabs and ETL.
 - Added util functions for describing a collection of resources.
 - Updated to treat resources as SolidDatasets instead of just Things.
+- Add passport photo image as a Blob to Pod.
 
 ## [0.0.1] - 2022-02-01
 
