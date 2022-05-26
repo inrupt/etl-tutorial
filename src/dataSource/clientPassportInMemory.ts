@@ -141,6 +141,7 @@ export function passportTransform(
 
     // Tag this instance of a passport with applicable DPV Personal Data
     // terms.
+    .addIri(GIST.isCategorizedBy, DPV_PD.OfficialID)
     .addIri(GIST.isCategorizedBy, DPV_PD.Passport)
     .addIri(GIST.isCategorizedBy, DPV_PD.Identifying)
     .addIri(GIST.isCategorizedBy, DPV_PD.Picture)
