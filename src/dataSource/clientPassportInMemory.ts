@@ -25,8 +25,13 @@ import {
   CRED,
   RDFS,
 } from "@inrupt/vocab-common-rdf-rdfdatafactory";
-import { INRUPT_3RD_PARTY_PASSPORT_OFFICE_UK } from "@inrupt/vocab-etl-tutorial-bundle-all-rdfdatafactory";
+import {
+  DPV_PD,
+  GIST,
+  INRUPT_3RD_PARTY_PASSPORT_OFFICE_UK,
+} from "@inrupt/vocab-etl-tutorial-bundle-all-rdfdatafactory";
 import { buildThing, SolidDataset } from "@inrupt/solid-client";
+
 import { APPLICATION_NAME } from "../applicationConstant";
 import { CollectionOfResources } from "../solidPod";
 import {
@@ -134,12 +139,11 @@ export function passportTransform(
     .addDate(CRED.issuanceDate, new Date(passportDataAsJson.issued_date))
     .addDate(CRED.expirationDate, new Date(passportDataAsJson.expiry_date))
 
-    // Tag this instance of a passport as being an 'Identifying', and also
-    // as containing a 'Picture' (since we have a passport photo included).
-    // (just to show multiple tags).
-    // USE DPV-PD TERMS ONCE EITHER LATEST AG IS RELEASED, OR VOCAB BUG FIXED.
-    // .addIri(INRUPT_COMMON.tag, DPV_PD.Identifying)
-    // .addIri(INRUPT_COMMON.tag, DPV_PD.Picture)
+    // Tag this instance of a passport with applicable DPV Personal Data
+    // terms.
+    .addIri(GIST.isCategorizedBy, DPV_PD.Passport)
+    .addIri(GIST.isCategorizedBy, DPV_PD.Identifying)
+    .addIri(GIST.isCategorizedBy, DPV_PD.Picture)
     .build();
 
   // This section of code was intended to simply read a local file
