@@ -19,6 +19,26 @@
 
 import { config } from "dotenv-flow";
 
+// We need to explicitly import the Node.js implementation of 'Blob' here
+// because it's not a global in Node.js (whereas it is global in the browser).
+// We may also need to explicitly convert our usage of 'Blob' into a Buffer
+// instead of using it as a 'Blob', because the Node.js 'Blob' implementation
+// has no 'stream()' method, whereas the browser implementation does -
+// otherwise using one instance where the other is expected will throw an
+// error like this:
+//   error TS2345: Argument of type 'Blob' is not assignable to parameter of type 'Blob | Buffer'.
+//     Type 'import("buffer").Blob' is not assignable to type 'Blob'.
+//       The types returned by 'stream()' are incompatible between these types.
+//         Type 'unknown' is not assignable to type 'ReadableStream<any>'.
+// Both the Node.js and the browser implementations of 'Blob' support the
+// '.arrayBuffer()' method, and the `solid-client-js` functions that expect
+// 'Blob's (like `overwriteFile()`) can accept both native 'Blob's and
+// 'Buffer's, so always converting any 'Blob' instances we have into 'Buffer's
+// allows those functions to work safely with both Node.js and browser
+// 'Blob's.
+// eslint-disable-next-line no-shadow
+import { Blob } from "node:buffer";
+
 import {
   buildThing,
   getSolidDataset,
@@ -37,6 +57,7 @@ import {
   loginAsRegisteredApp,
   loadResourcesAndBlobs,
 } from "./runEtl";
+import { buildDataset } from "./solidDatasetUtil";
 
 // Ideally we'd have a mock WebID per test suite, but it causes conflicts when
 // running all test suites. Would like to refactor to remove the duplication
@@ -141,6 +162,44 @@ describe("ETL process", () => {
 
       const successfullyProcessed = await runEtl(validArguments);
       expect(successfullyProcessed).toBe(1);
+    });
+
+    it("should fail ETL from data source fails", async () => {
+      jest.requireMock(
+        "@inrupt/solid-client-authn-node"
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      ) as { Session: any };
+
+      const dataset = mockSolidDatasetFrom("https://test.com/dataset");
+      jest
+        .spyOn(
+          jest.requireMock("@inrupt/solid-client") as {
+            getSolidDataset: typeof getSolidDataset;
+          },
+          "getSolidDataset"
+        )
+        .mockResolvedValueOnce(dataset);
+
+      jest
+        .spyOn(
+          jest.requireMock("@inrupt/solid-client") as {
+            deleteSolidDataset: typeof deleteSolidDataset;
+          },
+          "deleteSolidDataset"
+        )
+        .mockResolvedValueOnce();
+
+      const validArguments = {
+        _: ["runEtl"],
+        $0: "",
+        etlCredentialResource:
+          "resources/test/DummyData/DummyRegisteredAppCredentialResource/dummy-registered-app-credential-resource.ttl",
+        localUserCredentialResourceGlob:
+          "resources/test/DummyData/DummyUserCredentialResource/dummy-user-credential-user-with-etl-credential.ttl",
+      };
+
+      const successfullyProcessed = await runEtl(validArguments);
+      expect(successfullyProcessed).toBe(0);
     });
 
     it("should fail if looking for existing application resources throws", async () => {
@@ -276,7 +335,7 @@ describe("ETL process", () => {
           createCredentialResourceEmpty(),
           session,
           null,
-          [{ url: "https://example.com/test", blob: new Blob() }]
+          [{ url: "https://example.com/test", blob: new Blob([]) }]
         )
       ).resolves.toContain(`[${dataSource}] provided no resources`);
     });
@@ -299,20 +358,22 @@ describe("ETL process", () => {
           Buffer.from("whatever") as Buffer & WithResourceInfo
         );
 
-      const thing = buildThing()
-        .addStringNoLocale(
-          INRUPT_TEST.somePredicate,
-          INRUPT_TEST.hashSomeObject
-        )
-        .build();
+      const dataset = buildDataset(
+        buildThing()
+          .addStringNoLocale(
+            INRUPT_TEST.somePredicate,
+            INRUPT_TEST.hashSomeObject
+          )
+          .build()
+      );
 
       await expect(
         loadResources(
           "data source",
           createCredentialResourceEmpty(),
           session,
-          [thing],
-          [{ url: "https://example.com/test", blob: new Blob() }]
+          [dataset],
+          [{ url: "https://example.com/test", blob: new Blob([]) }]
         )
       ).resolves.toContain("and [1] Blob");
     });
@@ -341,26 +402,30 @@ describe("ETL process", () => {
       ) as { Session: any };
       const session = new authnModule.Session(false);
 
-      const thing = buildThing()
-        .addStringNoLocale(
-          INRUPT_TEST.somePredicate,
-          INRUPT_TEST.hashSomeObject
-        )
-        .build();
+      const dataset = buildDataset(
+        buildThing()
+          .addStringNoLocale(
+            INRUPT_TEST.somePredicate,
+            INRUPT_TEST.hashSomeObject
+          )
+          .build()
+      );
       await expect(
         loadResources("data source", createCredentialResourceEmpty(), session, [
-          thing,
+          dataset,
         ])
-      ).resolves.toContain("Not logged into Pod");
+      ).resolves.toContain("Not logged in");
     });
 
     it("should load resource, logged into Pod", async () => {
-      const thing = buildThing()
-        .addStringNoLocale(
-          INRUPT_TEST.somePredicate,
-          INRUPT_TEST.hashSomeObject
-        )
-        .build();
+      const dataset = buildDataset(
+        buildThing()
+          .addStringNoLocale(
+            INRUPT_TEST.somePredicate,
+            INRUPT_TEST.hashSomeObject
+          )
+          .build()
+      );
 
       const authnModule = jest.requireMock(
         "@inrupt/solid-client-authn-node"
@@ -370,7 +435,7 @@ describe("ETL process", () => {
 
       await expect(
         loadResources("data source", createCredentialResourceEmpty(), session, [
-          thing,
+          dataset,
         ])
       ).resolves.toContain("Successfully inserted or updated [1] resource");
     });

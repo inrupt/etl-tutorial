@@ -17,6 +17,26 @@
 // OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
 // SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
+// We need to explicitly import the Node.js implementation of 'Blob' here
+// because it's not a global in Node.js (whereas it is global in the browser).
+// We may also need to explicitly convert our usage of 'Blob' into a Buffer
+// instead of using it as a 'Blob', because the Node.js 'Blob' implementation
+// has no 'stream()' method, whereas the browser implementation does -
+// otherwise using one instance where the other is expected will throw an
+// error like this:
+//   error TS2345: Argument of type 'Blob' is not assignable to parameter of type 'Blob | Buffer'.
+//     Type 'import("buffer").Blob' is not assignable to type 'Blob'.
+//       The types returned by 'stream()' are incompatible between these types.
+//         Type 'unknown' is not assignable to type 'ReadableStream<any>'.
+// Both the Node.js and the browser implementations of 'Blob' support the
+// '.arrayBuffer()' method, and the `solid-client-js` functions that expect
+// 'Blob's (like `overwriteFile()`) can accept both native 'Blob's and
+// 'Buffer's, so always converting any 'Blob' instances we have into 'Buffer's
+// allows those functions to work safely with both Node.js and browser
+// 'Blob's.
+// eslint-disable-next-line no-shadow
+import { Blob } from "node:buffer";
+
 import {
   buildThing,
   getSolidDataset,
@@ -32,10 +52,12 @@ import {
   mockFetchError,
   overwriteFile,
   createContainerAt,
+  setThing,
 } from "@inrupt/solid-client";
 import { WithResourceInfo } from "@inrupt/solid-client/src/interfaces";
 import { INRUPT_TEST } from "@inrupt/vocab-inrupt-test-rdfdatafactory";
 import { updateOrInsertResourceInSolidPod } from "./solidPod";
+import { buildDataset } from "./solidDatasetUtil";
 
 // Ideally we'd have a mock WebID per test suite, but it causes conflicts when
 // running all test suites. Would like to refactor to remove the duplication
@@ -135,6 +157,33 @@ function mockSaveSolidDatasetAt<Dataset extends SolidDataset>(
 }
 
 describe("Solid Pod functions", () => {
+  describe("Multiple Things in a single dataset", () => {
+    it("should fail if more than one Thing", async () => {
+      const thing1 = buildThing()
+        .addIri(INRUPT_TEST.somePredicate, INRUPT_TEST.somePodResource)
+        .build();
+      const thing2 = buildThing()
+        .addIri(
+          INRUPT_TEST.someOtherPredicate,
+          INRUPT_TEST.someOtherPodResource
+        )
+        .build();
+      const dataset = setThing(buildDataset(thing1), thing2);
+
+      const authnModule = jest.requireMock(
+        "@inrupt/solid-client-authn-node"
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      ) as { Session: any };
+      const session = new authnModule.Session(true);
+
+      // We can use the same dataset twice for this test, we just need 'more
+      // than one' to kick off the dataset sorting code...
+      await expect(
+        updateOrInsertResourceInSolidPod(session, [dataset, dataset])
+      ).rejects.toThrow("more than one Thing");
+    });
+  });
+
   describe("Inserting or updating blob with metadata into Pod", () => {
     it("should insert Blob with no metadata", async () => {
       const obj = { hello: "world" };
@@ -172,9 +221,11 @@ describe("Solid Pod functions", () => {
       const blob = new Blob([JSON.stringify(obj, null, 2)], {
         type: "application/json",
       });
-      const metadata = buildThing()
-        .addIri(INRUPT_TEST.somePredicate, INRUPT_TEST.somePodResource)
-        .build();
+      const metadata = buildDataset(
+        buildThing()
+          .addIri(INRUPT_TEST.somePredicate, INRUPT_TEST.somePodResource)
+          .build()
+      );
 
       jest
         .spyOn(
@@ -217,9 +268,11 @@ describe("Solid Pod functions", () => {
       const blob = new Blob([JSON.stringify(obj, null, 2)], {
         type: "application/json",
       });
-      const metadata = buildThing()
-        .addIri(INRUPT_TEST.somePredicate, INRUPT_TEST.somePodResource)
-        .build();
+      const metadata = buildDataset(
+        buildThing()
+          .addIri(INRUPT_TEST.somePredicate, INRUPT_TEST.somePodResource)
+          .build()
+      );
 
       jest
         .spyOn(
@@ -275,8 +328,8 @@ describe("Solid Pod functions", () => {
       const session = new authnModule.Session(true);
 
       const result = await updateOrInsertResourceInSolidPod(session, [
-        thing1,
-        thing2,
+        buildDataset(thing1),
+        buildDataset(thing2),
       ]);
       expect(result).toContain(
         "Successfully inserted or updated [2] resources"
@@ -294,7 +347,9 @@ describe("Solid Pod functions", () => {
       ) as { Session: any };
       const session = new authnModule.Session(false);
 
-      const result = await updateOrInsertResourceInSolidPod(session, [thing]);
+      const result = await updateOrInsertResourceInSolidPod(session, [
+        buildDataset(thing),
+      ]);
       expect(result).toContain("session is not logged in");
 
       // Attempt insert with number of resources that's not 1 (so 'plural').
@@ -375,7 +430,9 @@ describe("Solid Pod functions", () => {
           .addIri(INRUPT_TEST.somePredicate, INRUPT_TEST.somePodResource)
           .build();
 
-        const result = await updateOrInsertResourceInSolidPod(session, [thing]);
+        const result = await updateOrInsertResourceInSolidPod(session, [
+          buildDataset(thing),
+        ]);
         expect(result).toContain("Successfully inserted or updated [1]");
         expect(result).toContain(`[${mockWebId}]`);
       }

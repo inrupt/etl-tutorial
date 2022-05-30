@@ -19,15 +19,33 @@
 
 import debugModule from "debug";
 
+// We need to explicitly import the Node.js implementation of 'Blob' here
+// because it's not a global in Node.js (whereas it is global in the browser).
+// We may also need to explicitly convert our usage of 'Blob' into a Buffer
+// instead of using it as a 'Blob', because the Node.js 'Blob' implementation
+// has no 'stream()' method, whereas the browser implementation does -
+// otherwise using one instance where the other is expected will throw an
+// error like this:
+//   error TS2345: Argument of type 'Blob' is not assignable to parameter of type 'Blob | Buffer'.
+//     Type 'import("buffer").Blob' is not assignable to type 'Blob'.
+//       The types returned by 'stream()' are incompatible between these types.
+//         Type 'unknown' is not assignable to type 'ReadableStream<any>'.
+// Both the Node.js and the browser implementations of 'Blob' support the
+// '.arrayBuffer()' method, and the `solid-client-js` functions that expect
+// 'Blob's (like `overwriteFile()`) can accept both native 'Blob's and
+// 'Buffer's, so always converting any 'Blob' instances we have into 'Buffer's
+// allows those functions to work safely with both Node.js and browser
+// 'Blob's.
+// eslint-disable-next-line no-shadow
+import { Blob } from "node:buffer";
+
 import {
   createContainerAt,
-  createSolidDataset,
   getSolidDataset,
+  getThingAll,
   overwriteFile,
   saveSolidDatasetAt,
-  setThing,
   SolidDataset,
-  Thing,
 } from "@inrupt/solid-client";
 import { Session } from "@inrupt/solid-client-authn-node";
 import { APPLICATION_NAME } from "./applicationConstant";
@@ -42,14 +60,14 @@ export type BlobWithMetadata = {
   url: string;
   blob: Blob;
   // Having metadata associated with the Blob is optional.
-  metadata?: Thing;
+  metadata?: SolidDataset;
 };
 
 // Type that represents a collection of resources. This collection can consist
 // of Linked Data resources and/or binary Blob resource that may optionally
 // have associated Linked Data metadata.
 export type CollectionOfResources = {
-  rdfResources: Thing[];
+  rdfResources: SolidDataset[];
   blobsWithMetadata: BlobWithMetadata[] | null;
 };
 
@@ -95,7 +113,7 @@ export async function insertResourceInSolidPod(
  */
 export async function updateOrInsertResourceInSolidPod(
   session: Session,
-  resources: Thing[],
+  resources: SolidDataset[],
   blobsWithMetadata: BlobWithMetadata[] | null = null
 ): Promise<string> {
   const plural = resources.length !== 1;
@@ -107,14 +125,36 @@ export async function updateOrInsertResourceInSolidPod(
     return Promise.resolve(message);
   }
 
+  // // Sort our resources by length of their URLs, so that we can create
+  // // containers before contained resources.
+  // const sortedResources = resources.sort((a, b) => a.url.length - b.url.length);
+  //
+  // // Turn our Things into SolidDatasets.
+  // const sortedDatasets = sortedResources.map((resource) => {
+  //   const dataset: SolidDataset = setThing(createSolidDataset(), resource);
+  //   return { resource, dataset };
+  // });
   // Sort our resources by length of their URLs, so that we can create
   // containers before contained resources.
-  const sortedResources = resources.sort((a, b) => a.url.length - b.url.length);
+  const sortedResources = resources.sort((a, b) => {
+    const aThings = getThingAll(a);
+    const bThings = getThingAll(b);
+
+    if (aThings.length !== 1 || bThings.length !== 1) {
+      throw new Error(
+        `Currently we don't support SolidDatasets with more than one Thing!`
+      );
+    }
+
+    return aThings[0].url.length - bThings[0].url.length;
+  });
 
   // Turn our Things into SolidDatasets.
   const sortedDatasets = sortedResources.map((resource) => {
-    const dataset: SolidDataset = setThing(createSolidDataset(), resource);
-    return { resource, dataset };
+    // const dataset: SolidDataset = setThing(createSolidDataset(), resource);
+    // return { resource, dataset };
+    const thing = getThingAll(resource)[0];
+    return { resource: thing, dataset: resource };
   });
 
   // Now try and fetch each resource ('cos we'll potentially need to add
@@ -320,20 +360,27 @@ export async function updateOrInsertResourceInSolidPod(
   if (blobsWithMetadata !== null) {
     for (const { url, blob, metadata } of blobsWithMetadata) {
       try {
+        // TODO: IRI of blob derived from URL param - but should be a separate
+        //  explicit field... (and URL is currently used for the metadata
+        //  resource, and *NOT* the blob, which should be the other way around
+        //  (given the name of the data structure is BlobWith...)!
         // eslint-disable-next-line no-await-in-loop
-        await overwriteFile(url, blob, {
-          contentType: blob.type,
-          fetch: session.fetch,
-        });
+        await overwriteFile(
+          `${url}.jpeg`,
+          // We need to explicitly convert our 'Blob' into a Buffer here (see
+          // detailed comment on our 'import { Blob }' code above).
+          // eslint-disable-next-line no-await-in-loop
+          Buffer.from(await blob.arrayBuffer()),
+          {
+            contentType: blob.type,
+            fetch: session.fetch,
+          }
+        );
 
         // Associated metadata is optional.
         if (metadata) {
-          const datasetToSave: SolidDataset = setThing(
-            createSolidDataset(),
-            metadata
-          );
           // eslint-disable-next-line no-await-in-loop
-          await insertResourceInSolidPod(metadata.url, session, datasetToSave);
+          await insertResourceInSolidPod(url, session, metadata);
         }
 
         blobsWritten += 1;

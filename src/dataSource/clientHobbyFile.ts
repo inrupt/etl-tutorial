@@ -29,24 +29,25 @@ import {
   wireUpDataSourceContainer,
 } from "../applicationSetup";
 import { describeCollectionOfResources } from "../util";
+import { buildDataset } from "../solidDatasetUtil";
 
 const debug = debugModule(`${APPLICATION_NAME}:clientHobbyFile`);
 
 const DATA_SOURCE = "Hobby";
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-export async function hobbyLocalExtract(source: string): Promise<any> {
+export async function hobbyFileExtract(sourceFile: string): Promise<any> {
   let fileData;
   try {
-    fileData = fs.readFileSync(source, "utf8");
+    fileData = fs.readFileSync(sourceFile, "utf8");
   } catch (error) {
-    const message = `Failed to extract local Hobby file [${source}] - error: ${error}]`;
+    const message = `Failed to extract local Hobby file [${sourceFile}] - error: ${error}]`;
     debug(message);
     throw new Error(message);
   }
 
   debug(
-    `Successfully extracted hobby data for [${DATA_SOURCE}] from [${source}].`
+    `Successfully extracted hobby data for [${DATA_SOURCE}] from [${sourceFile}].`
   );
   return Promise.resolve(JSON.parse(fileData));
 }
@@ -113,13 +114,15 @@ export function hobbyTransform(
     )
     .build();
 
-  result.rdfResources.push(hobby);
+  result.rdfResources.push(buildDataset(hobby));
 
   // Add the wiring-up resources to our result.
-  result.rdfResources.push(...wiring.resources);
+  result.rdfResources.push(
+    ...wiring.resources.map((thing) => buildDataset(thing))
+  );
 
   // Now build our data source container, and add it to our result resources.
-  result.rdfResources.push(dataSourceContainerBuilder.build());
+  result.rdfResources.push(buildDataset(dataSourceContainerBuilder.build()));
 
   debug(describeCollectionOfResources("Transformed hobby data into", result));
 

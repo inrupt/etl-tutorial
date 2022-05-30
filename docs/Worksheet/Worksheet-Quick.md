@@ -1,8 +1,7 @@
 # Worksheet for installing, configuring and running the ETL Tutorial
 
-This detailed worksheet attempts you walk you through the entire process of
-installing, configuring, testing, and running the ETL Tutorial, from start to
-finish.
+This worksheet attempts you walk you through the entire process of installing,
+configuring, testing, and running the ETL Tutorial, from start to finish.
 
 ### References
 
@@ -62,6 +61,52 @@ npm test
 - We expect to see error output (as we test all our error handling).
 - All tests should pass.
 - And branch code coverage should be 100%.
+
+---
+
+---
+
+Now start running the tool for real...
+
+---
+
+---
+
+Run with our example Turtle configs (note the use of a wildcard in the file
+pattern for user credentials)...
+
+```
+ts-node src/index.ts runEtl --etlCredentialResource "resources/CredentialResource/RegisteredApp/example-registered-app-credential.ttl" --localUserCredentialResourceGlob "resources/CredentialResource/User/example-user-credential*.ttl"
+```
+
+If we have no internet connection, we'll expect to get:
+
+```
+failed, reason: getaddrinfo ENOTFOUND api.company-information.service.gov.uk
+```
+
+SHOULD BOMB OUT WITH AN ERROR!!!!
+
+cd ./resources/CredentialResource/User
+cp example-user-credential.ttl user-credential-<<RECORD_HERE_USERNAME>>.ttl
+
+cd ./resources/CredentialResource/RegisteredApp/
+cp example-registered-app-credential.ttl registered-app-credential-etl-tutorial.ttl
+
+```
+ts-node src/index.ts runEtl --etlCredentialResource "resources/CredentialResource/RegisteredApp/registered-app-credential-etl-tutorial.ttl" --localUserCredentialResourceGlob "resources/CredentialResource/User/user-cred*.ttl"
+```
+
+---
+
+---
+
+Section on End-2-End tests (optional - helpful during
+development to break things down...
+
+---
+
+---
 
 Now run our End-2-End tests (even though we haven't configured anything yet!)
 

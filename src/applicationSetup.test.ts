@@ -31,7 +31,7 @@ import { RDF } from "@inrupt/vocab-common-rdf-rdfdatafactory";
 import { INRUPT_COMMON } from "@inrupt/vocab-etl-tutorial-bundle-all-rdfdatafactory";
 import {
   makeDataSourceContainerBuilder,
-  createWebIdProfileDocument,
+  createWebIdProfileDocumentIfNeeded,
   initiateApplication,
   wireUpDataSourceContainer,
   DataSourceContainerObject,
@@ -119,7 +119,7 @@ describe("Application setup", () => {
       ) as { Session: any };
       const session = new authnModule.Session(true);
 
-      const resources = await createWebIdProfileDocument(
+      const resources = await createWebIdProfileDocumentIfNeeded(
         mockSolidDatasetFrom("https://does_not-matter.com/"),
         session,
         "https://also_does_not-matter.com/"
@@ -135,7 +135,7 @@ describe("Application setup", () => {
       ) as { Session: any };
       const session = new authnModule.Session(false);
 
-      const resources = await createWebIdProfileDocument(
+      const resources = await createWebIdProfileDocumentIfNeeded(
         buildDataset(
           buildThing()
             .addIri(RDF.type, INRUPT_COMMON.CredentialResource)

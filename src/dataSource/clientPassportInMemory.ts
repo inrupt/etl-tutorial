@@ -17,14 +17,40 @@
 // OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
 // SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
+// We need to explicitly import the Node.js implementation of 'Blob' here
+// because it's not a global in Node.js (whereas it is global in the browser).
+// We may also need to explicitly convert our usage of 'Blob' into a Buffer
+// instead of using it as a 'Blob', because the Node.js 'Blob' implementation
+// has no 'stream()' method, whereas the browser implementation does -
+// otherwise using one instance where the other is expected will throw an
+// error like this:
+//   error TS2345: Argument of type 'Blob' is not assignable to parameter of type 'Blob | Buffer'.
+//     Type 'import("buffer").Blob' is not assignable to type 'Blob'.
+//       The types returned by 'stream()' are incompatible between these types.
+//         Type 'unknown' is not assignable to type 'ReadableStream<any>'.
+// Both the Node.js and the browser implementations of 'Blob' support the
+// '.arrayBuffer()' method, and the `solid-client-js` functions that expect
+// 'Blob's (like `overwriteFile()`) can accept both native 'Blob's and
+// 'Buffer's, so always converting any 'Blob' instances we have into 'Buffer's
+// allows those functions to work safely with both Node.js and browser
+// 'Blob's.
+// eslint-disable-next-line no-shadow
+import { Blob } from "node:buffer";
+import fs from "fs";
 import debugModule from "debug";
 import {
   RDF,
   SCHEMA_INRUPT,
   CRED,
+  RDFS,
 } from "@inrupt/vocab-common-rdf-rdfdatafactory";
-import { INRUPT_3RD_PARTY_PASSPORT_OFFICE_UK } from "@inrupt/vocab-etl-tutorial-bundle-all-rdfdatafactory";
+import {
+  DPV_PD,
+  GIST,
+  INRUPT_3RD_PARTY_PASSPORT_OFFICE_UK,
+} from "@inrupt/vocab-etl-tutorial-bundle-all-rdfdatafactory";
 import { buildThing, SolidDataset } from "@inrupt/solid-client";
+
 import { APPLICATION_NAME } from "../applicationConstant";
 import { CollectionOfResources } from "../solidPod";
 import {
@@ -32,6 +58,7 @@ import {
   wireUpDataSourceContainer,
 } from "../applicationSetup";
 import { describeCollectionOfResources } from "../util";
+import { buildDataset } from "../solidDatasetUtil";
 
 const debug = debugModule(`${APPLICATION_NAME}:clientPassportInMemory`);
 
@@ -52,7 +79,8 @@ const inputToEtlFrom3rdParty = {
   issued_date: "2010/01/01",
   expiry_date: "2020/01/01",
   number: "PII-123123213",
-  photo_image_file: "resources/test/DummyData/DummyPhoto/fake_passport.jpg",
+  photo_image_file:
+    "resources/test/DummyData/DummyDataSource/DummyPassportOffice/DummyPhoto/fake_passport.jpg",
   exif: `{ "ColorModel": "RGB", "PixelHeight": 800, "PixelWidth": 532 }`,
 };
 
@@ -61,7 +89,10 @@ export async function passportLocalExtract(): Promise<any> {
   debug(
     `Successfully extracted passport data from [${DATA_SOURCE}] for [${inputToEtlFrom3rdParty.surname}].`
   );
-  return Promise.resolve(inputToEtlFrom3rdParty);
+
+  // Return a copy of our 3rd-party data (in case the receiver (e.g., a test)
+  // mutates what they get back!).
+  return Promise.resolve({ ...inputToEtlFrom3rdParty });
 }
 
 export function passportTransform(
@@ -127,12 +158,12 @@ export function passportTransform(
     .addDate(CRED.issuanceDate, new Date(passportDataAsJson.issued_date))
     .addDate(CRED.expirationDate, new Date(passportDataAsJson.expiry_date))
 
-    // Tag this instance of a passport as being an 'Identifying', and also
-    // as containing a 'Picture' (since we have a passport photo included).
-    // (just to show multiple tags).
-    // USE DPV-PD TERMS ONCE EITHER LATEST AG IS RELEASED, OR VOCAB BUG FIXED.
-    // .addIri(INRUPT_COMMON.tag, DPV_PD.Identifying)
-    // .addIri(INRUPT_COMMON.tag, DPV_PD.Picture)
+    // Tag this instance of a passport with applicable DPV Personal Data
+    // terms.
+    .addIri(GIST.isCategorizedBy, DPV_PD.OfficialID)
+    .addIri(GIST.isCategorizedBy, DPV_PD.Passport)
+    .addIri(GIST.isCategorizedBy, DPV_PD.Identifying)
+    .addIri(GIST.isCategorizedBy, DPV_PD.Picture)
     .build();
 
   // This section of code was intended to simply read a local file
@@ -140,52 +171,56 @@ export function passportTransform(
   // into the user's Pod. But this project isn't setup to allow that, as we're
   // configured to use 'jsdom' when we shouldn't be (as this project should be
   // a pure Node.js project, and not a JS library).
-  // let fileData;
-  // try {
-  //   fileData = fs.readFileSync(passportData.photo_image_file);
-  // } catch (error) {
-  //   const message = `Failed to read local passport photo file [${passportData.photo_image_file}] for passport number [${passportNumber}] - error: ${error}]`;
-  //   debug(message);
-  //   throw new Error(message);
-  // }
-  //
-  // const passportPhoto = new Blob(
-  //   [fileData],
-  //   {
-  //     type: "image/jpeg",
-  //   }
-  // );
-  //
-  // const fileIri = `${passportIri}binary/passportPhoto`;
-  // const fileUrl = `${fileIri}.jpeg`;
-  //
-  // const blobMetadata: Thing = buildThing({
-  //   url: fileIri,
-  // })
-  //   .addIri(RDF.type, SCHEMA_INRUPT.NS("ImageObject"))
-  //   .addStringNoLocale(RDFS.label, passportData.photo_image)
-  //   .addStringNoLocale(SCHEMA_INRUPT.NS("exifData"), passportData.exif)
-  //   .addIri(SCHEMA_INRUPT.image, fileUrl)
-  //   .build();
-  //
-  // // Here can add the metadata resource to our collection of resources,
-  // // or add it to a simple structure that keeps blob and metadata
-  // // together (so a failure to write one can report its association
-  // // with the other).
-  // // @ts-ignore Value can't be null, we explicitly instantiate it above.
-  // result.blobsWithMetadata.push({
-  //   url: fileUrl,
-  //   blob: passportPhoto,
-  //   metadata: blobMetadata,
-  // });
+  let fileData;
+  try {
+    fileData = fs.readFileSync(passportDataAsJson.photo_image_file);
+  } catch (error) {
+    const message = `Failed to read local passport photo file [${passportDataAsJson.photo_image_file}] for passport number [${passportNumber}] - error: ${error}]`;
+    debug(message);
+    throw new Error(message);
+  }
 
-  result.rdfResources.push(passport);
+  const passportPhoto = new Blob([fileData], {
+    type: "image/jpeg",
+  });
+
+  const blobMetadataIri = `${passportIri}passportPhoto`;
+  const blobIri = `${blobMetadataIri}.jpeg`;
+
+  const blobMetadata: SolidDataset = buildDataset(
+    buildThing({
+      url: blobMetadataIri,
+    })
+      .addIri(RDF.type, SCHEMA_INRUPT.NS("ImageObject"))
+      .addStringNoLocale(RDFS.label, passportDataAsJson.photo_image)
+      .addStringNoLocale(SCHEMA_INRUPT.NS("exifData"), passportDataAsJson.exif)
+      .addIri(SCHEMA_INRUPT.image, blobIri)
+      .build()
+  );
+
+  // Here can add the metadata resource to our collection of resources,
+  // or add it to a simple structure that keeps blob and metadata
+  // together (so a failure to write one can report its association
+  // with the other).
+  // This 'blobsWithMetadata' value can't be null, 'cos we explicitly
+  // instantiated it above.
+  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+  // @ts-ignore
+  result.blobsWithMetadata.push({
+    url: blobMetadataIri,
+    blob: passportPhoto,
+    metadata: blobMetadata,
+  });
+
+  result.rdfResources.push(buildDataset(passport));
 
   // Add the wiring-up resources to our result.
-  result.rdfResources.push(...wiring.resources);
+  result.rdfResources.push(
+    ...wiring.resources.map((thing) => buildDataset(thing))
+  );
 
   // Now build our data source container, and add it to our result resources.
-  result.rdfResources.push(dataSourceContainerBuilder.build());
+  result.rdfResources.push(buildDataset(dataSourceContainerBuilder.build()));
 
   debug(
     describeCollectionOfResources("Transformed passport data into", result)

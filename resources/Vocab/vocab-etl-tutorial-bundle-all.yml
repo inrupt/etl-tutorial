@@ -33,139 +33,139 @@ license:
   name: "Proprietary"
 
 artifactToGenerate:
-  # This is the configuration of the DEFAULT Java artifact - i.e., where the name
-  # of the generated JAR does not contain details of its dependencies (e.g.
-  # whether it provides SolidCommonVocab constants or just string constants, or whether
-  # it depends on RDF4J or Jena or RDF Commons, etc.).
-  - programmingLanguage: Java
-    artifactVersion: 0.8.2-SNAPSHOT
-    artifactNamePrefix: ""
-    artifactNameSuffix: ""
-
-    artifactDirectoryName: Java
-    sourceFileExtension: java
-    javaPackageName: com.inrupt.vocab.thirdparty
-
-    templateInternal: stringLiteral/java/vocab.hbs
-
-    # Currently we're just adding terms as they occur in vocabs, and not all possible keywords.
-    languageKeywordsToUnderscore:
-      - class     # Defined in VCard.
-      - abstract  # Defined in DCTerms.
-      - default   # Defined in ACL
-    packaging:
-      - packagingTool: maven
-        groupId: com.inrupt
-        publish:
-          - key: "mavenLocal"
-            command: "mvn --version && mvn install"
-          - key: "mavenRemote"
-            command: "mvn deploy"
-          - key: "cloudsmith"
-            command: "mvn -s /home/runner/work/solid-common-vocab-rdf/solid-common-vocab-rdf/settings.xml deploy --log-file ../../../mvn-deploy.log"
-        packagingTemplates:
-          - templateInternal: stringLiteral/java/pom.hbs
-            fileName: pom.xml
-        repository:
-          - type: repository
-            id: cloudsmith-staging
-            url: https://maven.cloudsmith.io/inrupt/sdk-staging/
-          - type: snapshotRepository
-            id: cloudsmith-development
-            url: https://maven.cloudsmith.io/inrupt/sdk-development/
-
-
-  # This is the configuration of the DEFAULT TypeScript artifact - i.e., where
-  # the name of the generated npm module does not contain details of its
-  # dependencies (e.g., whether it provides SolidCommonVocab constants or just string
-  # literals, or whether it depends on RDF/JS or Jena or RDF Commons, etc.).
-  - programmingLanguage: TypeScript
-    artifactVersion: "1.0.1"
-    artifactNamePrefix: ""
-    artifactNameSuffix: ""
-
-    artifactDirectoryName: TypeScript
-    sourceFileExtension: ts
-
-    templateInternal: stringLiteral/typescript/vocab.hbs
-
-    packaging:
-      - packagingTool: npm
-        npmModuleScope: "@inrupt/"
-        bundleName: "Vocabinrupt3rdParty"
-
-        typescriptVersion: "~4.0.8"
-        rollupVersion: "^2.36.1"
-        rollupTypescriptPluginVersion: "^0.29.0"
-        rollupCommonjsPluginVersion: "^17.0.0"
-        rollupNodeResolveVersion: "^11.0.1"
-
-        publish:
-          - key: "npmInstallAndBuild"
-            command: "npm install && npm run build"
-          - key: "npmLocal"
-            command: "npm unpublish --force --registry http://localhost:4873/ && npm install --registry http://localhost:4873/ && npm run build && npm publish --registry http://localhost:4873/"
-          # The following command should only run in CI.
-          - key: "npmPublic"
-            command: "npm install --registry https://registry.npmjs.org/ && npm run build && npm publish --registry https://registry.npmjs.org/ --access public"
-        packagingTemplates:
-          - templateInternal: stringLiteral/typescript/package.hbs
-            fileName: package.json
-          - templateInternal: generic/typescript/index.hbs
-            fileName: index.ts
-          - templateInternal: generic/typescript/tsconfig.hbs
-            fileName: tsconfig.json
-          - templateInternal: generic/typescript/rollup.config.hbs
-            fileName: rollup.config.js
-
-
-  # This is the configuration of the DEFAULT SolidCommonVocab TypeScript
-  # artifact - i.e., where the name of the generated npm module does not
-  # contain details of the underlying RDF library dependencies (e.g.,
-  # whether it depends on RDF/JS or a specific implementation, etc.).
-  - programmingLanguage: TypeScript
-    artifactVersion: "1.0.1"
-    artifactNamePrefix: ""
-
-    artifactDirectoryName: TypeScript-SolidCommonVocab
-    sourceFileExtension: ts
-    artifactNameSuffix: -solidcommonvocab
-
-    solidCommonVocabVersion: "^1.0.0"
-    rdfjsTypesVersion: "^1.0.1"
-    rdfjsImplVersion: "^1.1.0"
-    templateInternal: solidCommonVocabDependent/typescript/rdfjsRdfDataFactory/vocab.hbs
-
-    packaging:
-      - packagingTool: npm
-        npmModuleScope: "@inrupt/"
-        bundleName: "Vocabinrupt3rdParty"
-
-        typescriptVersion: "~4.0.8"
-        rollupVersion: "^2.36.1"
-        rollupTypescriptPluginVersion: "^0.29.0"
-        rollupCommonjsPluginVersion: "^17.0.0"
-        rollupNodeResolveVersion: "^11.0.1"
-
-        publish:
-          - key: "npmInstallAndBuild"
-            command: "npm install && npm run build"
-          - key: "npmLocal"
-            command: "npm unpublish --force --registry http://localhost:4873/ && npm install --registry http://localhost:4873/ && npm run build && npm publish --registry http://localhost:4873/"
-          - key: 'npmGithub'
-            command: "npm install --registry https://npm.pkg.github.com/inrupt && npm run build && npm publish --registry https://npm.pkg.github.com/inrupt"
-          - key: "npmPrivate"
-            command: "npm install --registry https://registry.npmjs.org/ && npm publish --registry https://registry.npmjs.org/"
-        packagingTemplates:
-          - templateInternal: solidCommonVocabDependent/typescript/rdfjsRdfDataFactory/package.hbs
-            fileName: package.json
-          - templateInternal: generic/typescript/index.hbs
-            fileName: index.ts
-          - templateInternal: generic/typescript/tsconfig.hbs
-            fileName: tsconfig.json
-          - templateInternal: generic/typescript/rollup.config.hbs
-            fileName: rollup.config.js
-
+#  # This is the configuration of the DEFAULT Java artifact - i.e., where the name
+#  # of the generated JAR does not contain details of its dependencies (e.g.
+#  # whether it provides SolidCommonVocab constants or just string constants, or whether
+#  # it depends on RDF4J or Jena or RDF Commons, etc.).
+#  - programmingLanguage: Java
+#    artifactVersion: 0.8.2-SNAPSHOT
+#    artifactNamePrefix: ""
+#    artifactNameSuffix: ""
+#
+#    artifactDirectoryName: Java
+#    sourceFileExtension: java
+#    javaPackageName: com.inrupt.vocab.thirdparty
+#
+#    templateInternal: stringLiteral/java/vocab.hbs
+#
+#    # Currently we're just adding terms as they occur in vocabs, and not all possible keywords.
+#    languageKeywordsToUnderscore:
+#      - class     # Defined in VCard.
+#      - abstract  # Defined in DCTerms.
+#      - default   # Defined in ACL
+#    packaging:
+#      - packagingTool: maven
+#        groupId: com.inrupt
+#        publish:
+#          - key: "mavenLocal"
+#            command: "mvn --version && mvn install"
+#          - key: "mavenRemote"
+#            command: "mvn deploy"
+#          - key: "cloudsmith"
+#            command: "mvn -s /home/runner/work/solid-common-vocab-rdf/solid-common-vocab-rdf/settings.xml deploy --log-file ../../../mvn-deploy.log"
+#        packagingTemplates:
+#          - templateInternal: stringLiteral/java/pom.hbs
+#            fileName: pom.xml
+#        repository:
+#          - type: repository
+#            id: cloudsmith-staging
+#            url: https://maven.cloudsmith.io/inrupt/sdk-staging/
+#          - type: snapshotRepository
+#            id: cloudsmith-development
+#            url: https://maven.cloudsmith.io/inrupt/sdk-development/
+#
+#
+#  # This is the configuration of the DEFAULT TypeScript artifact - i.e., where
+#  # the name of the generated npm module does not contain details of its
+#  # dependencies (e.g., whether it provides SolidCommonVocab constants or just string
+#  # literals, or whether it depends on RDF/JS or Jena or RDF Commons, etc.).
+#  - programmingLanguage: TypeScript
+#    artifactVersion: "1.0.1"
+#    artifactNamePrefix: ""
+#    artifactNameSuffix: ""
+#
+#    artifactDirectoryName: TypeScript
+#    sourceFileExtension: ts
+#
+#    templateInternal: stringLiteral/typescript/vocab.hbs
+#
+#    packaging:
+#      - packagingTool: npm
+#        npmModuleScope: "@inrupt/"
+#        bundleName: "Vocabinrupt3rdParty"
+#
+#        typescriptVersion: "~4.0.8"
+#        rollupVersion: "^2.36.1"
+#        rollupTypescriptPluginVersion: "^0.29.0"
+#        rollupCommonjsPluginVersion: "^17.0.0"
+#        rollupNodeResolveVersion: "^11.0.1"
+#
+#        publish:
+#          - key: "npmInstallAndBuild"
+#            command: "npm install && npm run build"
+#          - key: "npmLocal"
+#            command: "npm unpublish --force --registry http://localhost:4873/ && npm install --registry http://localhost:4873/ && npm run build && npm publish --registry http://localhost:4873/"
+#          # The following command should only run in CI.
+#          - key: "npmPublic"
+#            command: "npm install --registry https://registry.npmjs.org/ && npm run build && npm publish --registry https://registry.npmjs.org/ --access public"
+#        packagingTemplates:
+#          - templateInternal: stringLiteral/typescript/package.hbs
+#            fileName: package.json
+#          - templateInternal: generic/typescript/index.hbs
+#            fileName: index.ts
+#          - templateInternal: generic/typescript/tsconfig.hbs
+#            fileName: tsconfig.json
+#          - templateInternal: generic/typescript/rollup.config.hbs
+#            fileName: rollup.config.js
+#
+#
+#  # This is the configuration of the DEFAULT SolidCommonVocab TypeScript
+#  # artifact - i.e., where the name of the generated npm module does not
+#  # contain details of the underlying RDF library dependencies (e.g.,
+#  # whether it depends on RDF/JS or a specific implementation, etc.).
+#  - programmingLanguage: TypeScript
+#    artifactVersion: "1.0.1"
+#    artifactNamePrefix: ""
+#
+#    artifactDirectoryName: TypeScript-SolidCommonVocab
+#    sourceFileExtension: ts
+#    artifactNameSuffix: -solidcommonvocab
+#
+#    solidCommonVocabVersion: "^1.0.0"
+#    rdfjsTypesVersion: "^1.0.1"
+#    rdfjsImplVersion: "^1.1.0"
+#    templateInternal: solidCommonVocabDependent/typescript/rdfjsRdfDataFactory/vocab.hbs
+#
+#    packaging:
+#      - packagingTool: npm
+#        npmModuleScope: "@inrupt/"
+#        bundleName: "Vocabinrupt3rdParty"
+#
+#        typescriptVersion: "~4.0.8"
+#        rollupVersion: "^2.36.1"
+#        rollupTypescriptPluginVersion: "^0.29.0"
+#        rollupCommonjsPluginVersion: "^17.0.0"
+#        rollupNodeResolveVersion: "^11.0.1"
+#
+#        publish:
+#          - key: "npmInstallAndBuild"
+#            command: "npm install && npm run build"
+#          - key: "npmLocal"
+#            command: "npm unpublish --force --registry http://localhost:4873/ && npm install --registry http://localhost:4873/ && npm run build && npm publish --registry http://localhost:4873/"
+#          - key: 'npmGithub'
+#            command: "npm install --registry https://npm.pkg.github.com/inrupt && npm run build && npm publish --registry https://npm.pkg.github.com/inrupt"
+#          - key: "npmPrivate"
+#            command: "npm install --registry https://registry.npmjs.org/ && npm publish --registry https://registry.npmjs.org/"
+#        packagingTemplates:
+#          - templateInternal: solidCommonVocabDependent/typescript/rdfjsRdfDataFactory/package.hbs
+#            fileName: package.json
+#          - templateInternal: generic/typescript/index.hbs
+#            fileName: index.ts
+#          - templateInternal: generic/typescript/tsconfig.hbs
+#            fileName: tsconfig.json
+#          - templateInternal: generic/typescript/rollup.config.hbs
+#            fileName: rollup.config.js
+#
 
   - programmingLanguage: TypeScript
     artifactVersion: "1.0.1"
@@ -275,13 +275,17 @@ vocabList:
   - inputResources:
       - ./Hobby/CopyOfVocab/Skydiving.ttl
 
-  # This will be included in the next release of the 'Common RDF' bundle from
-  # Inrupt, but including it here shows how flexible and powerful the Artifact
+  # These will be included in the next release of the 'Common RDF' bundle from
+  # Inrupt, but including here shows how flexible and powerful the Artifact
   # Generator is - in that we could choose to cherry-pick individual terms, or
   # extend terms with extra `rdfs:label` or `rdfs:comment` translations, etc.
-#  - inputResources:
-#      - https://w3id.org/dpv/dpv-pd#
-#    # Seems like a small bug to me, but the vann:preferredNamespaceUri value
-#    # from this vocab seems to be missing it's trailing hash. So I provide it
-#    # here... (as of 2022/05/16)
-#    namespaceOverride: https://w3id.org/dpv/dpv-pd#
+  - inputResources:
+      - https://w3id.org/dpv#
+
+  - inputResources:
+      - https://w3id.org/dpv/dpv-pd#
+
+  - inputResources:
+      - https://ontologies.semanticarts.com/o/gistCore11.0.0
+    nameAndPrefixOverride: gist
+    namespaceOverride: https://ontologies.semanticarts.com/gist/

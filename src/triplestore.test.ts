@@ -28,6 +28,7 @@ import {
   insertIntoTriplestoreNTriples,
 } from "./triplestore";
 import { createCredentialResourceFromEnvironmentVariables } from "./credentialUtil";
+import { buildDataset } from "./solidDatasetUtil";
 
 jest.mock("cross-fetch");
 const mockedFetch = crossFetch as jest.MockedFunction<typeof crossFetch>;
@@ -125,10 +126,13 @@ describe("triplestore", () => {
       blobsWithMetadata.push({
         url: "https://example.com/test",
         blob: new Blob(),
-        metadata: buildThing({ url: "https://inrupt.com/vocab/first" })
-          .addIri(RDF.type, SCHEMA_INRUPT.Person)
-          .build(),
+        metadata: buildDataset(
+          buildThing({ url: "https://inrupt.com/vocab/first" })
+            .addIri(RDF.type, SCHEMA_INRUPT.Person)
+            .build()
+        ),
       });
+
       blobsWithMetadata.push({
         url: "https://example.com/test",
         blob: new Blob(),
@@ -157,9 +161,11 @@ describe("triplestore", () => {
 
       const resources = [];
       resources.push(
-        buildThing({ url: "https://inrupt.com/vocab/first" })
-          .addIri(RDF.type, SCHEMA_INRUPT.Person)
-          .build()
+        buildDataset(
+          buildThing({ url: "https://inrupt.com/vocab/first" })
+            .addIri(RDF.type, SCHEMA_INRUPT.Person)
+            .build()
+        )
       );
 
       expect(
@@ -177,12 +183,14 @@ describe("triplestore", () => {
         )
       );
 
-      const thing = buildThing({ url: "https://inrupt.com/vocab/first" })
-        .addIri(RDF.type, SCHEMA_INRUPT.Person)
-        .build();
+      const resource = buildDataset(
+        buildThing({ url: "https://inrupt.com/vocab/first" })
+          .addIri(RDF.type, SCHEMA_INRUPT.Person)
+          .build()
+      );
 
       const resources = [];
-      resources.push(thing);
+      resources.push(resource);
 
       const credentials = createCredentialResourceFromEnvironmentVariables();
       expect(
@@ -198,9 +206,11 @@ describe("triplestore", () => {
         })
       );
 
-      const thing = buildThing({ url: "https://inrupt.com/vocab/first" })
-        .addIri(RDF.type, SCHEMA_INRUPT.Person)
-        .build();
+      const thing = buildDataset(
+        buildThing({ url: "https://inrupt.com/vocab/first" })
+          .addIri(RDF.type, SCHEMA_INRUPT.Person)
+          .build()
+      );
 
       await expect(
         insertIntoTriplestoreResource(
@@ -218,9 +228,11 @@ describe("triplestore", () => {
         })
       );
 
-      const thing = buildThing({ url: "https://inrupt.com/vocab/first" })
-        .addIri(RDF.type, SCHEMA_INRUPT.Person)
-        .build();
+      const thing = buildDataset(
+        buildThing({ url: "https://inrupt.com/vocab/first" })
+          .addIri(RDF.type, SCHEMA_INRUPT.Person)
+          .build()
+      );
 
       await expect(
         insertIntoTriplestoreResource(

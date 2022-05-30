@@ -61,7 +61,7 @@ import {
 } from "../../src/dataSource/clientPassportInMemory";
 import { DEFAULT_STORAGE_ROOT } from "../../src/applicationSetup";
 import {
-  hobbyLocalExtract,
+  hobbyFileExtract,
   hobbyTransform,
 } from "../../src/dataSource/clientHobbyFile";
 
@@ -208,7 +208,7 @@ describe("All data sources", () => {
 
   describe("Hobby (local)", () => {
     it("should transform and load", async () => {
-      const hobbyData = await hobbyLocalExtract(hobbyExample);
+      const hobbyData = await hobbyFileExtract(hobbyExample);
 
       const resources = await hobbyTransform(credential, hobbyData);
 
