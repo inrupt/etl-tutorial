@@ -19,6 +19,9 @@
 
 import { config } from "dotenv-flow";
 
+// eslint-disable-next-line no-shadow
+import { Blob } from "node:buffer";
+
 import {
   buildThing,
   getSolidDataset,
@@ -315,7 +318,7 @@ describe("ETL process", () => {
           createCredentialResourceEmpty(),
           session,
           null,
-          [{ url: "https://example.com/test", blob: new Blob() }]
+          [{ url: "https://example.com/test", blob: new Blob([]) }]
         )
       ).resolves.toContain(`[${dataSource}] provided no resources`);
     });
@@ -353,7 +356,7 @@ describe("ETL process", () => {
           createCredentialResourceEmpty(),
           session,
           [dataset],
-          [{ url: "https://example.com/test", blob: new Blob() }]
+          [{ url: "https://example.com/test", blob: new Blob([]) }]
         )
       ).resolves.toContain("and [1] Blob");
     });
