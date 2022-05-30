@@ -18,6 +18,24 @@
 // SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 import debugModule from "debug";
+
+// We need to explicitly import the Node.js implementation of 'Blob' here
+// because it's not a global in Node.js (whereas it is global in the browser).
+// We may also need to explicitly convert our usage of 'Blob' into a Buffer
+// instead of using it as a 'Blob', because the Node.js 'Blob' implementation
+// has no 'stream()' method, whereas the browser implementation does -
+// otherwise using one instance where the other is expected will throw an
+// error like this:
+//   error TS2345: Argument of type 'Blob' is not assignable to parameter of type 'Blob | Buffer'.
+//     Type 'import("buffer").Blob' is not assignable to type 'Blob'.
+//       The types returned by 'stream()' are incompatible between these types.
+//         Type 'unknown' is not assignable to type 'ReadableStream<any>'.
+// Both the Node.js and the browser implementations of 'Blob' support the
+// '.arrayBuffer()' method, and the `solid-client-js` functions that expect
+// 'Blob's (like `overwriteFile()`) can accept both native 'Blob's and
+// 'Buffer's, so always converting any 'Blob' instances we have into 'Buffer's
+// allows those functions to work safely with both Node.js and browser
+// 'Blob's.
 // eslint-disable-next-line no-shadow
 import { Blob } from "node:buffer";
 
@@ -349,6 +367,8 @@ export async function updateOrInsertResourceInSolidPod(
         // eslint-disable-next-line no-await-in-loop
         await overwriteFile(
           `${url}.jpeg`,
+          // We need to explicitly convert our 'Blob' into a Buffer here (see
+          // detailed comment on our 'import { Blob }' code above).
           // eslint-disable-next-line no-await-in-loop
           Buffer.from(await blob.arrayBuffer()),
           {
