@@ -18,6 +18,8 @@
 // SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 import debugModule from "debug";
+// eslint-disable-next-line no-shadow
+import { Blob } from "node:buffer";
 
 import {
   createContainerAt,
@@ -345,10 +347,15 @@ export async function updateOrInsertResourceInSolidPod(
         //  resource, and *NOT* the blob, which should be the other way around
         //  (given the name of the data structure is BlobWith...)!
         // eslint-disable-next-line no-await-in-loop
-        await overwriteFile(`${url}.jpeg`, blob, {
-          contentType: blob.type,
-          fetch: session.fetch,
-        });
+        await overwriteFile(
+          `${url}.jpeg`,
+          // eslint-disable-next-line no-await-in-loop
+          Buffer.from(await blob.arrayBuffer()),
+          {
+            contentType: blob.type,
+            fetch: session.fetch,
+          }
+        );
 
         // Associated metadata is optional.
         if (metadata) {
