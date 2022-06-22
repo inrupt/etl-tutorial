@@ -94,7 +94,7 @@ artifactToGenerate:
 #        npmModuleScope: "@inrupt/"
 #        bundleName: "Vocabinrupt3rdParty"
 #
-#        typescriptVersion: "~4.0.8"
+#        typescriptVersion: "^4.7.4"
 #        rollupVersion: "^2.36.1"
 #        rollupTypescriptPluginVersion: "^0.29.0"
 #        rollupCommonjsPluginVersion: "^17.0.0"
@@ -141,7 +141,7 @@ artifactToGenerate:
 #        npmModuleScope: "@inrupt/"
 #        bundleName: "Vocabinrupt3rdParty"
 #
-#        typescriptVersion: "~4.0.8"
+#        typescriptVersion: "^4.7.4"
 #        rollupVersion: "^2.36.1"
 #        rollupTypescriptPluginVersion: "^0.29.0"
 #        rollupCommonjsPluginVersion: "^17.0.0"
@@ -184,7 +184,7 @@ artifactToGenerate:
         npmModuleScope: "@inrupt/"
         bundleName: "Vocabinrupt3rdParty"
 
-        typescriptVersion: "~4.0.8"
+        typescriptVersion: "^4.7.4"
         rollupVersion: "^2.36.1"
         rollupTypescriptPluginVersion: "^0.29.0"
         rollupCommonjsPluginVersion: "^17.0.0"

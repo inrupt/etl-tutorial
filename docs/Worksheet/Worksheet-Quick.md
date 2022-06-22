@@ -7,7 +7,7 @@ configuring, testing, and running the ETL Tutorial, from start to finish.
 
 Here are some useful links and resources you can use during this worksheet:
 
-- PodSpaces registration: https://signup.pod.inrupt.com/
+- PodSpaces registration: https://start.inrupt.com/
 - Yopmail: https://yopmail.com/en/
 - Password generator: https://passwordsgenerator.net/
 - Broker: https://broker.pod.inrupt.com/
@@ -45,12 +45,6 @@ Now run:
 
 ```
 npm ci
-```
-
-Now build the project:
-
-```
-npm run build
 ```
 
 Now run the unit test suite:

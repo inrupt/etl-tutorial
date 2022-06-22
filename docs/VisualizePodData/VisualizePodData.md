@@ -53,3 +53,17 @@ To create a new empty repository:
 - ...and click the "_Show_" button
 - Now try double-clicking on the nodes to expand them and explore (see a sample
   expanded view [here](./VisualizeExamplePodData.png)).
+
+# UI Navigation Tips
+
+- Dragging-and-dropping any node ‘pins’ it to its dropped position.
+- Single click on any node to see its ‘Properties’ in the right-hand sidebar.
+  Single clicking that node again will dismiss the sidebar.
+- Hovering over a node pops up a nice icon menu (from which you can remove the
+  node (just from the visualization, not the database!), etc.), but these icons
+  only appear if the sidebar is dismissed (so single click the node to dismiss
+  the sidebar first if needed).
+- To ‘restart’ the visualization (e.g., if things get cluttered or confusing),
+  simply use <Ctrl>-R to refresh and start navigating again.
+- Note that the sidebar only displays properties whose values are literals, not
+  links (IRIs).
