@@ -98,13 +98,13 @@ export default async function processCommandLine<T>(
             .alias("e", "etlCredentialResource")
             .describe(
               "etlCredentialResource",
-              "A glob pattern for local Linked Data resources containing user credentials for the 3rd-party APIs to ETL from."
+              "A local Linked Data resource containing credentials for our ETL tool itself (e.g., it's OIDC Issuer, and it's ClientID and ClientSecret) so it can login to get an Access Token."
             )
 
             .alias("l", "localUserCredentialResourceGlob")
             .describe(
               "localUserCredentialResourceGlob",
-              "A glob pattern for local Linked Data resources containing user credentials for the 3rd-party APIs to ETL from."
+              "A filename pattern for local Linked Data resources containing user credentials for the 3rd-party APIs to ETL from."
             )
 
             .alias("i", "localUserCredentialResourceGlobIgnore")

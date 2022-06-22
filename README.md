@@ -38,14 +38,14 @@ each of those vocabularies (which are all located in the
 [./resources/Vocab](./resources/Vocab) directory):
 
 ```script
-npx @inrupt/artifact-generator generate --vocabListFile "resources/Vocab/vocab-etl-tutorial-bundle-all.yml" --outputDirectory "./src/InruptTooling/Vocab/EtlTutorial" --noprompt --force --publish npmInstallAndBuild
+npx @inrupt/artifact-generator generate --vocabListFile "resources/Vocab/vocab-etl-tutorial-bundle-all.yml" --outputDirectory "./src/InruptTooling/Vocab/EtlTutorial" --noPrompt --force --publish npmInstallAndBuild
 ```
 
 **Note:** If you have the Artifact Generator installed locally (e.g., for
 faster execution), then you can run it directly:
 
 ```script
-node ../SDK/artifact-generator/src/index.js generate --vocabListFile "resources/Vocab/vocab-etl-tutorial-bundle-all.yml" --outputDirectory "./src/InruptTooling/Vocab/EtlTutorial" --noprompt --force --publish npmInstallAndBuild
+node ../SDK/artifact-generator/src/index.js generate --vocabListFile "resources/Vocab/vocab-etl-tutorial-bundle-all.yml" --outputDirectory "./src/InruptTooling/Vocab/EtlTutorial" --noPrompt --force --publish npmInstallAndBuild
 ```
 
 **Note**: during any ETL development, it's generally very common to continue

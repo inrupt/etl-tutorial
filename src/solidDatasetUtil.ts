@@ -79,6 +79,13 @@ export interface GetThingOptions {
   scope?: Url | UrlString;
 }
 
+/**
+ * NOTE: This function arbitrarily picks any subject out of each dataset, and
+ * relies on the assumption that only one subject is present at all.
+ *
+ * @param resourceDetails Collection of resources (possibly with Blobs)
+ * @param type RDF type to get
+ */
 export function getThingOfTypeFromCollectionMandatoryOne(
   resourceDetails: CollectionOfResources,
   type: NamedNode

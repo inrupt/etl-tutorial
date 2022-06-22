@@ -94,7 +94,7 @@ export async function loadResources(
         blobsWithMetadata
       );
     } else {
-      result = `Not logged in, so nothing written to Pod for data source [${dataSource}].`;
+      result = `ETL tool did not log into its Identity Provider, so nothing written to user Pod for data source [${dataSource}].`;
     }
   }
 
@@ -362,7 +362,7 @@ export async function loginAsRegisteredApp(argv: Arguments): Promise<Session> {
     etlOidcIssuer === null
   ) {
     debug(
-      `Ignoring Solid login - as our registered application credential resource [${etlCredentialResource}] didn't contain all the information we need to automatically (i.e., without human intervention) log into our ETL tool's Solid Pod (we got 'clientId' [${etlClientId}], 'clientSecret' [${etlClientSecret}], and 'oidcIssuer' [${etlOidcIssuer}], all of which are required).`
+      `Ignoring Solid login - as our registered application credential resource [${etlCredentialResource}] didn't contain all the information we need to automatically log into (i.e., without human intervention) our ETL tool's Solid Pod (we got 'clientId' [${etlClientId}], 'clientSecret' [${etlClientSecret}], and 'oidcIssuer' [${etlOidcIssuer}], all of which are required).`
     );
   } else {
     try {
