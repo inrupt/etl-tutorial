@@ -18,7 +18,8 @@ Here are some useful links and resources you can use during this worksheet:
 
 ## PHASE 1 - Basic code installation, and running tests.
 
-Ensure you're on Node.js version 14 (should be fine on v16 too, but we've tested on v14):
+Ensure you're on a Node.js version > 14.18 (should be fine on v16 too, but we've
+tested on v14):
 
 ```
 $ node --version
@@ -317,7 +318,7 @@ See screenshot of how we're going to grant this permission
 [here](docs/Worksheet/GivingEtlTutorialPermission.png).
 
 Now use PodBrowser to login as your test user, and navigate to their
-`/private` folder.
+`/private` folder (create one if none are present).
 
 Click on the line of this folder (not on the text of the folder name itself
 (which will navigate into that folder)), you should see a right-hand sidebar
