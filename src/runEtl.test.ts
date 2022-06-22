@@ -414,7 +414,7 @@ describe("ETL process", () => {
         loadResources("data source", createCredentialResourceEmpty(), session, [
           dataset,
         ])
-      ).resolves.toContain("Not logged in");
+      ).resolves.toContain("ETL tool did not log into");
     });
 
     it("should load resource, logged into Pod", async () => {

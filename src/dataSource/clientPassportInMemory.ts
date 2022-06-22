@@ -81,7 +81,7 @@ const inputToEtlFrom3rdParty = {
   number: "PII-123123213",
   photo_image_file:
     "resources/test/DummyData/DummyDataSource/DummyPassportOffice/DummyPhoto/fake_passport.jpg",
-  exif: `{ "ColorModel": "RGB", "PixelHeight": 800, "PixelWidth": 532 }`,
+  exif: `{ ColorModel: RGB, PixelHeight: 800, PixelWidth: 532 }`,
 };
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -192,7 +192,7 @@ export function passportTransform(
       url: blobMetadataIri,
     })
       .addIri(RDF.type, SCHEMA_INRUPT.NS("ImageObject"))
-      .addStringNoLocale(RDFS.label, passportDataAsJson.photo_image)
+      .addStringNoLocale(RDFS.label, passportDataAsJson.photo_image_file)
       .addStringNoLocale(SCHEMA_INRUPT.NS("exifData"), passportDataAsJson.exif)
       .addIri(SCHEMA_INRUPT.image, blobIri)
       .build()

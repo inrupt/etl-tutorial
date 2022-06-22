@@ -129,7 +129,7 @@ export async function initiateApplication(
     }
   } else {
     debug(
-      `Not logged into Solid Pod - ignore clearing out existing application data from Pod.`
+      `Ignoring clear-out of existing ETL data from user Pod  (ETL tool did not log into it's identity provider, as we have no Access Token needed to attempt to access private data in any user's Pod).`
     );
     const storageRoot = getCredentialStringOptional(
       credential,

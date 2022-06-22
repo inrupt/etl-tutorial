@@ -74,7 +74,12 @@ export async function companiesHouseUkExtractCompanyById(
     return null;
   }
 
-  debug(`COMPANIE SHOUSE AUTH TOKEN FROM USER: [${authToken}]`);
+  debug(
+    `Got Companies House Auth Token from user credential resource: [${authToken.substring(
+      0,
+      5
+    )}...]`
+  );
 
   const endpoint = companiesHouseUkEndpointSearchCompanyById.replace(
     "{{COMPANY_ID}}",

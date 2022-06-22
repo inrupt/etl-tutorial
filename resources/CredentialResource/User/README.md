@@ -1,11 +1,16 @@
 # User Credentials directory
 
-This directory contains credentials files, where each file contains a single user's credentials for
-each of the data sources for which they have an account.
+This directory (and potentially it's subdirectories) can contain credential
+files, where each file contains a single user's credentials for each of the data
+sources for which they may have an account.
 
-Our ETL process will iterate over each of these credentials files, and execute the ETL process for
-each one, thereby loading data from each data source into that user's Solid Pod.
+Our ETL process can iterate over each of these credentials files, and execute
+the ETL process for each one, thereby Extracting data from each data source for
+which that user may have provided their credentials, Transforming that data into
+Linked Data, and Loading it into that user's Solid Pod.
 
-Some data sources may be optional (i.e., a user not having an account, or not providing their
-credentials for that account if they do have one), meaning the ETL process will simply not attempt
-to extract, transform and load data for that user from that data source.
+It's important to re-iterate that for each user, data sources may be optional
+(i.e., a user not having an account, or not providing their credentials for
+their account even if they do have one), meaning the ETL process will simply not
+attempt to Extract, Transform, and Load data for that user for that particular
+data source.
