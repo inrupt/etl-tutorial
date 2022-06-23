@@ -87,7 +87,7 @@ const inputToEtlFrom3rdParty = {
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export async function passportLocalExtract(): Promise<any> {
   debug(
-    `Successfully extracted passport data from [${DATA_SOURCE}] for [${inputToEtlFrom3rdParty.surname}].`
+    `\nSuccessfully extracted passport data from [${DATA_SOURCE}] for [${inputToEtlFrom3rdParty.surname}].`
   );
 
   // Return a copy of our 3rd-party data (in case the receiver (e.g., a test)
@@ -99,7 +99,8 @@ export function passportTransform(
   credential: SolidDataset,
   // This 3rd-party APIs doesn't provide type information for responses...
   // eslint-disable-next-line @typescript-eslint/no-explicit-any, @typescript-eslint/explicit-module-boundary-types
-  passportDataAsJson: any
+  passportDataAsJson: any,
+  applicationEntrypointIri: string
 ): CollectionOfResources {
   // Our transformed result will be an array of Linked Data resources plus an
   // array of binary resources (i.e., Blobs), each of which can have
@@ -116,7 +117,11 @@ export function passportTransform(
   if (passportDataAsJson === null) {
     return result;
   }
-  const wiring = wireUpDataSourceContainer(DATA_SOURCE, credential);
+  const wiring = wireUpDataSourceContainer(
+    DATA_SOURCE,
+    credential,
+    applicationEntrypointIri
+  );
 
   // Create a container for all the resources we will be adding from this data
   // source.

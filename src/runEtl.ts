@@ -62,7 +62,7 @@ const COMPANY_ID_TO_SEARCH_FOR = "00041424";
 
 // For tutorial purposes, we hard-code a Hobby.
 const HOBBY_SOURCE_FILE =
-  "resources/test/DummyData/DummyDataSource/DummyHobby/JoeBloggs-Skydive.json";
+  "resources/test/DummyData/DummyDataSource/DummyHobby/TestUser-Hobby-Skydive.json";
 
 export async function loadResources(
   dataSource: string,
@@ -192,13 +192,19 @@ export async function parseUserCredentialResources(
   return Promise.all(parsedDatasets);
 }
 
+/**
+ *
+ * @param session The authenticated session.
+ * @param credentialDetails
+ * @returns The application entrypoint IRI, or undefined if none.
+ */
 async function initializeAppResourcesForUser(
   session: Session,
   credentialDetails: {
     name: string;
     dataset: SolidDataset;
   }
-): Promise<boolean> {
+): Promise<string | undefined> {
   try {
     // Prepare where we're going to load.
     const applicationEntrypointIri = await initiateApplication(
@@ -232,12 +238,12 @@ async function initializeAppResourcesForUser(
     );
     debug(loadAppResources);
 
-    return true;
+    return applicationEntrypointIri;
   } catch (error) {
     // Report our failure, but keep processing users - i.e., do not throw...
     const message = `Failed to setup application resources (before attempting any data source ETL) for user credentials from [${credentialDetails.name}] - error: [${error}]`;
     debug(message);
-    return false;
+    return undefined;
   }
 }
 
@@ -246,7 +252,8 @@ async function etlDataSourcesForUser(
   credentialDetails: {
     name: string;
     dataset: SolidDataset;
-  }
+  },
+  applicationEntrypointIri: string
 ): Promise<number> {
   let result;
 
@@ -260,7 +267,8 @@ async function etlDataSourcesForUser(
         await companiesHouseUkExtractCompanyById(
           credentialDetails.dataset,
           COMPANY_ID_TO_SEARCH_FOR
-        )
+        ),
+        applicationEntrypointIri
       )
     );
     debug(result);
@@ -269,7 +277,11 @@ async function etlDataSourcesForUser(
       "Passport office UK",
       credentialDetails.dataset,
       session,
-      passportTransform(credentialDetails.dataset, await passportLocalExtract())
+      passportTransform(
+        credentialDetails.dataset,
+        await passportLocalExtract(),
+        applicationEntrypointIri
+      )
     );
     debug(result);
 
@@ -279,7 +291,8 @@ async function etlDataSourcesForUser(
       session,
       hobbyTransform(
         credentialDetails.dataset,
-        await hobbyFileExtract(HOBBY_SOURCE_FILE)
+        await hobbyFileExtract(HOBBY_SOURCE_FILE),
+        applicationEntrypointIri
       )
     );
     debug(result);
@@ -310,12 +323,18 @@ async function etlAllUsers(
     );
 
     // eslint-disable-next-line no-await-in-loop
-    if (await initializeAppResourcesForUser(session, credentials)) {
+    const applicationEntrypointIri = await initializeAppResourcesForUser(
+      session,
+      credentials
+    );
+
+    if (applicationEntrypointIri) {
       // Do ETL for each data source...
       // eslint-disable-next-line no-await-in-loop
       successfullyProcessed += await etlDataSourcesForUser(
         session,
-        credentials
+        credentials,
+        applicationEntrypointIri
       );
     }
   }

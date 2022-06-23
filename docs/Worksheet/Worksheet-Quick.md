@@ -244,7 +244,7 @@ Token (which will be provided by your instructor).
 Edit our single user credentials resource again:
 
 ```
-# Use gedit, vim, VSCode, or any text editor to edit a sample user resource:
+# Use gedit, vim, VSCode, or any text editor:
 gedit ./resources/CredentialResource/User/example-user-credential-1.ttl
 ```
 
@@ -265,6 +265,107 @@ ts-node src/index.ts runEtl --etlCredentialResource "resources/CredentialResourc
   to Linked Data as before.
 - **_But now_** we should see that data Loaded as Resources from both the
   Passport Office and Companies House data sources into the triplestore.
+
+## PHASE 4 - Registering our ETL Tutorial application
+
+Now we'll Register our ETL Tutorial application with the Identity Provider (IdP)
+you used to create its Pod. This registration process will provide us with
+standard OAuth `ClientID` and `ClientSecret` values, which we can then use to
+configure your ETL process to login automatically (i.e., without any human
+intervention whatsoever).
+
+**_Note_**: This is just the standard OAuth Client Credentials flow.
+
+Go to:
+
+```
+https://broker.pod.inrupt.com/registration.html
+```
+
+Login with your **_ETL Tutorial_** username and password (do **_not_** use
+your test user credentials by mistake!), and register your ETL Tutorial
+instance with whatever name you like, e.g., `InruptEtlTutorial`.
+
+Record the resulting `ClientID` and `ClientSecret` values (using a password
+manager, or our simple template from above):
+
+- ClientID: **_<<RECORD_HERE_ETL_CLIENT_ID>>_**
+- ClientSecret: **_<<RECORD_HERE_ETL_CLIENT_SECRET>>_**
+
+## PHASE 5 - Configure our ETL's `ClientId` and `ClientSecret` values
+
+Now we simply edit our ETL Credentials resource to add the `ClientId` and
+`ClientSecret` values.
+
+```
+# Use gedit, vim, VSCode, or any text editor:
+gedit ./resources/CredentialResource/RegisteredApp/example-registered-app-credential.ttl
+```
+
+...and paste in our registration values into their respective values in their
+corresponding triples:
+
+```
+  inrupt_common:clientId "" ;
+  inrupt_common:clientSecret "" ;
+```
+
+Save our ETL credentials Turtle resource, and re-run our ETL process again (we
+should expect failures!):
+
+```
+ts-node src/index.ts runEtl --etlCredentialResource "resources/CredentialResource/RegisteredApp/example-registered-app-credential.ttl" --localUserCredentialResourceGlob "resources/CredentialResource/User/example-user-credential-1.ttl"
+```
+
+Now we should see a successful login by the ETL Tutorial application into its
+Solid Pod. The login will result in our application's WebID being displayed in
+the console output.
+
+But later in the process, we should see that we fail to find a valid Storage
+Root configuration for our test user. This is simply because we still haven't
+configured our test users credentials - so let's do that now...
+
+## PHASE 6 - Configure our test users WebID and StorageRoot
+
+Edit our single user credentials resource again:
+
+```
+# Use gedit, vim, VSCode, or any text editor:
+gedit ./resources/CredentialResource/User/example-user-credential-1.ttl
+```
+
+This time we wish to add the values we received when we first created this test
+user's Pod.
+
+```
+  solid:webId "https://id.inrupt.com/patburneruser1" ;
+  solid:storageRoot "https://storage.inrupt.com/7e9f0ce9-2066-4bf1-8b78-4608e2865ed2/" ;
+```
+
+Save our user credentials resource, and re-run our ETL process again (we
+should **_still_** expect failures!):
+
+```
+ts-node src/index.ts runEtl --etlCredentialResource "resources/CredentialResource/RegisteredApp/example-registered-app-credential.ttl" --localUserCredentialResourceGlob "resources/CredentialResource/User/example-user-credential-1.ttl"
+```
+
+This time we should see a different failures. This time it's a `403 Forbidden`
+error, which is exactly what we should expect!
+
+This test user has not yet granted permission for our ETL Tutorial application
+to write to their Pod! So let's go do that now...
+
+## PHASE 7 - Test user granting permission to our ETL Tutorial application
+
+For this operation, we're going to use Inrupt's open-source PodBrowser tool.
+
+In a new Incognito window, go to: `https://podbrowser.inrupt.com/`.
+
+Log in as the test user you created earlier (be careful not to login as the ETL
+Tutorial by mistake!).
+
+Navigate to the `private` folder (click on line, not text), on right-hand see Sharing, click Add,
+paste in the ETL Tutorial's WebID (but careful again to paste in the ETL Tutorial's WebID, and not the test user's WebID!)
 
 ## PHASE Appendix - Run End-2-End tests independently
 

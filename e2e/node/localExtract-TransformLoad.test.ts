@@ -46,7 +46,7 @@ import {
 import companiesHouseUkSearchCompanyIdExample from "../../resources/test/RealData/PublicApiResponse/api-uk-companieshouse-search-companyid-unilever.json";
 /* eslint-enable import/extensions */
 const hobbyExample =
-  "resources/test/DummyData/DummyDataSource/DummyHobby/JoeBloggs-Skydive.json";
+  "resources/test/DummyData/DummyDataSource/DummyHobby/TestUser-Hobby-Skydive.json";
 
 import {
   clearTriplestore,
@@ -59,7 +59,7 @@ import {
   passportLocalExtract,
   passportTransform,
 } from "../../src/dataSource/clientPassportInMemory";
-import { DEFAULT_STORAGE_ROOT } from "../../src/applicationSetup";
+import { DEFAULT_STORAGE_ROOT_PREFIX } from "../../src/applicationSetup";
 import {
   hobbyFileExtract,
   hobbyTransform,
@@ -96,7 +96,9 @@ describe("All data sources", () => {
     // storage (so we can subsequently visualize our loaded data).
     storageRoot = getCredentialStringOptional(credential, SOLID.storageRoot);
     if (!storageRoot) {
-      process.env["SOLID_STORAGE_ROOT"] = DEFAULT_STORAGE_ROOT;
+      process.env[
+        "SOLID_STORAGE_ROOT"
+      ] = `${DEFAULT_STORAGE_ROOT_PREFIX}UnitTest/`;
       credential = createCredentialResourceFromEnvironmentVariables();
     }
 
@@ -151,7 +153,10 @@ describe("All data sources", () => {
 
   describe("Test Pod connectivity", () => {
     it("should read private resource from Pod", async () => {
-      if (storageRoot === null || storageRoot === DEFAULT_STORAGE_ROOT) {
+      if (
+        storageRoot === null ||
+        storageRoot.startsWith(DEFAULT_STORAGE_ROOT_PREFIX)
+      ) {
         debug(
           `No storage root (or just our default one for triplestore population), so not attempting to access a private resource on the ETL Tutorial Pod.`
         );
@@ -189,7 +194,10 @@ describe("All data sources", () => {
       );
       expect(response).not.toBeNull();
 
-      if (storageRoot === null || storageRoot === DEFAULT_STORAGE_ROOT) {
+      if (
+        storageRoot === null ||
+        storageRoot.startsWith(DEFAULT_STORAGE_ROOT_PREFIX)
+      ) {
         debug(
           `No storage root (or just our default one for triplestore population), so not attempting to insert into user Pods.`
         );
@@ -219,7 +227,10 @@ describe("All data sources", () => {
       );
       expect(response).not.toBeNull();
 
-      if (storageRoot === null || storageRoot === DEFAULT_STORAGE_ROOT) {
+      if (
+        storageRoot === null ||
+        storageRoot.startsWith(DEFAULT_STORAGE_ROOT_PREFIX)
+      ) {
         debug(
           `No storage root (or just our default one for triplestore population), so not attempting to insert into user Pods.`
         );
@@ -250,7 +261,10 @@ describe("All data sources", () => {
       );
       expect(response).not.toBeNull();
 
-      if (storageRoot === null || storageRoot === DEFAULT_STORAGE_ROOT) {
+      if (
+        storageRoot === null ||
+        storageRoot.startsWith(DEFAULT_STORAGE_ROOT_PREFIX)
+      ) {
         debug(
           `No storage root (or just our default one for triplestore population), so not attempting to insert into user Pods.`
         );
