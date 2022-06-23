@@ -214,10 +214,7 @@ ts-node src/index.ts runEtl --etlCredentialResource "resources/CredentialResourc
   - Make sure you select the `inrupt-etl-tutorial` repository (i.e., or
     whichever repository you configured).
   - Simply visualize this node:
-    `https://example.com/generatedUser-1/storageRoot/private/inrupt/etl-tutorial/etl-run-1/dataSource/PassportOffice-UK/`
-    - (You could also navigate to  
-      `https://test.example.com/test-user/profile/card#me` to see the WebID and
-      the ETL containers, but it's not yet fully wired up to the ETL data!).
+    `https://test.example.com/test-user/profile/card#me`
   - You should be able to intuitively navigate through the ETL-ed data.
 
 Make a change to the local Passport data (e.g., in the JSON in
@@ -516,7 +513,7 @@ npm run e2e-test-node-localExtract-TransformLoad
     whichever repository you configured your `.env.test.local` to Load data
     into).
   - Simply visualize this node:
-    `https://different.domain.example.com/testStorageRoot/private/inrupt/etl-tutorial/etl-run-1/`
+    `https://test.example.com/test-user/profile/card#me`
   - You should be able to intuitively navigate through the ETL-ed data.
 
 Make a change to the local Passport data (e.g., in the JSON in
