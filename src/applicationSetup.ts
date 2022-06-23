@@ -93,6 +93,7 @@ export async function initiateApplication(
     const fetchedRootResource = await getSolidDataset(
       applicationEntrypointIri,
       {
+        // @ts-ignore
         fetch: session.fetch,
       }
     ).catch((error) => {
@@ -112,6 +113,7 @@ export async function initiateApplication(
         `Found resource at [${applicationEntrypointIri}] - about to recursively delete...`
       );
       await deleteRecursively(fetchedRootResource, {
+        // @ts-ignore
         fetch: session.fetch,
       }).catch((error) => {
         const message = `Failed to recursively delete ${APPLICATION_LABEL} resources from Pod at [${applicationEntrypointIri}] - error: [${error}]`;
@@ -129,7 +131,7 @@ export async function initiateApplication(
     }
   } else {
     debug(
-      `Ignoring clear-out of existing ETL data from user Pod  (ETL tool did not log into it's identity provider, as we have no Access Token needed to attempt to access private data in any user's Pod).`
+      `Ignoring clear-out of existing ETL data from user Pod  (ETL tool did not log into its identity provider, so we have no Access Token, as needed for write access to any user's Pod).`
     );
     const storageRoot = getCredentialStringOptional(
       credential,
@@ -165,7 +167,7 @@ export async function createWebIdProfileDocumentIfNeeded(
       DEFAULT_WEBID
     ) as string;
 
-    const description = `No Solid Pod credentials were provided, so generating profile document for test user (with WebID [${webId}]).`;
+    const description = `No user credentials provided, so in case we Load to a triplestore, we will generate a profile document for this user (with WebID [${webId}]).`;
 
     resources.push(
       buildDataset(
@@ -191,7 +193,7 @@ export async function createApplicationResources(
 ): Promise<SolidDataset[]> {
   const resources = [];
 
-  debug(`Creating resources specific to [${APPLICATION_LABEL}]...`);
+  debug(`\nCreating resources specific to [${APPLICATION_LABEL}]...`);
   const detailThing = getThingOfTypeMandatoryOne(
     credential,
     INRUPT_COMMON.DataHierarchyFirst

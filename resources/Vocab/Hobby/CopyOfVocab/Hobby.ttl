@@ -22,21 +22,19 @@ hobby: a owl:Ontology, inrupt_gen:Ontology ;
 
 hobby:Hobby a rdfs:Class ;
   rdfs:isDefinedBy hobby: ;
-  rdfs:label "Hobby"@en ;
-  rdfs:label "Hobby"@es ;
-  rdfs:comment "An activity done regularly in one's leisure time for pleasure."@en ;
-  rdfs:comment "Una actividad realizada regularmente en el tiempo libre por placer."@es .
+  rdfs:label "Hobby"@en , "Hobby"@es ;
+  rdfs:comment
+    "An activity done regularly in one's leisure time for pleasure."@en ,
+    "Una actividad realizada regularmente en el tiempo libre por placer."@es .
 
 hobby:hasHobby a rdf:Property ;
   rdfs:isDefinedBy hobby: ;
-  rdfs:label "Hobby"@en ;
-  rdfs:label "Hobby"@es ;
-  rdfs:comment "Has a hobby."@en ;
-  rdfs:comment "Tiene un pasatiempo."@es .
+  rdfs:label "Hobby"@en , "Hobby"@es ;
+  rdfs:comment "Has a hobby."@en , "Tiene un pasatiempo."@es .
 
 hobby:kind a rdf:Property ;
   rdfs:isDefinedBy hobby: ;
-  rdfs:label "Kind"@en ;
-  rdfs:label "Clase"@es ;
-  rdfs:comment "The kind of hobby (e.g., collecting, sport, artistic, etc.)."@en ;
-  rdfs:comment "El tipo de pasatiempo (por ejemplo, coleccionismo, deporte, artístico, etc.)."@es .
+  rdfs:label "Kind"@en , "Clase"@es ;
+  rdfs:comment
+    "The kind of hobby (e.g., collecting, sport, artistic, etc.)."@en ,
+    "El tipo de pasatiempo (por ejemplo, coleccionismo, deporte, artístico, etc.)."@es .

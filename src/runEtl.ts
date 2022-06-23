@@ -362,7 +362,7 @@ export async function loginAsRegisteredApp(argv: Arguments): Promise<Session> {
     etlOidcIssuer === null
   ) {
     debug(
-      `Ignoring Solid login - as our registered application credential resource [${etlCredentialResource}] didn't contain all the information we need to automatically log into (i.e., without human intervention) our ETL tool's Solid Pod (we got 'clientId' [${etlClientId}], 'clientSecret' [${etlClientSecret}], and 'oidcIssuer' [${etlOidcIssuer}], all of which are required).`
+      `\nIgnoring Solid login - as our registered application credential resource [${etlCredentialResource}] didn't contain all the information we need to automatically log into (i.e., without human intervention) our ETL tool's Solid Pod (we got 'clientId' [${etlClientId}], 'clientSecret' [${etlClientSecret}], and 'oidcIssuer' [${etlOidcIssuer}], all of which are required).\n\n`
     );
   } else {
     try {
@@ -400,7 +400,7 @@ export async function runEtl(argv: Arguments): Promise<number> {
     const processedPlural = successfullyProcessed === 1 ? "" : "s";
     const userPlural = userCredentialDatasets.length === 1 ? "" : "s";
     debug(
-      `Successfully completed ETL process for [${successfullyProcessed}] user${processedPlural} from [${userCredentialDatasets.length}] set${userPlural} of user credentials.`
+      `\nSuccessfully completed ETL process for [${successfullyProcessed}] user${processedPlural} from [${userCredentialDatasets.length}] set${userPlural} of user credentials.`
     );
     return successfullyProcessed;
     // eslint-disable-next-line @typescript-eslint/no-explicit-any

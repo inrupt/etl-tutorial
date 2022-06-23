@@ -69,13 +69,13 @@ export async function companiesHouseUkExtractCompanyById(
 
   if (authToken === null) {
     debug(
-      `Ignoring extraction of data from [${DATA_SOURCE}] - no, or missing, credentials (got authentication token [${authToken}]).`
+      `\nIgnoring extraction of data from [${DATA_SOURCE}] - no, or missing, credentials (got authentication token [${authToken}]).`
     );
     return null;
   }
 
   debug(
-    `Got Companies House Auth Token from user credential resource: [${authToken.substring(
+    `\nGot Companies House Auth Token from user credential resource: [${authToken.substring(
       0,
       5
     )}...]`

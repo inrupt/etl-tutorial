@@ -7,7 +7,7 @@ configuring, testing, and running the ETL Tutorial, from start to finish.
 
 Here are some useful links and resources you can use during this worksheet:
 
-- PodSpaces registration: https://signup.pod.inrupt.com/
+- PodSpaces registration: https://start.inrupt.com/
 - Yopmail: https://yopmail.com/en/
 - Password generator: https://passwordsgenerator.net/
 - Broker: https://broker.pod.inrupt.com/
@@ -67,13 +67,13 @@ npm test
 
 ## PHASE 2 - Run ETL (without configuring anything yet)
 
-Run without any commands...
+Run without any commands to see what options we may have...
 
 ```
 ts-node src/index.ts
 ```
 
-Run with the 'runEtl' command...
+Run with the 'runEtl' command, but no arguments yet...
 
 ```
 ts-node src/index.ts runEtl
@@ -104,12 +104,18 @@ pattern for user credentials):
 ts-node src/index.ts runEtl --etlCredentialResource "resources/CredentialResource/RegisteredApp/example-registered-app-credential.ttl" --localUserCredentialResourceGlob "resources/CredentialResource/User/example-user-credential*.ttl"
 ```
 
-If we have no internet connection, we'll expect to see the following (**Note**:
-our code should exit with a descriptive error message here instead!):
+---
+
+**Note**: If we have no internet connection, we'll expect to see the following
+(our code should really exit with a descriptive error message here instead!):
 
 ```
 failed, reason: getaddrinfo ENOTFOUND api.company-information.service.gov.uk
 ```
+
+---
+
+## Successful ETL flow
 
 We should see a lot of console output, but the walking through it slowly, we
 should see that our tool starts to attempt to log into it's identity provider
@@ -119,11 +125,11 @@ configured them yet!), and so it ignores the IdP login stage (this is fine, as,
 for example, we may only wish our ETL process to populate a triplestore, and not
 attempt to write to any user Pods at all).
 
-Next our tool searches for local resources matching the pattern we provided for
-user credential resources, and it should find, and successfully parse, two such
-resources.
+Next our tool searches for local resources matching the file pattern we provided
+for user credential resources, and it should find, and successfully parse, two
+such resources.
 
-For each of the two users resources it finds it:
+For each of the two user credential resources it finds it:
 
 - Attempts to clear out existing user data from the triplestore (but we
   haven't configured one yet, so this is ignored).
@@ -142,12 +148,15 @@ resources will work, but source requiring credentials to access real 3rd-party
 APIs will fail (due to missing credentials), and will therefore be ignored).
 
 In each case, writing any successfully Extracted and Transformed resources will
-not be written to user Pods or a triplestore at this stage (since we haven't
-configured those yet).
+not be written to user Pods or a triplestore at this stage, since we haven't
+configured those yet!
+
+### Run with one test user (just for less output)
 
 For here on, there's no need to demonstrate the ETL process for multiple users,
-so we can replace our wildcard in the user resource argument, and just provide
-a single user's credential resource to reduce the amount of output we generate:
+so we can replace our wildcard in the user credential resource argument, and
+just provide a single user's credential resource to reduce the amount of output
+we generate:
 
 ```
 ts-node src/index.ts runEtl --etlCredentialResource "resources/CredentialResource/RegisteredApp/example-registered-app-credential.ttl" --localUserCredentialResourceGlob "resources/CredentialResource/User/example-user-credential-1.ttl"
