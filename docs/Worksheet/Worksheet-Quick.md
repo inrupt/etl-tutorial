@@ -69,6 +69,9 @@ npm test
 
 Run without any commands to see what options we may have...
 
+**_Note_**: We recommend using `ts-node` to run the remaining commands, as its
+faster and more convenient. To install globally, simply run: `npm i -g ts-node`.
+
 ```
 ts-node src/index.ts
 ```
