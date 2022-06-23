@@ -282,7 +282,7 @@ intervention whatsoever).
 Go to:
 
 ```
-https://broker.pod.inrupt.com/registration.html
+https://login.inrupt.com/registration.html
 ```
 
 Login with your **_ETL Tutorial_** username and password (do **_not_** use
@@ -341,8 +341,8 @@ This time we wish to add the values we received when we first created this test
 user's Pod.
 
 ```
-  solid:webId "https://id.inrupt.com/patburneruser1" ;
-  solid:storageRoot "https://storage.inrupt.com/7e9f0ce9-2066-4bf1-8b78-4608e2865ed2/" ;
+  solid:webId "https://id.inrupt.com/<YOUR-USERNAME-LOWERCASE>burneruser1" ;
+  solid:storageRoot "https://storage.inrupt.com/AAAAAAAA-BBBB-CCCC-DDDD-EEEEEEEEEEEE/" ;
 ```
 
 Save our user credentials resource, and re-run our ETL process again (we
@@ -353,7 +353,7 @@ ts-node src/index.ts runEtl --etlCredentialResource "resources/CredentialResourc
 ```
 
 This time we should see a different failures. This time it's a `403 Forbidden`
-error, which is exactly what we should expect!
+error, **_which is exactly what we should expect!_**
 
 This test user has not yet granted permission for our ETL Tutorial application
 to write to their Pod! So let's go do that now...
@@ -362,13 +362,55 @@ to write to their Pod! So let's go do that now...
 
 For this operation, we're going to use Inrupt's open-source PodBrowser tool.
 
-In a new Incognito window, go to: `https://podbrowser.inrupt.com/`.
+In a **_new Incognito window_** (and make sure you don't have any other
+Incognito windows open, as session state is shared even for Incognito tabs,
+across browser instances!), go to: `https://podbrowser.inrupt.com/`.
+
+---
+
+**_Note_**: Temporarily, you must **_NOT_** click the big 'Sign In' button here,
+but instead click on the 'SIGN IN WITH OTHER PROVIDER', and enter the latest ESS
+Broker URL of `https://login.inrupt.com`, then click 'GO'.
+
+---
 
 Log in as the test user you created earlier (be careful not to login as the ETL
 Tutorial by mistake!).
 
-Navigate to the `private` folder (click on line, not text), on right-hand see Sharing, click Add,
-paste in the ETL Tutorial's WebID (but careful again to paste in the ETL Tutorial's WebID, and not the test user's WebID!)
+---
+
+Create a new `private` folder.
+
+Click on line of your new folder (don't click on the text of the folder name, as
+that will navigate _into_ the `private` folder itself! If you do that, simply
+click back to the parent container using the breadcrumbs just under the `Files`
+heading).
+
+On right-hand side of the page you should see a big sidebar open up, and in
+there an option for Sharing. Open that Sharing pane and you'll see a section for
+`Editors`. In there click `EDIT EDITORS`, then click `ADD WEBID` and in the text
+box paste in the **_ETL Tutorial's WebID_** (be careful again to paste in the
+ETL Tutorial's WebID, and not the test user's WebID!).
+
+Click the `ADD` button, then the `SAVE EDITORS` button, confirm the action, and
+we should see the ETL Tutorial application's WebID appear as an Editor of this
+`private` container resource in our test user's Pod.
+
+Finally, re-run our ETL process again - and this time we should have no
+failures!
+
+```
+ts-node src/index.ts runEtl --etlCredentialResource "resources/CredentialResource/RegisteredApp/example-registered-app-credential.ttl" --localUserCredentialResourceGlob "resources/CredentialResource/User/example-user-credential-1.ttl"
+```
+
+## PHASE 8 - Navigate to the Loaded resources in the user's Pod
+
+We can use Pod Browser to navigate our Loaded resources - see if you can
+download and view the test user's sample Passport photo :) !
+
+To be able to see the actual triples we've Loaded into the Pod, we can use
+[Penny](https://penny.vincenttunru.com/) (although currently it's a little
+awkward, due to very recent updates from ESS v2.0).
 
 ## PHASE Appendix - Run End-2-End tests independently
 
