@@ -47,7 +47,7 @@ export async function hobbyFileExtract(sourceFile: string): Promise<any> {
   }
 
   debug(
-    `Successfully extracted hobby data for [${DATA_SOURCE}] from [${sourceFile}].`
+    `\nSuccessfully extracted hobby data for [${DATA_SOURCE}] from [${sourceFile}].`
   );
   return Promise.resolve(JSON.parse(fileData));
 }
