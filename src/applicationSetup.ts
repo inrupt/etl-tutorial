@@ -93,6 +93,7 @@ export async function initiateApplication(
     const fetchedRootResource = await getSolidDataset(
       applicationEntrypointIri,
       {
+        // @ts-ignore
         fetch: session.fetch,
       }
     ).catch((error) => {
@@ -112,6 +113,7 @@ export async function initiateApplication(
         `Found resource at [${applicationEntrypointIri}] - about to recursively delete...`
       );
       await deleteRecursively(fetchedRootResource, {
+        // @ts-ignore
         fetch: session.fetch,
       }).catch((error) => {
         const message = `Failed to recursively delete ${APPLICATION_LABEL} resources from Pod at [${applicationEntrypointIri}] - error: [${error}]`;
