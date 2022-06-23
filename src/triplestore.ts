@@ -194,7 +194,7 @@ export async function insertIntoTriplestoreResources(
         `Writing resource [${written}] of [${resources.length}] to triplestore...`
       );
 
-      // We have guard above against null or empty repo.
+      // We have a guard above against a null or empty repository endpoint.
       return insertIntoTriplestoreResource(
         repoEndpointUpdate as string,
         namedGraph,

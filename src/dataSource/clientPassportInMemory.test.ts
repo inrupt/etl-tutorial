@@ -52,7 +52,7 @@ describe("Passport data source", () => {
   });
 
   it("should ignore null input for transformation", async () => {
-    const resourceDetails = passportTransform(credential, null);
+    const resourceDetails = passportTransform(credential, null, "");
     expect(resourceDetails.rdfResources).toHaveLength(0);
     expect(resourceDetails.blobsWithMetadata).toHaveLength(0);
   });
@@ -61,15 +61,23 @@ describe("Passport data source", () => {
     const responseJson = await passportLocalExtract();
     responseJson.photo_image_file = "non-existent-image.jpeg";
 
-    expect(() => passportTransform(credential, responseJson)).toThrow(
-      "Failed to read"
-    );
+    expect(() =>
+      passportTransform(
+        credential,
+        responseJson,
+        "https://example.com/entrypoint/"
+      )
+    ).toThrow("Failed to read");
   });
 
   it("should extract and transform passport", async () => {
     const responseJson = await passportLocalExtract();
 
-    const resourceDetails = passportTransform(credential, responseJson);
+    const resourceDetails = passportTransform(
+      credential,
+      responseJson,
+      "https://example.com/entrypoint/"
+    );
     expect(resourceDetails).toBeDefined();
     expect(resourceDetails.rdfResources).toHaveLength(3);
 

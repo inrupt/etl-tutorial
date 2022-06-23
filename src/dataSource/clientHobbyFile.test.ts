@@ -39,7 +39,7 @@ config({
 });
 
 const hobbySourceFile =
-  "resources/test/DummyData/DummyDataSource/DummyHobby/JoeBloggs-Skydive.json";
+  "resources/test/DummyData/DummyDataSource/DummyHobby/TestUser-Hobby-Skydive.json";
 
 describe("Hobby data source", () => {
   const credential: SolidDataset =
@@ -56,7 +56,7 @@ describe("Hobby data source", () => {
   });
 
   it("should ignore null input for transformation", async () => {
-    const resourceDetails = hobbyTransform(credential, null);
+    const resourceDetails = hobbyTransform(credential, null, "");
     expect(resourceDetails.rdfResources).toHaveLength(0);
     expect(resourceDetails.blobsWithMetadata).toHaveLength(0);
   });
@@ -64,7 +64,11 @@ describe("Hobby data source", () => {
   it("should extract and transform hobby", async () => {
     const responseJson = await hobbyFileExtract(hobbySourceFile);
 
-    const resourceDetails = hobbyTransform(credential, responseJson);
+    const resourceDetails = hobbyTransform(
+      credential,
+      responseJson,
+      "https://example.com/entrypoint/"
+    );
     expect(resourceDetails).toBeDefined();
     expect(resourceDetails.rdfResources).toHaveLength(3);
 

@@ -58,11 +58,11 @@ const debug = debugModule(`${APPLICATION_NAME}:applicationSetup`);
 // These default values can be useful if we wanted to populate a triplestore
 // even if no Solid Pod details are provided at all.
 const DEFAULT_WEBID = "https://test.example.com/test-user/profile/card#me";
-export const DEFAULT_STORAGE_ROOT =
-  "https://different.domain.example.com/testStorageRoot/";
+export const DEFAULT_STORAGE_ROOT_PREFIX =
+  "https://different.domain.example.com/testStorageRoot/user-GUID-";
 
-// For users that do not provide a Pod storage root, we need to generate user-unique
-// values.
+// For users that do not provide a Pod storage root, we need to generate
+// user-unique values.
 let generatedUserId = 1;
 
 // Object used to return wiring-up information for Data Source containers.
@@ -136,8 +136,9 @@ export async function initiateApplication(
     const storageRoot = getCredentialStringOptional(
       credential,
       SOLID.storageRoot,
-      DEFAULT_STORAGE_ROOT
+      `${DEFAULT_STORAGE_ROOT_PREFIX}${generatedUserId}/`
     ) as string;
+    generatedUserId += 1;
 
     applicationEntrypointIri = `${storageRoot}${APPLICATION_ENTRYPOINT}`;
   }
@@ -193,43 +194,38 @@ export async function createApplicationResources(
 ): Promise<SolidDataset[]> {
   const resources = [];
 
-  debug(`\nCreating resources specific to [${APPLICATION_LABEL}]...`);
-  const detailThing = getThingOfTypeMandatoryOne(
+  debug(
+    `\nCreating resources specific to the application: [${APPLICATION_LABEL}].`
+  );
+  // Our user credential resource should have a reference to a description of
+  // the first level of our application's hierarchy of data (e.g., for a Home
+  // Data application, this Thing would contain descriptive metadata for the
+  // container our ETL tool wil create to store the individual Homes a user may
+  // own.
+  const appDataContainerMetadata = getThingOfTypeMandatoryOne(
     credential,
     INRUPT_COMMON.DataHierarchyFirst
   );
 
-  const labels = getLiteralAll(detailThing, RDFS.label);
-  const comments = getLiteralAll(detailThing, RDFS.comment);
+  const labels = getLiteralAll(appDataContainerMetadata, RDFS.label);
+  const comments = getLiteralAll(appDataContainerMetadata, RDFS.comment);
 
-  const etlRunContainer = `${applicationEntrypointIri}${APPLICATION_FIRST_LEVEL_OF_HIERARCHY}etl-run-1/`;
-
-  resources.push(
-    buildDataset(
-      buildThing({ url: applicationEntrypointIri })
-        .addIri(RDF.type, ETL_TUTORIAL.EtlTutorial)
-        // Wire up this instance to it's container...
-        .addIri(INRUPT_COMMON.dataHierarchyFirst, etlRunContainer)
-        .build()
-    )
+  const appDataContainerIri = determineAppDataContainerIri(
+    applicationEntrypointIri
   );
 
-  const etlRunContainerBuilder = buildThing({ url: etlRunContainer })
-    .addIri(RDF.type, INRUPT_COMMON.DataHierarchyFirst)
-    .addStringEnglish(RDFS.label, "ETL process 1")
-    .addStringEnglish(
-      RDFS.comment,
-      "Container for the first ETL process instance."
-    );
-
+  // Metadata to describe our application data container comes from the user
+  // credentials resource.
+  const appDataContainerBuilder = buildThing({
+    url: appDataContainerIri,
+  }).addIri(RDF.type, INRUPT_COMMON.DataHierarchyFirst);
   labels.forEach((literal) =>
-    etlRunContainerBuilder.addLiteral(RDFS.label, literal)
+    appDataContainerBuilder.addLiteral(RDFS.label, literal)
   );
   comments.forEach((literal) =>
-    etlRunContainerBuilder.addLiteral(RDFS.comment, literal)
+    appDataContainerBuilder.addLiteral(RDFS.comment, literal)
   );
-
-  resources.push(buildDataset(etlRunContainerBuilder.build()));
+  resources.push(buildDataset(appDataContainerBuilder.build()));
 
   // Create a container for all notifications for our application (regardless
   // of ETL run instance, or data source).
@@ -241,17 +237,47 @@ export async function createApplicationResources(
         .addStringEnglish(RDFS.label, `Notification container`)
         .addStringEnglish(
           RDFS.comment,
-          `Container for all notifications for ${APPLICATION_LABEL}, regardless of ETL run or data source.`
+          `Container for all notifications for [${APPLICATION_LABEL}], regardless of ETL run or data source.`
         )
         .build()
     )
   );
 
-  const resourceText = pluralize("resource", resources);
+  resources.push(
+    buildDataset(
+      buildThing({ url: applicationEntrypointIri })
+        .addIri(RDF.type, ETL_TUTORIAL.EtlTutorial)
+        .addStringEnglish(RDFS.label, `Entrypoint for [${APPLICATION_LABEL}]`)
+        .addStringEnglish(
+          RDFS.comment,
+          `Entrypoint container for application [${APPLICATION_LABEL}], regardless of ETL run or data source.`
+        )
+        // Wire up our created containers to our app entrypoint container...
+        .addIri(INRUPT_COMMON.dataHierarchyFirst, appDataContainerIri)
+        .addIri(
+          INRUPT_COMMON.NS("notificationContainer"),
+          notificationContainerIri
+        )
+        .build()
+    )
+  );
+
   debug(
-    `...created [${resources.length}] [${APPLICATION_LABEL}] specific ${resourceText}.`
+    `App entrypoint:          [${applicationEntrypointIri}]\nApp data container:      [${appDataContainerIri}]\nNotifications container: [${notificationContainerIri}]`
+  );
+
+  debug(
+    `...created [${
+      resources.length
+    }] [${APPLICATION_LABEL}]-specific ${pluralize("resource", resources)}.`
   );
   return resources;
+}
+
+export function determineAppDataContainerIri(
+  applicationEntrypointIri: string
+): string {
+  return `${applicationEntrypointIri}${APPLICATION_FIRST_LEVEL_OF_HIERARCHY}etl-run-1/`;
 }
 
 export function makeDataSourceContainerBuilder(
@@ -277,26 +303,16 @@ export function makeDataSourceContainerBuilder(
  */
 export function wireUpDataSourceContainer(
   dataSource: string,
-  credential: SolidDataset
+  credential: SolidDataset,
+  applicationEntrypointIri: string
 ): DataSourceContainerObject {
   const resources = [];
 
-  // Provide a default storage root in case this user has not provided any
-  // Solid Pod credentials.
-  // This is useful if loading only to a triplestore, as we need some base IRI
-  // for all the triples in this user's data.
-  const storageRoot = getCredentialStringOptional(
-    credential,
-    SOLID.storageRoot,
-    `https://example.com/generatedUser-${generatedUserId}/storageRoot/`
+  const appDataContainerIri = determineAppDataContainerIri(
+    applicationEntrypointIri
   );
-  generatedUserId += 1;
 
-  // Based on the Pod root, we can know where our app is, and where this
-  // ETL run should store its data.
-  const etlRunContainer = `${storageRoot}${APPLICATION_ENTRYPOINT}${APPLICATION_FIRST_LEVEL_OF_HIERARCHY}etl-run-1/`;
-
-  const dataSourceContainerIri = `${etlRunContainer}dataSource/${dataSource}/`;
+  const dataSourceContainerIri = `${appDataContainerIri}dataSource/${dataSource}/`;
 
   // We need to iterate over many resources, adding each to our container,
   // so just create the builder.
@@ -310,7 +326,7 @@ export function wireUpDataSourceContainer(
   // data source's overall container, as we assume it's already been added
   // (i.e., by the first data source), hence no other triples needed.
   resources.push(
-    buildThing({ url: etlRunContainer })
+    buildThing({ url: appDataContainerIri })
       .addIri(INRUPT_COMMON.dataSource, dataSourceContainerIri)
       .build()
   );

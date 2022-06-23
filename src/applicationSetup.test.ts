@@ -155,7 +155,11 @@ describe("Application setup", () => {
         createCredentialResourceFromEnvironmentVariables([]);
 
       const dataSourceContainerDetails: DataSourceContainerObject =
-        wireUpDataSourceContainer("Test data source", credential);
+        wireUpDataSourceContainer(
+          "Test data source",
+          credential,
+          "https://example.com/entrypoint/"
+        );
       expect(dataSourceContainerDetails.resources).toHaveLength(1);
     });
   });

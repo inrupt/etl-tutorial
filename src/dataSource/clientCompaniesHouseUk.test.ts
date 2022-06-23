@@ -82,7 +82,8 @@ describe("Companies House UK data source", () => {
     it("should ignore null input for transformation", async () => {
       const resourceDetails = companiesHouseUkTransformCompany(
         credential,
-        null
+        null,
+        ""
       );
       expect(resourceDetails.rdfResources).toHaveLength(0);
       expect(resourceDetails.blobsWithMetadata).toHaveLength(0);
@@ -101,7 +102,8 @@ describe("Companies House UK data source", () => {
 
       const resourceDetails = companiesHouseUkTransformCompany(
         credential,
-        responseJson
+        responseJson,
+        "https://example.com/entrypoint/"
       );
       expect(resourceDetails).toBeDefined();
       expect(resourceDetails.rdfResources).toHaveLength(4);
