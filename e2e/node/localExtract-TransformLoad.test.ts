@@ -165,6 +165,7 @@ describe("All data sources", () => {
         debug(`Attempting to read PRIVATE resource [${resourceIri}]...`);
         try {
           const dataset = await getSolidDataset(resourceIri, {
+            // @ts-ignore
             fetch: session.fetch,
           });
           expect(dataset).toBeDefined();
@@ -185,7 +186,11 @@ describe("All data sources", () => {
     it("should transform and load", async () => {
       const passportData = await passportLocalExtract();
 
-      const resources = await passportTransform(credential, passportData);
+      const resources = await passportTransform(
+        credential,
+        passportData,
+        "https://example.com/anything/"
+      );
 
       let response = await insertIntoTriplestoreResources(
         credential,
@@ -218,7 +223,11 @@ describe("All data sources", () => {
     it("should transform and load", async () => {
       const hobbyData = await hobbyFileExtract(hobbyExample);
 
-      const resources = await hobbyTransform(credential, hobbyData);
+      const resources = await hobbyTransform(
+        credential,
+        hobbyData,
+        "https://example.com/anything/"
+      );
 
       let response = await insertIntoTriplestoreResources(
         credential,
@@ -251,7 +260,8 @@ describe("All data sources", () => {
     it("should transform and load", async () => {
       const resources = await companiesHouseUkTransformCompany(
         credential,
-        companiesHouseUkSearchCompanyIdExample
+        companiesHouseUkSearchCompanyIdExample,
+        "https://example.com/anything/"
       );
 
       let response = await insertIntoTriplestoreResources(

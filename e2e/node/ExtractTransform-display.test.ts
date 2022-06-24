@@ -88,7 +88,11 @@ describe("All data sources", () => {
 
       if (response !== null) {
         const resourceDetails: CollectionOfResources =
-          companiesHouseUkTransformCompany(credential, response);
+          companiesHouseUkTransformCompany(
+            credential,
+            response,
+            "https://example.com/anything/"
+          );
 
         const companyResource = getThingOfTypeFromCollectionMandatoryOne(
           resourceDetails,
@@ -144,7 +148,8 @@ describe("All data sources", () => {
       if (response !== null) {
         const resourceDetails: CollectionOfResources = passportTransform(
           credential,
-          response
+          response,
+          "https://example.com/anything/"
         );
         expect(resourceDetails.rdfResources).toHaveLength(3);
 
