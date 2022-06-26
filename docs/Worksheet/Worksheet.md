@@ -81,16 +81,16 @@ git clone git@github.com:inrupt/etl-tutorial.git
 Run the code generation phase for our local vocabularies (this will generate
 local TypeScript source code providing convenient constants for all the terms
 defined in the local vocabularies that we created to represent concepts from the
-sample 3rd-party data source we Extract from (e.g., for concepts like a
+sample 3rd-party data sources we Extract from (e.g., for concepts like a
 Passport, or a passport number, as might be defined by a government Passport
-Office, or the concepts related to a persons hobbies):
+Office; or the concepts related to a person's hobbies):
 
 ```
 npx @inrupt/artifact-generator generate --vocabListFile "resources/Vocab/vocab-etl-tutorial-bundle-all.yml" --outputDirectory "./src/InruptTooling/Vocab/EtlTutorial" --noPrompt --force --publish npmInstallAndBuild
 ```
 
-Now install (note: we use `ci` instead of `install` to ensure a deterministic,
-repeatable installation):
+Now install (**_note_**: we use `ci` instead of `install` to ensure a
+deterministic, repeatable installation):
 
 ```
 npm ci
@@ -193,10 +193,10 @@ pattern contained a wildcard, and matched two local user credential resources.
 
 ### Run with one test user (just for less output)
 
-For here on, there's no need to demonstrate the ETL process for multiple users,
-so we can replace our wildcard in the user credential resource argument and
-just provide a single user's credentials to reduce the amount of output we
-generate:
+From here on, there's no need to continue demonstrating the ETL processes
+ability to execute across multiple users, so we'll replace the wildcard in the
+user credential resource argument and just provide a single user's credentials
+to reduce the amount of output we generate:
 
 ```
 npx ts-node src/index.ts runEtl --etlCredentialResource "resources/CredentialResource/RegisteredApp/example-registered-app-credential.ttl" --localUserCredentialResourceGlob "resources/CredentialResource/User/example-user-credential-1.ttl"
@@ -394,8 +394,8 @@ corresponding triples:
   inrupt_common:clientSecret "<PASTE IN ETL TUTORIAL CLIENT SECRET>" ;
 ```
 
-Save the ETL credentials resource, and re-run your ETL process again (**_Note_**:
-we should expect failures!):
+Save the ETL credentials resource, and re-run your ETL process again
+(**_note_**: we should expect failures!):
 
 ```
 npx ts-node src/index.ts runEtl --etlCredentialResource "resources/CredentialResource/RegisteredApp/example-registered-app-credential.ttl" --localUserCredentialResourceGlob "resources/CredentialResource/User/example-user-credential-1.ttl"
@@ -427,7 +427,7 @@ user's Pod (and that we recorded in the credential template).
 ```
 
 Save our user credentials resource, and re-run your ETL process again
-(**_Note_**: we should **_still_** expect to see failures!):
+(**_note_**: we should **_still_** expect to see failures!):
 
 ```
 npx ts-node src/index.ts runEtl --etlCredentialResource "resources/CredentialResource/RegisteredApp/example-registered-app-credential.ttl" --localUserCredentialResourceGlob "resources/CredentialResource/User/example-user-credential-1.ttl"
