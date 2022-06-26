@@ -1,14 +1,19 @@
-# Worksheet for installing, configuring and running the ETL Tutorial
+# Worksheet for installing, configuring, debugging, and successfully running the ETL Tutorial
 
-This detailed worksheet attempts you walk you through the entire process of
-installing, configuring, testing, and running the ETL Tutorial, from start to
+This worksheet attempts you walk you through the entire process of installing,
+configuring, debugging, and successfully running the ETL Tutorial, from start to
 finish.
+
+You'll know you've successfully completed this entire process if you can
+determine which famous comedian appears in our test user's sample passport
+photo!
 
 ### References
 
-Here are some useful links and resources you can use during this worksheet:
+Here are some useful links and reference you may find useful as you work your
+way through this worksheet:
 
-- PodSpaces registration: https://signup.pod.inrupt.com/
+- PodSpaces registration: https://start.inrupt.com/
 - Yopmail: https://yopmail.com/en/
 - Password generator: https://passwordsgenerator.net/
 - Broker: https://broker.pod.inrupt.com/
@@ -17,17 +22,55 @@ Here are some useful links and resources you can use during this worksheet:
 - Penny: https://penny.vincenttunru.com/
 - PodBrowser: https://podbrowser.inrupt.com/
 
+## Pre-requisites
+
+1. Before we run through this process, first ensure you're on at least Node.js
+   version 14.18:
+
+   ```
+   $ node --version
+   v14.18.2
+
+   $ npm --version
+   6.14.15
+   ```
+
+2. Create a Pod to represent your particular instance of this ETL Tutorial
+   application. We really only need a WebID, but the easiest way to get a WebID
+   is simply to create a Pod.
+3. Create a Pod for our test user. This will be the Pod into which we want our
+   ETL tool to Load data Extracted from multiple 3rd-parties.
+
+---
+
+When creating Pods generally, it can be very helpful to keep a record of the
+various pieces of credential information (for example in a password manager).
+We provide a very simple credential template below, which you may find useful:
+
+```
+Test User Pod:
+  username: <MY-NAME>BurnerUser1
+  password: <Generated using https://passwordsgenerator.net/>
+  email: <Generated using https://yopmail.com/>
+
+  WebID: https://id.inrupt.com/<MY-NAME-LOWERCASE>burneruser1
+  Storage: https://storage.inrupt.com/XXXXXXXX-YYYY-ZZZZ-AAAA-BBBBBBBBBBBB/
+
+ETL Tutorial Pod:
+  username: <MY-NAME>BurnerEtl1
+  password: <Generated using https://passwordsgenerator.net/>
+  email: <Generated using https://yopmail.com/>
+
+  WebID: https://id.inrupt.com/<MY-NAME-LOWERCASE>burneretl1
+  Storage: https://storage.inrupt.com/AAAAAAAA-BBBB-CCCC-DDDD-EEEEEEEEEEEE/
+
+  ClientID: <ETL_TUTORIAL_CLIENT_ID>
+  ClientSecret: <ETL_TUTORIAL_CLIENT_SECRET>
+```
+
+---
+
 ## PHASE 1 - Basic code installation, and running tests.
-
-Ensure you're on Node.js version 14 (should be fine on v16 too, but we've tested on v14):
-
-```
-$ node --version
-v14.18.2
-
-$ npm --version
-6.14.15
-```
 
 Pull down the **_ETL Tutorial_** codebase:
 
@@ -35,19 +78,25 @@ Pull down the **_ETL Tutorial_** codebase:
 git clone git@github.com:inrupt/etl-tutorial.git
 ```
 
-Run the code generation phase for our local vocabularies:
+Run the code generation phase for our local vocabularies (this will generate
+local TypeScript source code providing convenient constants for all the terms
+defined in the local vocabularies that we created to represent concepts from the
+sample 3rd-party data source we Extract from (e.g., for concepts like a
+Passport, or a passport number, as might be defined by a government Passport
+Office, or the concepts related to a persons hobbies):
 
 ```
 npx @inrupt/artifact-generator generate --vocabListFile "resources/Vocab/vocab-etl-tutorial-bundle-all.yml" --outputDirectory "./src/InruptTooling/Vocab/EtlTutorial" --noPrompt --force --publish npmInstallAndBuild
 ```
 
-Now run:
+Now install (note: we use `ci` instead of `install` to ensure a deterministic,
+repeatable installation):
 
 ```
 npm ci
 ```
 
-Now build the project:
+Now build the project (since this is a TypeScript codebase):
 
 ```
 npm run build
@@ -59,56 +108,143 @@ Now run the unit test suite:
 npm test
 ```
 
-- We expect to see error output (as we test all our error handling).
+- We expect to see some red error output (as we test all our error handling, so
+  this is normal and expected).
 - All tests should pass.
-- And branch code coverage should be 100%.
+- Branch code coverage should be 100% - i.e., green right across the board!
 
-Now run our End-2-End tests (even though we haven't configured anything yet!)
+---
 
-```
-npm run e2e-test-node
-```
+## PHASE 2 - Run ETL (without configuring anything yet)
 
-(Tests should all pass - but output has no colour-coding.)
+Let's first run our ETL Tutorial without any commands, just to see what options
+we have.
 
-Run our first End-2-End test in isolation (ET and display) - output should be
-fairly self-explanatory:
+---
 
-```
-npm run e2e-test-node-ExtractTransform-display
-```
+**_Note_**: We recommend using `ts-node` to run the remaining commands, as its
+faster and more convenient. We generally don't recommend installing modules
+globally as you'll have problems if multiple applications require modules, like
+`ts-node`, to be globally installed, but with different versions, etc.
 
-- We haven't configured an auth token for the Companies House API.
-- So we can't do anything for this data source.
-- We can Extract Passport data though, 'cos it's just local JSON.
-- This data is Transformed into 3 Resources.
-- So we can successfully display our Extracted and Transformed Passport data.
+So instead we've provided `ts-node` as a dev dependency of this project, meaning
+you can run it conveniently using `npx`, or less convenient by explicitly using
+`./node_modules/.bin/ts-node`. All our examples below use `npx`.
 
-Run our second End-2-End test in isolation (Local-extract and TL) - output
-should be fairly self-explanatory:
+Remember that using `ts-node` is completely optional, and if it doesn't install
+or run correctly for you, simply replace all references below of `npx ts-node`
+with the standard `node` instead.
 
-```
-npm run e2e-test-node-localExtract-TransformLoad
-```
+---
 
-- We haven't configured our ETL Tutorial credentials yet, so we skip logging in.
-- We haven't configured a triplestore yet, so we can't clear that.
-- We haven't configured our ETL Tutorial credentials yet, so we can't test reading a private resource.
-- We can Extract Passport data though, 'cos it's just local JSON.
-- This data is Transformed into 3 Resources.
-- We haven't configured a user Pod's storage, so there's nowhere to Load our 3 Resources yet.
-
-## PHASE 2 - Creating our environment file, and (optionally) loading data into a triplestore, and visualizing it.
-
-Now create a copy of the local file `/e2e/node/.env.example`, and name it
-`/e2e/node/.env.test.local`:
+So to view our options for running the ETL Tutorial, run:
 
 ```
-cd ./e2e/node/
-cp .env.example .env.test.local
+npx ts-node src/index.ts
 ```
 
-## PHASE 2.5 (Optional) load data into a triplestore and visualizing it.
+Now run with the 'runEtl' command, but no arguments yet...
+
+```
+npx ts-node src/index.ts runEtl
+```
+
+...and we see that there are two **_required_** arguments needed to run any ETL
+job:
+
+- etlCredentialResource - the filename of a local Linked Data resource (e.g.,
+  a Turtle file) containing the required credentials we need for our ETL tool
+  itself.
+  This is required since our tool needs to have a valid Access Token that
+  effectively identifies itself, so that it can then attempt to write data into
+  the Pods of end users on their behalf (if those users explicitly granted it
+  permission to do so, of course!).
+- localUserCredentialResourceGlob - this is a file pattern that can contain
+  wildcards (including for subdirectories) that tells our ETL tool what
+  local filenames it should search for, expecting matching files to be user
+  credential resources (e.g., Turtle files).
+  These user credential resources are needed by our tool so that it can log into
+  potentially multiple 3d-party data sources on behalf of that user to Extract
+  relevant data that we then Transform into Linked Data, and Load into that
+  user's Pod.
+
+Run with our example Turtle configurations (note the use of a wildcard (e.g., an
+asterisk `*`) in the file pattern for user credentials):
+
+```
+npx ts-node src/index.ts runEtl --etlCredentialResource "resources/CredentialResource/RegisteredApp/example-registered-app-credential.ttl" --localUserCredentialResourceGlob "resources/CredentialResource/User/example-user-credential*.ttl"
+```
+
+---
+
+**Note**: If we have no internet connection, we'll expect to see the following
+(our code should really exit with a descriptive error message here instead!):
+
+```
+failed, reason: getaddrinfo ENOTFOUND api.company-information.service.gov.uk
+```
+
+---
+
+## Successful ETL flow
+
+We should see a lot of console output, much of it duplicated because our file
+pattern contained a wildcard, and matched two local user credential resources.
+
+### Run with one test user (just for less output)
+
+For here on, there's no need to demonstrate the ETL process for multiple users,
+so we can replace our wildcard in the user credential resource argument and
+just provide a single user's credentials to reduce the amount of output we
+generate:
+
+```
+npx ts-node src/index.ts runEtl --etlCredentialResource "resources/CredentialResource/RegisteredApp/example-registered-app-credential.ttl" --localUserCredentialResourceGlob "resources/CredentialResource/User/example-user-credential-1.ttl"
+```
+
+So walking through this console output slowly, we should see that our ETL
+process starts by attempting to log into its own Identity Provider (IdP) as
+specified in the local ETL credential resource we provided via the
+`--etlCredentialResource` command-line argument. It successfully parses that
+resource, but finds no credentials in there (since we haven't configured them
+yet!), so it ignores the IdP login stage.
+
+This is totally fine, as, for example, we may only wish our ETL process to
+populate a Linked Data database (called a triplestore), and not attempt to write
+to any user Pods at all.
+
+Next our tool searches for local resources matching the file pattern we provided
+for user credential resources via the `--localUserCredentialResourceGlob`
+command-line argument, and it should find, and successfully parse, two such
+local resources.
+
+For each of the two user credential resources it finds it then:
+
+- Attempts to clear out existing user data from the triplestore (but we
+  haven't configured one yet, so this is ignored).
+- Attempts to clear out existing user data from the current user's Pod (but we
+  haven't configured them yet, so this is ignored).
+- Creates a dummy ProfileDocument for this user. Even though we didn't attempt
+  to get an Access Token (via the ETL tool logging into it's IdP), the code
+  assumes that we **_may_** want to write a triplestore, and so it creates this
+  dummy resource just in case.
+- Creates a number of ETL Tutorial-specific resources, such as containers
+  intended to contain all the data we expect we Load into a user's Pod.
+
+The ETL process then attempts to connect to each of the multiple potential data
+sources of user data, and for each one attempts to Extract relevant data for the
+current user.
+
+Data sources that Extract from local files, or from sample in-memory objects,
+will work fine without any further configuration, but data sources that require
+credentials to access real 3rd-party APIs will fail (since we haven't configured
+their required credentials yet), and will therefore be ignored.
+
+In each case, writing any successfully Extracted and Transformed resources will
+not be written to user Pods or a triplestore at this stage, since we haven't
+configured those yet!
+
+## PHASE 2.5 (Optionally) load data into a triplestore and visualize it.
 
 It can be **_extremely_** helpful to visualize the data we are Loading,
 especially when developing data models for new data sources, which may go
@@ -116,308 +252,272 @@ through multiple phases of iteration.
 
 Perhaps the most convenient way to do this is using a triplestore (see
 [here](../VisualizePodData/VisualizeExamplePodData.png) for a screenshot of a
-sample Pod with lots of data).
+sample Pod with lots of highly inter-related personal data).
 
 If you don't already have a triplestore, you can follow the very simple
-instructions [here](../VisualizePodData/VisualizePodData.md) to install and
-configure a free triplestore locally in **_less than 10 minutes_**.
+instructions [here](../VisualizePodData/VisualizePodData.md) to install,
+configure, load, and visualize sample Pod data yourself using a free triplestore
+locally in **_less than 10 minutes_**.
 
 Once you have a triplestore running (locally or remotely), you can populate
-that right away by simply editing just one line of your new local `.env`
-file.
+that right away using our ETL tool by simply editing just a single line of a
+user's credential resource (or by editing your new local `.env` file - but see
+the [Advanced Worksheet](./Worksheet-Advanced.md) for details on that approach).
+
+So assuming that you do have GraphDB installed and running locally, and it's
+listening on its default port of `7200`, **_and_** that you've already created a
+new repository named `inrupt-etl-tutorial`:
 
 ```
-# Or use vim, or VSCode, or whatever
-gedit .env.test.local
+# Use gedit, vim, VSCode, or any text editor to edit our sample user resource:
+gedit ./resources/CredentialResource/User/example-user-credential-1.ttl
 ```
 
-...and just uncommenting this line (assuming you're running GraphDB locally,
-on its default port of `7200`, and that you've created a new repository named
-`inrupt-etl-tutorial`):
+...and just uncommenting this line (editing it accordingly to match the port and
+repository name in your trplestore):
 
 ```
 INRUPT_TRIPLESTORE_ENDPOINT_UPDATE="http://localhost:7200/repositories/inrupt-etl-tutorial/statements"
 ```
 
-Now re-run the End-2-End load test from our project root:
+Now re-run your ETL process:
 
 ```
-cd ../..
-npm run e2e-test-node-localExtract-TransformLoad
+npx ts-node src/index.ts runEtl --etlCredentialResource "resources/CredentialResource/RegisteredApp/example-registered-app-credential.ttl" --localUserCredentialResourceGlob "resources/CredentialResource/User/example-user-credential-1.ttl"
 ```
 
-- Now our console output should show local data being Extracted, Transformed
-  to Linked Data as before.
-- **_But now_** we should see that data Loaded as Resources from both the
-  Passport and Companies House data sources into the triplestore.
-- Open GraphDB:
+- Our console output should show local data being Extracted and Transformed to
+  Linked Data as before.
+- **_But now_** we should also see that data Loaded as Resources from the
+  Passport Office data source and the Hobby data source into the triplestore
+  (our Companies House data source is still being ignored, as we haven't yet
+  configured the necessary API credentials).
+- To see this data in the triplestore, open GraphDB:
   - Make sure you select the `inrupt-etl-tutorial` repository (i.e., or
-    whichever repository you configured your `.env.test.local` to Load data
-    into).
+    whatever repository name you created and configured).
   - Simply visualize this node:
-    `https://different.domain.example.com/testStorageRoot/private/inrupt/etl-tutorial/etl-run-1/`
+    `https://test.example.com/test-user/profile/card#me`
   - You should be able to intuitively navigate through the ETL-ed data.
 
-Make a change to the local Passport data (e.g., in the JSON in
-`src/dataSource/clientPassportInMemory.ts`), and re-run the test:
+Make a change, such as extending the passport expiry date, to the local Passport
+data (e.g., in the JSON in `src/dataSource/clientPassportInMemory.ts`), and
+re-run:
 
 ```
-npm run e2e-test-node-localExtract-TransformLoad
+npx ts-node src/index.ts runEtl --etlCredentialResource "resources/CredentialResource/RegisteredApp/example-registered-app-credential.ttl" --localUserCredentialResourceGlob "resources/CredentialResource/User/example-user-credential-1.ttl"
 ```
 
-...and you should see your change when you refresh the visualization.
+...and you should see your change reflected in the data now in the triplestore
+when you refresh the visualization.
 
-**_Note:_** This test loads Companies House data from a local, hard-coded
-JSON response (and not via the live API, which our other End-2-End test uses),
-so we can't simply update the company ID to search for to Load those results
-into our triplestore!
+## PHASE 3 - (Optionally) configure Companies House API
 
-## PHASE 3 - Configuring our UK Companies House API auth token, and Extracting data from that API.
+Our ETL Tutorial also demonstrates accessing a real public 3rd-party API, in
+this case the Company Search API from the Companies House in the UK.
 
-**NOTE: If you don't already have a UK Companies House API Auth Token - just
-ask for a sample one.**
+To use this API, a developer needs to register to get an API Auth Token that
+allows them to make API requests - see
+[here](https://developer-specs.company-information.service.gov.uk/guides/authorisation)
+for instructions on how to register.
 
-If you have a UK Companies House API auth token (from instructions provided
-earlier), then simply uncomment and insert you token on this line of our
-environment file `.env.test.local`:
+For now, and for ease of demonstration, we're going to simply reuse a test Auth
+Token provided by your instructor.
 
-```
-INRUPT_SOURCE_COMPANIES_HOUSE_UK_HTTP_BASIC_TOKEN="<Generated token - see https://developer-specs.company-information.service.gov.uk/guides/authorisation>"
-```
-
-Re-run our End-2-End test again:
+Edit our single user credentials resource again:
 
 ```
-npm run e2e-test-node-ExtractTransform-display
+# Use gedit, vim, VSCode, or any text editor:
+gedit ./resources/CredentialResource/User/example-user-credential-1.ttl
 ```
 
-- And this time we should see that we successfully extracted Unilever via the
-  Companies House API.
-
-To prove this really is extracting from the API, edit the test
-`e2e/node/ExtractTransform-display.test.ts` to search for a different UK
-company, setting:
+...and paste the provided token as the value of this triple (should be the last
+line of the file):
 
 ```
-const COMPANY_ID_TO_SEARCH = COMPANY_ID_MYSTERY;
+  inrupt_3rd_party_companies_house_uk:authenticationHttpBasicToken "<PASTE_TOKEN_HERE>" .
 ```
 
-...instead, and re-run the test again to see which UK company that really is!
+Now re-run your ETL process:
 
-## PHASE 4 - Creating Pods, registering our ETL Tutorial as an application.
+```
+npx ts-node src/index.ts runEtl --etlCredentialResource "resources/CredentialResource/RegisteredApp/example-registered-app-credential.ttl" --localUserCredentialResourceGlob "resources/CredentialResource/User/example-user-credential-1.ttl"
+```
 
-Create a Pod for your first test user -
-[https://signup.pod.inrupt.com/](https://signup.pod.inrupt.com/) (using a new
-Incognito window can ease session clashes):
+- Now our console output should show local data being Extracted and Transformed
+  to Linked Data as before.
+- **_But now_** we should also see data Loaded as Resources from the Companies
+  House data source too.
+- If we configured a triplestore, we'll also see a new data source container
+  containing multiple resources - one for the company search result, and a
+  connected resource for that company's registered address (can you
+  see which company was searched for, and where it's registered in the UK?)
 
-- Username (pick a unique username): **_<<RECORD_HERE_USERNAME>>_**
-- EMail (use [https://yopmail.com/en/](https://yopmail.com/en/)): **_<<RECORD_HERE>>_**
-- Password (use [https://passwordsgenerator.net/](https://passwordsgenerator.net/)): **_<<RECORD_HERE>>_**
+## PHASE 4 - Registering our ETL Tutorial application
 
-- Your test user's WebID: https://pod.inrupt.com/**_<<RECORD_HERE_USERNAME>>_**/profile/card#me
+Now we'll Register your ETL Tutorial application with the Identity Provider
+(IdP) you used to create its Pod. This registration process will provide us with
+standard OAuth `ClientID` and `ClientSecret` values, which we can then use to
+configure your ETL process to allow it to login automatically (i.e., without any
+human intervention whatsoever).
 
-Create a Pod for your ETL Tutorial app -
-[https://signup.pod.inrupt.com/](https://signup.pod.inrupt.com/) (using a new
-Incognito window can ease session clashes). Each instance of the ETL is
-unique, so each needs its own WebID:
-
-- Username (pick a unique username): **_<<RECORD_HERE_ETL_USERNAME>>_**
-- EMail (use [https://yopmail.com/en/](https://yopmail.com/en/)): **_<<RECORD_HERE>>_**
-- Password (use [https://passwordsgenerator.net/](https://passwordsgenerator.net/)): **_<<RECORD_HERE>>_**
-
-- Your ETL Tutorial instance's WebID: https://pod.inrupt.com/**_<<RECORD_HERE_ETL_USERNAME>>_**/profile/card#me
-
-Now you need to Register your ETL Tutorial instance with the Identity Provider
-(IdP) you used to create its Pod (to give us OAuth `ClientID` and
-`ClientSecret` values to allow your ETL process to login automatically (i.e.,
-without any human intervention - this is just the standard OAuth Client
-Credentials flow)).
+**_Note_**: This is just the standard OAuth Client Credentials flow.
 
 Go to:
 
 ```
-https://broker.pod.inrupt.com/registration.html
+https://login.inrupt.com/registration.html
 ```
 
 Login with your **_ETL Tutorial_** username and password (do **_not_** use
 your test user credentials by mistake!), and register your ETL Tutorial
 instance with whatever name you like, e.g., `InruptEtlTutorial`.
 
-Record the resulting `ClientID` and `ClientSecret` values:
+Record the resulting `ClientID` and `ClientSecret` values (using a password
+manager, or our simple credentials template from the pre-requisites section
+above).
 
-- ClientID: **_<<RECORD_HERE_ETL_CLIENT_ID>>_**
-- ClientSecret: **_<<RECORD_HERE_ETL_CLIENT_SECRET>>_**
+## PHASE 5 - Configure our ETL's `ClientId` and `ClientSecret` values
 
-## PHASE 5 - Configuring our environment with Pods, granting access, and re-running the tests.
-
-In our local environment file `/e2e/node/.env.test.local`, uncomment and
-replace the values for (note usernames will always be _fully lower-case_ when
-they appear as part of WebIDs):
+Now we simply edit our ETL Credentials resource to add the `ClientId` and
+`ClientSecret` values.
 
 ```
-SOLID_WEBID="https://pod.inrupt.com/<<RECORD_HERE_USERNAME>>/profile/card#me"
-SOLID_STORAGE_ROOT="https://pod.inrupt.com/<<RECORD_HERE_USERNAME>>/"
+# Use gedit, vim, VSCode, or any text editor:
+gedit ./resources/CredentialResource/RegisteredApp/example-registered-app-credential.ttl
 ```
 
-Run our Load test (**_this should fail!_**):
+...and paste in our registration values into the respective values of their
+corresponding triples:
 
 ```
-npm run e2e-test-node-localExtract-TransformLoad
+  inrupt_common:clientId "<PASTE IN ETL TUTORIAL CLIENT ID>" ;
+  inrupt_common:clientSecret "<PASTE IN ETL TUTORIAL CLIENT SECRET>" ;
 ```
 
-It should fail because our test user has not yet granted permission to the ETL
-Tutorial process to write to their Pod.
-
-See screenshot of how we're going to grant this permission
-[here](docs/Worksheet/GivingEtlTutorialPermission.png).
-
-Now use PodBrowser to login as your test user, and navigate to their
-`/private` folder.
-
-Click on the line of this folder (not on the text of the folder name itself
-(which will navigate into that folder)), you should see a right-hand sidebar
-expand out.
-
-Under `Sharing`, and `Editors`, add the WebID for your instance of the **_ETL
-Tutorial_** process (not the test user's WebID):
+Save the ETL credentials resource, and re-run your ETL process again (**_Note_**:
+we should expect failures!):
 
 ```
-https://pod.inrupt.com/<<RECORD_HERE_ETL_USERNAME>>/profile/card#me
+npx ts-node src/index.ts runEtl --etlCredentialResource "resources/CredentialResource/RegisteredApp/example-registered-app-credential.ttl" --localUserCredentialResourceGlob "resources/CredentialResource/User/example-user-credential-1.ttl"
 ```
 
-Re-run our Load test (it should now succeed!):
+Now we should see a successful login by the ETL Tutorial application into its
+Solid Pod. The login will result in our application's WebID being displayed in
+the console output.
+
+But later in the process, we should see that we fail to find a valid Storage
+Root configuration for our test user. This is simply because we still haven't
+configured our test users credentials - so let's do that now...
+
+## PHASE 6 - Configure our test users WebID and StorageRoot
+
+Edit our user credentials resource again:
 
 ```
-npm run e2e-test-node-localExtract-TransformLoad
+# Use gedit, vim, VSCode, or any text editor:
+gedit ./resources/CredentialResource/User/example-user-credential-1.ttl
 ```
 
-- Now all our tests should pass.
-- And the data Loaded as resources into the user's Pod.
-
-## PHASE 6 - Running the ETL Tutorial 'for real'!
-
-Now we get to running the ETL process 'for real' (as opposed to running test
-code).
-
-Firstly, we recommend installing and using `ts-node` if you haven't already:
+This time we wish to add the values we received when we first created this test
+user's Pod (and that we recorded in the credential template).
 
 ```
-npm install -g ts-node typescript '@types/node'
+  solid:webId "https://id.inrupt.com/<YOUR-USERNAME-LOWERCASE>burneruser1" ;
+  solid:storageRoot "https://storage.inrupt.com/AAAAAAAA-BBBB-CCCC-DDDD-EEEEEEEEEEEE/" ;
 ```
 
-Next, let's just run our ETL process without any commands (just to see the
-command options we have):
+Save our user credentials resource, and re-run your ETL process again
+(**_Note_**: we should **_still_** expect to see failures!):
 
 ```
-ts-node src/index.ts
+npx ts-node src/index.ts runEtl --etlCredentialResource "resources/CredentialResource/RegisteredApp/example-registered-app-credential.ttl" --localUserCredentialResourceGlob "resources/CredentialResource/User/example-user-credential-1.ttl"
 ```
 
-Now run with the main `runEtl` command, but no parameters (just to see the
-parameters for this command, and which are mandatory):
+This time we should see a different failure. This time it's a `403 Forbidden`
+error, **_which is exactly what we should expect!_**
+
+This test user has not yet granted permission for our ETL Tutorial application
+to write to their Pod! So let's go do that now...
+
+## PHASE 7 - Test user granting permission to our ETL Tutorial application
+
+For this operation, we're going to use Inrupt's open-source PodBrowser tool.
+
+In a **_new Incognito window_** (make sure you don't have any other Incognito
+windows open, as session state is shared even for Incognito tabs, across browser
+instances!), go to: `https://podbrowser.inrupt.com/`.
+
+---
+
+**_Note_**: Temporarily, you must **_NOT_** click the big 'Sign In' button here,
+but instead click on the 'SIGN IN WITH OTHER PROVIDER', and enter the latest ESS
+Broker URL of `https://login.inrupt.com`, then click 'GO'.
+
+---
+
+Log in as the test user you created earlier (be careful not to login as the ETL
+Tutorial by mistake!).
+
+---
+
+Create a new `private` folder.
+
+Click on the line of your new folder (don't click on the text of the folder
+name, as that will navigate _into_ the `private` folder itself! If you do that,
+simply click back to the parent container using the breadcrumbs just under the
+`Files` heading).
+
+On the right-hand side of the page you should see a big sidebar open up, and in
+there an option for Sharing. Open that Sharing pane, and you'll see a section
+for `Editors`.
+
+Click `EDIT EDITORS`, then click `ADD WEBID`, and in the text box paste in the
+**_ETL Tutorial's WebID_** (be careful to paste in the ETL Tutorial's WebID, and
+not the test user's WebID!).
+
+Click the `ADD` button, then the `SAVE EDITORS` button, confirm the action, and
+we should see the ETL Tutorial application's WebID appear as an Editor of this
+`private` container resource in our test user's Pod.
+
+Finally, re-run your ETL process again. This time we should have no failures!
 
 ```
-ts-node src/index.ts runEtl
+npx ts-node src/index.ts runEtl --etlCredentialResource "resources/CredentialResource/RegisteredApp/example-registered-app-credential.ttl" --localUserCredentialResourceGlob "resources/CredentialResource/User/example-user-credential-1.ttl"
 ```
 
-We can see that we need a minimum of two parameters:
+## PHASE 8 - Navigate to the Loaded resources in the user's Pod
 
-```
---etlCredentialResource
---localUserCredentialResourceGlob
-```
+Now use [PodBrowser](https://podbrowser.inrupt.com/) to navigate our Loaded
+resources - see if you can find, download, and view the test user's sample
+Passport photo :) !
 
-So instead of our local test environment file providing credentials, we now
-configure real credential resources as local Linked Data resources, and point
-these ETL parameters at those resources.
-
-Notice that the first parameter above is a single file (for our ETL Tutorial's
-credentials), whereas the second parameter is a glob - i.e., a filename
-pattern that is intended to match potentially many, many local files
-(including recursing into subdirectories too), where every matching file
-stores the credentials for a single end user that we wish to ETL.
-
-## PHASE 7 - Creating credential resources.
-
-First, we create a single credential resource to hold our ETL Tutorial's
-standard OAuth ClientID and ClientSecret values. We provide an example
-resource for you to copy-and-edit:
-
-```
-# From the project root:
-
-cd ./resources/CredentialResource/RegisteredApp/
-cp example-registered-app-credential.ttl registered-app-credential-etl-tutorial.ttl
-
-gedit registered-app-credential-etl-tutorial.ttl
-```
-
-- Now paste in the ETL Tutorial's `ClientID` and `ClientSecret` values into
-  the values for the `inrupt_common:clientId` and `inrupt_common:clientSecret`
-  properties respectively.
-
-Second, we create a similar credential resource for our test user (and we'd
-create one such resource per test user we wish to ETL).
-
-We also provide an example resource for you to copy-and-edit:
-
-```
-# From the project root:
-
-cd ./resources/CredentialResource/User
-cp example-user-credential.ttl user-credential-<<RECORD_HERE_USERNAME>>.ttl
-
-gedit user-credential-<<RECORD_HERE_USERNAME>>.ttl
-```
-
-- Now paste in the values for the following properties, keeping in mind that
-  the intention here is to provide end-user-specific credentials for each data
-  source that that user may (or may not) have an account for:
-  ```
-  solid:webId - the user's WebID: https://pod.inrupt.com/<<RECORD_HERE_USERNAME>>/profile/card#me
-  solid:storageRoot - the storage root of the user's Pod: https://pod.inrupt.com/<<RECORD_HERE_USERNAME>>
-  inrupt_3rd_party_companies_house_uk:authenticationHttpBasicToken - this is our UK Companies House API token (it'll be shared across all users we ETL)
-  ```
-
-## PHASE 8 - Run the ETL Tutorial for real real!
-
-Finally we're ready to run the ETL Tutorial for real. We simply point it at
-our ETL Tutorial credentials, and a file glob that matches all the user
-credentials files we created, like so:
-
-```
-ts-node src/index.ts runEtl --etlCredentialResource "resources/CredentialResource/RegisteredApp/registered-app-credential-etl-tutorial.ttl" --localUserCredentialResourceGlob "resources/CredentialResource/User/user-cred*.ttl"
-```
-
-Hopefully, we should see successful output, saying something like:
-
-```
-Successfully completed ETL process for [1] user from [1] set of user credentials.
-```
-
-## PHASE 9 - Checking if it really worked - navigate into the user's Pod to see.
-
-PodPro ([https://podpro.dev/](https://podpro.dev/)) is a nice open-source
-project for browsing Pods, and it has a nice way of displaying the contents of
-Linked Data resources.
-
-You can also use PodBrowser (https://podbrowser.inrupt.com/) to browse the
-Pod, but it doesn't display the contents of Linked Data resources yet, or
-Penny (https://penny.vincenttunru.com/) which does show the contents, but not
-as nicely formatted as PodPro.
-
-So log into your test user's Pod using PodPro (you may need to click on the
-Login icon in the bottom-left-hand-side of the page, and you WILL need to
-paste in the Pod Spaces broker (i.e., `https://broker.pod.inrupt.com/` even
-though, frustratingly, it does appear by default as the textbox's placeholder
-value!).
-
-Navigate to the resources that should now be in the user's Pod:
+As a starting point, we should see containers for all the data sources we
+successfully ETL'ed for this user here:
 
 ```
 /private/inrupt/etl-tutorial/etl-run-1/dataSource/
 ```
 
-...and you should see containers for all the data sources we ETL'ed for this
-user!
+## PHASE 9 - See the Linked Data (as Turtle) in the user's Pod
+
+PodPro ([https://podpro.dev/](https://podpro.dev/)) is another really nice
+open-source project for browsing the data in Pods, especially for developers as
+it very nicely displays the contents of all Linked Data resources as Turtle.
+
+Log into your test user's Pod using PodPro by clicking on the Login icon in the
+bottom-left-hand-side of the page, and you'll need to paste in, or select, the
+PodSpaces broker (i.e., `https://login.inrupt.com/`).
+
+By navigating the resources and viewing the Linked Data triples, can you find
+where our test user skydives as a hobby in Ireland?
+
+## PHASE 10 - Congratulate yourself!
+
+If you made it all the way through this worksheet, then congratulations!
+
+You've certainly covered a lot of ground, and managed to install, run,
+configure, debug, and successfully execute a sophisticated full End-to-End ETL
+process resulting in the population of a user Pod from multiple 3rd-party data
+sources.
 
 Well done!

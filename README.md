@@ -16,7 +16,7 @@ everything in Solid, we first recommend reading the
 
 If you want a complete, start-to-finish run through of the entire process of
 installing, configuring, testing, and running the ETL Tutorial, then you can
-follow our detailed Worksheet instructions [here](docs/Worksheet/Worksheet-Quick.md).
+follow our detailed Worksheet instructions [here](docs/Worksheet/Worksheet.md).
 
 The following instructions provide more background, and go into greater
 detail.
