@@ -19,6 +19,10 @@ The following changes have been implemented but not released yet:
 - Added util functions for describing a collection of resources.
 - Updated to treat resources as SolidDatasets instead of just Things.
 - Add passport photo image as a Blob to Pod.
+- Wired up ETL container resources so that they all link up properly when viewed
+  and navigated to from the WebID IRI in a triplestore.
+- Fixed Hobby resource IRI to remove trailing slash (making it look like a
+  Container).
 
 ## [0.0.1] - 2022-02-01
 

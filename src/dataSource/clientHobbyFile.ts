@@ -90,7 +90,7 @@ export function hobbyTransform(
   // Build our Pod resource IRI using our container and our incoming hobby
   // data to build up the identifier.
   const hobbyId = `Hobby-${hobbyDataAsJson.id}-${hobbyDataAsJson.membership_id}`;
-  const hobbyIri = `${wiring.dataSourceContainerIri}${hobbyId}/`;
+  const hobbyIri = `${wiring.dataSourceContainerIri}${hobbyId}`;
 
   // Add a reference to this instance to our data source container.
   dataSourceContainerBuilder.addIri(HOBBY.hasHobby, hobbyIri);
