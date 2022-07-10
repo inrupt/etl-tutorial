@@ -119,53 +119,53 @@ artifactToGenerate:
 #            fileName: rollup.config.js
 #
 #
-#  # This is the configuration of the DEFAULT SolidCommonVocab TypeScript
-#  # artifact - i.e., where the name of the generated npm module does not
-#  # contain details of the underlying RDF library dependencies (e.g.,
-#  # whether it depends on RDF/JS or a specific implementation, etc.).
-#  - programmingLanguage: TypeScript
-#    artifactVersion: "1.0.1"
-#    artifactNamePrefix: ""
-#
-#    artifactDirectoryName: TypeScript-SolidCommonVocab
-#    sourceFileExtension: ts
-#    artifactNameSuffix: -solidcommonvocab
-#
-#    solidCommonVocabVersion: "^1.0.0"
-#    rdfjsTypesVersion: "^1.0.1"
-#    rdfjsImplVersion: "^1.1.0"
-#    templateInternal: solidCommonVocabDependent/typescript/rdfjsRdfDataFactory/vocab.hbs
-#
-#    packaging:
-#      - packagingTool: npm
-#        npmModuleScope: "@inrupt/"
-#        bundleName: "Vocabinrupt3rdParty"
-#
-#        typescriptVersion: "^4.7.4"
-#        rollupVersion: "^2.36.1"
-#        rollupTypescriptPluginVersion: "^0.29.0"
-#        rollupCommonjsPluginVersion: "^17.0.0"
-#        rollupNodeResolveVersion: "^11.0.1"
-#
-#        publish:
-#          - key: "npmInstallAndBuild"
-#            command: "npm install && npm run build"
-#          - key: "npmLocal"
-#            command: "npm unpublish --force --registry http://localhost:4873/ && npm install --registry http://localhost:4873/ && npm run build && npm publish --registry http://localhost:4873/"
-#          - key: 'npmGithub'
-#            command: "npm install --registry https://npm.pkg.github.com/inrupt && npm run build && npm publish --registry https://npm.pkg.github.com/inrupt"
-#          - key: "npmPrivate"
-#            command: "npm install --registry https://registry.npmjs.org/ && npm publish --registry https://registry.npmjs.org/"
-#        packagingTemplates:
-#          - templateInternal: solidCommonVocabDependent/typescript/rdfjsRdfDataFactory/package.hbs
-#            fileName: package.json
-#          - templateInternal: generic/typescript/index.hbs
-#            fileName: index.ts
-#          - templateInternal: generic/typescript/tsconfig.hbs
-#            fileName: tsconfig.json
-#          - templateInternal: generic/typescript/rollup.config.hbs
-#            fileName: rollup.config.js
-#
+  # This is the configuration of the DEFAULT SolidCommonVocab TypeScript
+  # artifact - i.e., where the name of the generated npm module does not
+  # contain details of the underlying RDF library dependencies (e.g.,
+  # whether it depends on RDF/JS or a specific implementation, etc.).
+  - programmingLanguage: TypeScript
+    artifactVersion: "1.0.1"
+    artifactNamePrefix: ""
+
+    artifactDirectoryName: TypeScript-SolidCommonVocab
+    sourceFileExtension: ts
+    artifactNameSuffix: -solidcommonvocab
+
+    solidCommonVocabVersion: "^1.0.0"
+    rdfjsTypesVersion: "^1.0.1"
+    rdfjsImplVersion: "^1.1.0"
+    templateInternal: solidCommonVocabDependent/typescript/rdfjsRdfDataFactory/vocab.hbs
+
+    packaging:
+      - packagingTool: npm
+        npmModuleScope: "@inrupt/"
+        bundleName: "Vocabinrupt3rdParty"
+
+        typescriptVersion: "^4.7.4"
+        rollupVersion: "^2.36.1"
+        rollupTypescriptPluginVersion: "^0.29.0"
+        rollupCommonjsPluginVersion: "^17.0.0"
+        rollupNodeResolveVersion: "^11.0.1"
+
+        publish:
+          - key: "npmInstallAndBuild"
+            command: "npm install && npm run build"
+          - key: "npmLocal"
+            command: "npm unpublish --force --registry http://localhost:4873/ && npm install --registry http://localhost:4873/ && npm run build && npm publish --registry http://localhost:4873/"
+          - key: 'npmGithub'
+            command: "npm install --registry https://npm.pkg.github.com/inrupt && npm run build && npm publish --registry https://npm.pkg.github.com/inrupt"
+          - key: "npmPrivate"
+            command: "npm install --registry https://registry.npmjs.org/ && npm publish --registry https://registry.npmjs.org/"
+        packagingTemplates:
+          - templateInternal: solidCommonVocabDependent/typescript/rdfjsRdfDataFactory/package.hbs
+            fileName: package.json
+          - templateInternal: generic/typescript/index.hbs
+            fileName: index.ts
+          - templateInternal: generic/typescript/tsconfig.hbs
+            fileName: tsconfig.json
+          - templateInternal: generic/typescript/rollup.config.hbs
+            fileName: rollup.config.js
+
 
   - programmingLanguage: TypeScript
     artifactVersion: "1.0.1"
