@@ -70,7 +70,7 @@ describe("Hobby data source", () => {
       "https://example.com/entrypoint/"
     );
     expect(resourceDetails).toBeDefined();
-    expect(resourceDetails.rdfResources).toHaveLength(3);
+    expect(resourceDetails.rdfResources).toHaveLength(4);
 
     const hobbyResource = getThingOfTypeFromCollectionMandatoryOne(
       resourceDetails,

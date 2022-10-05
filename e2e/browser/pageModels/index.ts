@@ -31,7 +31,7 @@ export class IndexPage {
     this.submitButton = screen.getByText("Log in");
   }
 
-  async startLogin(idp = "https://broker.pod.inrupt.com") {
+  async startLogin(idp = "https://login.inrupt.com") {
     await t
       .selectText(this.idpInput)
       .pressKey("delete")

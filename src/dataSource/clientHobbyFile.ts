@@ -90,7 +90,7 @@ export function hobbyTransform(
   // Build our Pod resource IRI using our container and our incoming hobby
   // data to build up the identifier.
   const hobbyId = `Hobby-${hobbyDataAsJson.id}-${hobbyDataAsJson.membership_id}`;
-  const hobbyIri = `${wiring.dataSourceContainerIri}${hobbyId}`;
+  const hobbyIri = `${wiring.dataSourceContainerIri}${hobbyId}/`;
 
   // Add a reference to this instance to our data source container.
   dataSourceContainerBuilder.addIri(HOBBY.hasHobby, hobbyIri);
@@ -98,15 +98,11 @@ export function hobbyTransform(
   // Very simplistic address processing...
   const addressComponents = hobbyDataAsJson.address_details.split(",");
 
-  const hobby = buildThing({
-    url: `${hobbyIri}`,
+  const hobbyAddress = buildThing({
+    url: `${hobbyIri}address`,
   })
     // Denote the type of this resource.
-    .addIri(RDF.type, HOBBY.Hobby)
-
-    .addStringEnglish(SCHEMA_INRUPT.name, hobbyDataAsJson.club)
-    .addStringNoLocale(HOBBY.kind, hobbyDataAsJson.kind_of_hobby)
-    .addIri(SCHEMA_INRUPT.NS("member"), hobbyDataAsJson.web_site)
+    .addIri(RDF.type, SCHEMA_INRUPT.PostalAddress)
     .addStringNoLocale(SCHEMA_INRUPT.streetAddress, addressComponents[0].trim())
     .addStringNoLocale(
       SCHEMA_INRUPT.addressLocality,
@@ -119,6 +115,18 @@ export function hobbyTransform(
     )
     .build();
 
+  const hobby = buildThing({
+    url: `${hobbyIri}`,
+  })
+    // Denote the type of this resource.
+    .addIri(RDF.type, HOBBY.Hobby)
+    .addStringEnglish(SCHEMA_INRUPT.name, hobbyDataAsJson.club)
+    .addStringNoLocale(HOBBY.kind, hobbyDataAsJson.kind_of_hobby)
+    .addIri(SCHEMA_INRUPT.NS("member"), hobbyDataAsJson.web_site)
+    .addIri(SCHEMA_INRUPT.address, hobbyAddress)
+    .build();
+
+  result.rdfResources.push(buildDataset(hobbyAddress));
   result.rdfResources.push(buildDataset(hobby));
 
   // Add the wiring-up resources to our result.

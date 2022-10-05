@@ -215,6 +215,11 @@ vocabList:
       - ./EtlTutorial/CopyOfVocab/etl-tutorial.ttl
 
 
+  #
+  # Just some example vocabularies we define on behalf of 3rd-parties (until
+  # they get around to defining and publishing their own authoritative
+  # vocabularies!).
+  #
   - widocoLanguages: en-es
     inputResources:
       - ./ThirdParty/CopyOfVocab/inrupt-3rd-party-companies-house-uk.ttl
@@ -241,9 +246,9 @@ vocabList:
   # We'd also like to be able to extend the Inrupt Common vocabulary too, but
   # that's currently only published publicly on GitHub, and so we need to use
   # the Artifact Generator's ability to override HTTP headers to pull that
-  # vocab as raw content, and then parse it as Turtle.
+  # vocab as 'raw content', and then parse it as Turtle.
   #
-  # Note: unfortunately, GitHub has a rate limit of only 60 unauthenticated
+  # Note: Unfortunately, GitHub has a rate limit of only 60 unauthenticated
   # requests per hour - after which we get JSON responses back (telling us our
   # rate limit has been reached), but that blows up the parser 'cos it's
   # expecting Turtle (i.e., "Error: Unexpected literal on line 1.").
@@ -251,7 +256,7 @@ vocabList:
   # Note: Doing this raises import issues too - i.e., we are almost certainly
   # importing the Inrupt Common bundle anyway, and so trying to extend just
   # this one vocab means our IDE will offer two very confusing choices if we
-  # don't name our extension differently.
+  # don't name our extension of that vocabulary differently.
 #  - vocabAcceptHeaderOverride: application/vnd.github.v3.raw
 #    vocabContentTypeHeaderOverride: text/turtle
 #    inputResources:

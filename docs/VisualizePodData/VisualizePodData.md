@@ -41,6 +41,7 @@ To create a new empty repository:
 - Select "_Get RDF data from a URL_".
 - Cut-and-paste the URL of our example data file:
   `https://pod.inrupt.com/pattestburner1/public/PodPat.trig`
+  (or import the local file: [../../resources/test/PodPat.trig](../../resources/test/PodPat.trig))
 - Click on the "_Import_" button to the right of the filename.
 - Just click the "_Import_" button (i.e., there's no need to enter or change
   anything).

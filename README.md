@@ -303,11 +303,11 @@ OAuth Client ID and Client Secret values that our ETL tool will use to
 authenticate itself to allow it access individual user Pod's to Load their
 respective data.
 
-1. Go to `registration` endpoint of the user's Identity Provider. For example,
-   for Pods registered with Inrupt's Pod Spaces, that would be:
+1. Go to the `registration` endpoint of the user's Identity Provider. For
+   example, for Pods registered with Inrupt's PodSpaces, that would be:
 
    ```
-   https://broker.pod.inrupt.com/registration.html
+   https://login.inrupt.com/registration.html
    ```
 
 2. Login as the ETL tool user.

@@ -173,10 +173,9 @@ describe("All data sources", () => {
             `Successfully read PRIVATE resource [${resourceIri}] in the test user's Pod (meaning our ETL Tutorial has a valid access token, and has been granted access by the user).`
           );
         } catch (error) {
-          debug(
-            `FAILED TO READ PRIVATE RESOURCE [${resourceIri}] in test user's Pod (meaning our ETL Tutorial has not got a valid access token, or has not been granted access by the user) - error: ${error}`
-          );
-          throw new Error("Fail test!");
+          const message = `FAILED TO READ PRIVATE RESOURCE [${resourceIri}] in test user's Pod (meaning our ETL Tutorial has not got a valid access token, or has not been granted access by the user) - error: ${error}`;
+          debug(message);
+          throw new Error(message);
         }
       }
     }, 10000);

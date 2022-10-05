@@ -12,7 +12,7 @@ So, what is "Linked Data"?
 
 ## What is Linked Data?
 
-[Slide 2](docs/LinkedDataOverview/LinkedDataSlidedeckImagenkedDataSlidedeckImage/Slide2-TimsTedTalk2009.png)
+[Slide 2](./LinkedDataSlidedeckImage/Slide2-TimsTedTalk2009.png)
 
 Well, the term itself was originally coined by Sir Tim Berners-Lee WAY BACK in
 2006, and awareness was greatly accelerated by this Ted talk that Tim gave back
@@ -68,7 +68,7 @@ But in general terms, what do we mean by "Graph Data" in the first place?
 
 ## What do we mean by Graphs?
 
-[Slide 3](docs/LinkedDataOverview/LinkedDataSlidedeckImagenkedDataSlidedeckImage/Slide3-GraphMotifEverywhere.png)
+[Slide 3](./LinkedDataSlidedeckImage/Slide3-GraphMotifEverywhere.png)
 
 Well, what I DON'T mean is line graphs, or pie charts, or histograms - not ANY
 of those types of graph, which are really just CHARTS.
@@ -111,7 +111,7 @@ across ALL of their customer relationships too...
 
 ## Adoption of Graph Technology
 
-[Slide 4](docs/LinkedDataOverview/LinkedDataSlidedeckImagenkedDataSlidedeckImage/Slide4-RisingGraphTechAdoption.png)
+[Slide 4](./LinkedDataSlidedeckImage/Slide4-RisingGraphTechAdoption.png)
 
 So on this slide I thought I'd try and highlight the rapidly GROWING adoption
 of Graph technology GENERALLY, starting in the top-left here with Graph DATABASE
@@ -152,7 +152,7 @@ using Linked Data in Enterprises...
 
 ## Use-case: D&B - Corporate Ownership Structure
 
-[Slide 5](docs/LinkedDataOverview/LinkedDataSlidedeckImagenkedDataSlidedeckImage/Slide5-UseCase-DNB.png)
+[Slide 5](./LinkedDataSlidedeckImage/Slide5-UseCase-DNB.png)
 
 Firstly I'm showing a screenshot here from Open Corporates, who aim to be "The
 largest OPEN database of companies in the world".
@@ -218,7 +218,7 @@ my personally moving from D&B to join Mastercard...
 
 ## Use-case: Vocalink - Fraudulent Money Mule Networks
 
-[Slide 6](docs/LinkedDataOverview/LinkedDataSlidedeckImagenkedDataSlidedeckImage/Slide6-UseCase-Vocalink.png)
+[Slide 6](./LinkedDataSlidedeckImage/Slide6-UseCase-Vocalink.png)
 
 ...and NOT coincidentally at all, by the way(!), it was Mastercard that also
 helped kick-start the entire Solid project, via a $1M donation to Sir Tim
@@ -275,7 +275,7 @@ while out playing golf!
 
 ## Use-case: Mastercard and NGOs - Pamoja (2nd in World Bank competition)
 
-[Slide 7](docs/LinkedDataOverview/LinkedDataSlidedeckImagenkedDataSlidedeckImage/Slide7-UseCase-Mastercard-Pamoja.png)
+[Slide 7](./LinkedDataSlidedeckImage/Slide7-UseCase-Mastercard-Pamoja.png)
 
 Ok, so this third, and final, Enterprise example, again from my time at
 Mastercard, yet again came about due to the inherent frustrations caused by
@@ -329,7 +329,7 @@ came 2nd would require pints in a pub later I think...
 
 ## Visualizing a Pod
 
-[Slide 8](docs/LinkedDataOverview/LinkedDataSlidedeckImagenkedDataSlidedeckImage/Slide8-VisualizingAPod.png)
+[Slide 8](./LinkedDataSlidedeckImage/Slide8-VisualizingAPod.png)
 
 And so finally, if we have time, I'd like to finish with a practical
 demonstration of Linked Data, by quickly walking you through an interactive
@@ -342,7 +342,7 @@ through so far...
 
 ## Wrap up...
 
-[Slide 9](docs/LinkedDataOverview/LinkedDataSlidedeckImagenkedDataSlidedeckImage/Slide9-WrapUp.png)
+[Slide 9](./LinkedDataSlidedeckImage/Slide9-WrapUp.png)
 
 So we've gone through:
 
