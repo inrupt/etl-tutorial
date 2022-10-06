@@ -146,9 +146,10 @@ isolation.
 
 ## Visualize from the Triplestore
 
-- Create a very simple 'Visual Graph' in your local GraphDB selecting the
-  starting node of
-  `https://pod.inrupt.com/pattestuserburner1/private/inrupt/etl-tutorial/etl-run-1/dataSource/CompaniesHouse-UK/00041424/`
+- If you enabled loading to a triplestore (in your local environments file),
+  then you can create a very simple 'Visual Graph' (if you used GraphDB) by
+  selecting the starting node of (using your own test username):
+  `https://pod.inrupt.com/<Username as lowercase>/private/inrupt/etl-tutorial/etl-run-1/dataSource/CompaniesHouse-UK/00041424/`
 
 ## Navigate using PodPro (which allows us to view resource contents as Turtle)
 
