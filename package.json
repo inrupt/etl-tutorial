@@ -99,5 +99,8 @@
   },
   "resolutions": {
     "parse-link-header": "^2.0.0"
+  },
+  "optionalDependencies": {
+    "fsevents": "^2.3.2"
   }
 }
