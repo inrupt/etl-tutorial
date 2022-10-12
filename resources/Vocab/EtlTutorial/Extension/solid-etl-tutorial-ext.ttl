@@ -51,16 +51,3 @@ solid:storageRoot a rdf:Property, owl:ObjectProperty ;
     rdfs:isDefinedBy solid_etl_tutorial_ext: ;
     rdfs:label "Storage root"@en ;
     rdfs:comment "The IRI of the root resource of a Solid Pod."@en .
-
-schema:Organisation
-    rdfs:isDefinedBy solid_etl_tutorial_ext: ;
-    schema:alternateName "Organisation"@en ;
-    schema:alternateName "Organisation"@fr ;
-    schema:alternateName "Organisation"@de ;
-    schema:alternateName "Organización"@es ;
-    schema:alternateName "Organizzazione"@it ;
-    rdfs:comment "Une organisation telle qu'une école, une ONG, une société, un club, etc."@fr ;
-    rdfs:comment "Eine Organisation wie eine Schule, eine NGO, ein Unternehmen, ein Verein usw."@de ;
-    rdfs:comment "Una organización como una escuela, ONG, corporación, club, etc."@es ;
-    rdfs:comment "Un'organizzazione come una scuola, una ONG, una società, un club, ecc."@it .
-

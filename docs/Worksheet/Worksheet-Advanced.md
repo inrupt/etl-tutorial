@@ -191,12 +191,12 @@ Credentials flow)).
 Go to:
 
 ```
-https://broker.pod.inrupt.com/registration.html
+https://login.inrupt.com/registration.html
 ```
 
 Login with your **_ETL Tutorial_** username and password (do **_not_** use
 your test user credentials by mistake!), and register your ETL Tutorial
-instance with whatever name you like, e.g., `InruptEtlTutorial`.
+instance with whatever name you like, e.g., `Inrupt ETL Tutorial`.
 
 Record the resulting `ClientID` and `ClientSecret` values:
 

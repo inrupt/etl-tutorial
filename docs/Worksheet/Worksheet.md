@@ -14,9 +14,9 @@ Here are some useful links and reference you may find useful as you work your
 way through this worksheet:
 
 - PodSpaces registration: https://start.inrupt.com/
+- PodSpaces Identity Provider: https://login.inrupt.com/
 - Yopmail: https://yopmail.com/en/
 - Password generator: https://passwordsgenerator.net/
-- Broker: https://broker.pod.inrupt.com/
 
 - PodPro: https://podpro.dev/
 - Penny: https://penny.vincenttunru.com/

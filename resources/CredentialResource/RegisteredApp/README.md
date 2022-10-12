@@ -16,15 +16,15 @@ application (or 'bot') with its Identity Provider (IdP), which will generate
 `clientID` and `clientSecret` values that can then be pasted into a new local
 credentials file in this directory.
 
-For example, using Pod Spaces this registration can be done here:
+For example, using PodSpaces this registration can be done here:
 
 ```
-https://broker.pod.inrupt.com/registration.html
+https://login.inrupt.com/registration.html
 ```
 
 You'll be asked to login (as the ETL tutorial application itself, not as a human
-'user'!), and then asked to provide a simple text name for the application to be
-registered (e.g., "ETL Tutorial").
+user!), and then asked to provide a simple text name for the application to be
+registered (you can provide any description here, e.g., "ETL Tutorial").
 
 ## Storing credentials in a local Turtle file
 

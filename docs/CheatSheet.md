@@ -13,20 +13,20 @@ attempts to offer general direction.
 ## Prerequisites
 
 - As a minimum, we'd highly recommend being at least somewhat familiar with
-  Turtle before attempting to understand or even use this project.
+  Turtle before attempting to understand, or even use, this project.
 
 ## 'Extras'
 
 This repository also includes some _indirectly_ related material:
 
 - A very high-level overview of Linked Data, as a presentation with slides, but
-  also with detailed accompanying prose [here](docs/LinkedDataOverview).
+  also with detailed accompanying prose [here](./LinkedDataOverview).
 - A detailed description of options for Advanced Vocabulary Management, for
   developers to work more efficiently with evolving vocabs once familiar and
   experienced with the basics.
 - A single page of instructions to register for, download, install and run the
-  free edition of a commercial Linked Data database (i.e., a triplestore), load
-  that database with dummy data representing a Solid Pod, and then visualizing
+  free edition of a commercial Linked Data database (i.e., a triplestore); load
+  that database with dummy data representing a Solid Pod; and then visualizing
   that Pod data interactively (and hopefully intuitively!).
   (Suitable for non-technical people, and should take less than **10 minutes**
   _*in total*_.)
@@ -38,7 +38,7 @@ ways, and finally visualizing the results of this project locally.
 
 ### Clone the repo
 
-Get the ETL Tutorial repository:
+Clone the public ETL Tutorial repository from GitHub:
 
 ```
   git clone git@github.com:inrupt/etl-tutorial.git
@@ -46,8 +46,9 @@ Get the ETL Tutorial repository:
 
 ### Generate JavaScript constants from our local vocabularies:
 
-- Run Inrupt's Artifact Generator to generate local source-code from the local
-  vocabularies this project defines (for illustrative purposes):
+- Run Inrupt's [Artifact Generator](https://github.com/inrupt/artifact-generator)
+  to generate local source-code from the local vocabularies this project defines
+  for illustrative purposes:
 
   Once-off using `npx` (slower, but no local dependencies required):
 
@@ -56,7 +57,8 @@ Get the ETL Tutorial repository:
   ```
 
   From local install (faster, but requires local Artifact Generator to be
-  installed):
+  installed, in the example below in a subdirectory named 'SDK' a sibling
+  directory named 'SDK'):
 
   ```
   node ../SDK/artifact-generator/src/index.js generate --vocabListFile "resources/Vocab/vocab-etl-tutorial-bundle-all.yml" --outputDirectory "./src/InruptTooling/Vocab/EtlTutorial" --noPrompt --force
@@ -71,10 +73,10 @@ npm test
 - Ensures everything is _basically_ installed and setup correctly.
 - Demonstrates that we have 100% branch code coverage (which we know doesn't
   '_prove_' anything in itself, but shows at least some commitment to
-  maintaining some measurable measure of 'code quality' 😄 !).
+  maintaining some measurable measure of 'code quality'!).
 - All tests run locally - they don't require any Web access (i.e., they don't
-  invoke any APIs), and they don't attempt to populate anything (e.g., Solid
-  Pods or triplestores).
+  invoke any online APIs), and they don't attempt to populate anything (e.g.,
+  any Solid Pods or triplestores).
 
 ## Running full End-2-End tests (using 3rd-party APIs, or loading to Pods)
 
@@ -82,23 +84,24 @@ You need to provide valid credentials for the actual End-2-Ends tests to run,
 since they can make actual API calls to the 3rd-party data sources, and can
 actually populate user Pods and triplestores.
 
-**Note:** See the main README.md documentation for setting up the correct
-credentials.
+**Note:** See our main README.md documentation for registering your instance of
+this ETL Tutorial application, and for setting up the correct credentials in a
+local environments file.
 
-## Running parts of the actual ETL
+### Running parts of the actual ETL
 
 We have End-to-End tests that allow us run specific parts of the ETL in
 isolation.
 
-### Extracts - Transforms - display to console
+#### Extracts - Transforms - display to console
 
-- `npm run e2e-ExtractTransform-display`
+- `npm run e2e-test-node-ExtractTransform-display`
   - Extracts from real sources, Transforms to Linked Data, but only displays
     results to the console.
 
-### Loads data from local files - Transforms - Loads
+#### Loads data from local files - Transforms - Loads
 
-- `npm run e2e-local-TransformLoad`
+- `npm run e2e-test-node-localExtract-TransformLoad`
   - Reads from _local_ sources, Transforms to Linked Data, and Loads to Pod
     and/or triplestore.
 
@@ -110,7 +113,8 @@ isolation.
 
 ## Run for 'real'
 
-- Display usage for entire tool:
+- Display usage for entire tool (assume you have `ts-node` installed - if not,
+  you can install it (globally) using `npm install -g ts-node`):
 
   ```
   ts-node src/index
@@ -122,7 +126,7 @@ isolation.
   ts-node src/index runEtl
   ```
 
-  Only two _required_ options:
+  This usage informs that there are only two _required_ options:
 
   - `--etlCredentialResource`
     - A Linked Data resource with credentials for the ETL tool itself (so that
@@ -130,9 +134,9 @@ isolation.
       it's been granted write access).
   - `--localUserCredentialResourceGlob`
     - A Glob (wildcard filename pattern) to scan for local Linked Data files
-      containing credentials for all the users ETL (and that can contain the
-      credentials for those users access 3rd-party data sources on their
-      behalf).
+      containing credentials for all the users to ETL (where each matching file
+      can contain the credentials for a user for each 3rd-party data sources so
+      on that our ETL tool can access that 3rd-party on that user's behalf).
 
 - Running it for real:
 
@@ -142,27 +146,29 @@ isolation.
 
 ## Visualize from the Triplestore
 
-- Create a very simple 'Visual Graph' in your local GraphDB selecting the
-  starting node of
-  `https://pod.inrupt.com/pattestuserburner1/private/inrupt/etl-tutorial/etl-run-1/dataSource/CompaniesHouse-UK/00041424/`
+- If you enabled loading to a triplestore (in your local environments file),
+  then you can create a very simple 'Visual Graph' (if you used GraphDB) by
+  selecting the starting node of (using your own test username):
+  `https://pod.inrupt.com/<Username as lowercase>/private/inrupt/etl-tutorial/etl-run-1/dataSource/CompaniesHouse-UK/00041424/`
 
-## Navigate using Penny (allows us to View Turtle) or PodBrowser
+## Navigate using PodPro (which allows us to view resource contents as Turtle)
 
-- Browse to `https://penny.vincenttunru.com/`.
-- Connect to the Pod Spaces at: `https://broker.pod.inrupt.com`.
-- Login using the test user credentials.
-- Click `Allow` to allow Penny access this test user's private resources.
+- Browse to `https://podpro.dev`.
+- Connect to your Identity Provider, e.g., for a Pod on PodSpaces use:
+  `https://login.inrupt.com`.
+- Login using your test user credentials.
+- Click `Allow` to allow PodPro access this test user's private resources.
 
-## Simulate a real-time event (e.g., a Water Leak in the user's home):
+## Simulate a real-time event (e.g., a Water Leak in the user's home)
 
 _Note:_ To be added to this open-source code soon...
 
 `ts-node src/index.ts publishEvent --etlCredentialResource resources/test/RealData/RealRegisteredAppCredentialResource/registered-app-credential-etl-tutorial.ttl --userCredentialResource resources/test/RealData/RealUserCredentialResource/user-credential-test-user.ttl --eventResource resources/test/DummyData/DummyEvent/Flume/dummy-event-flume-leak.json`
 
-## Comunica to query Pod and public sources
+## Use Comunica to query Pod and public sources
 
-- Browse to: `https://data.rubensworks.net/tmp/comunica-solid/`
-- Login into Pod, e.g. `https://broker.pod.inrupt.com/`.
+- Browse to: `https://query.linkeddatafragments.org/`
+- Login into Pod, e.g., for a Pod on PodSpaces use: `https://login.inrupt.com/`.
 - Execute query, e.g.:
   ```
   SELECT *
