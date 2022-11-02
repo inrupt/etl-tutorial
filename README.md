@@ -6,6 +6,13 @@ accessible 3rd-party data sources, local files, etc.
 
 Developed by [Inrupt, inc](https://www.inrupt.com).
 
+## Prerequisites
+
+This repository is intended for use by experienced TypeScript developers who are
+also familiar with running Node.JS applications from the command-line, and who
+are also somewhat familiar with the principles of Linked Data and using Solid
+Pods.
+
 ## Background
 
 To aid in the understanding of Linked Data, which is the foundation for
