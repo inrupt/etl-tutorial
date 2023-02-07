@@ -23,6 +23,7 @@ The following changes have been implemented but not released yet:
   and navigated to from the WebID IRI in a triplestore.
 - Fixed Hobby resource IRI to remove trailing slash (making it look like a
   Container).
+- Added simple utility function to get value with preferred language locale.
 
 ## [0.0.1] - 2022-02-01
 
