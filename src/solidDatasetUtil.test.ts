@@ -56,6 +56,8 @@ import {
   deleteRecursively,
   parseStreamIntoSolidDataset,
   getThingOfTypeFromCollectionMandatoryOne,
+  getPreferredLocale,
+  getPreferredLocaleIncludeNoLocale,
 } from "./solidDatasetUtil";
 import { CollectionOfResources } from "./solidPod";
 
@@ -82,6 +84,35 @@ jest.mock("@inrupt/solid-client", () => {
 });
 
 describe("Solid dataset util functions", () => {
+  describe("Get value with preferred locale", () => {
+    it("should find preferred locale values", async () => {
+      const thing = buildThing()
+        .addStringWithLocale(SCHEMA_INRUPT.name, "Padraig", "ga")
+        .addStringEnglish(SCHEMA_INRUPT.name, "Patrick")
+        .addStringNoLocale(SCHEMA_INRUPT.name, "Paddy")
+        .build();
+      const preferredLanguageTags = ["ga", "es", "en"];
+
+      expect(
+        getPreferredLocale(thing, SCHEMA_INRUPT.name, preferredLanguageTags)
+      ).toBe("Padraig");
+      expect(
+        getPreferredLocale(thing, SCHEMA_INRUPT.name, ["en", "es", "ga"])
+      ).toBe("Patrick");
+      expect(getPreferredLocale(thing, SCHEMA_INRUPT.name, ["es"])).toBeNull();
+
+      expect(
+        getPreferredLocaleIncludeNoLocale(thing, SCHEMA_INRUPT.name, [])
+      ).toBe("Paddy");
+      expect(
+        getPreferredLocaleIncludeNoLocale(thing, SCHEMA_INRUPT.name, [
+          "fr",
+          "de",
+        ])
+      ).toBe("Paddy");
+    });
+  });
+
   describe("Build dataset", () => {
     it("should build a dataset from a thing", async () => {
       const thing = buildThing()

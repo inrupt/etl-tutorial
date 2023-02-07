@@ -44,6 +44,8 @@ import {
   getSourceUrl,
   WithResourceInfo,
   fromRdfJsDataset,
+  getStringNoLocale,
+  getStringWithLocale,
 } from "@inrupt/solid-client";
 import debugModule from "debug";
 import { DataFactory, NamedNode } from "rdf-data-factory";
@@ -77,6 +79,41 @@ export interface GetThingOptions {
    * [[SolidDataset]].
    */
   scope?: Url | UrlString;
+}
+
+// Searches strictly for values from the ordered array of preferred language
+// tags (which may include 'No Locale' in any position).
+export function getPreferredLocale(
+  thing: Thing,
+  property: Url | UrlString,
+  preferredLanguageTags: string[]
+): string | null {
+  let value: string | null | undefined;
+
+  preferredLanguageTags.find((locale) => {
+    value = getStringWithLocale(thing, property, locale);
+    return value;
+  });
+
+  return value || null;
+}
+
+// Searches for values from the ordered array of preferred language tags
+// (which may include 'No Locale' in any position), but if nothing found, then
+// explicitly checks for a 'No Locale' value too (yeah, this might result in
+// searching twice for a 'No Locale' value if it's explicitly included in the
+// array of preferred language tags!).
+export function getPreferredLocaleIncludeNoLocale(
+  thing: Thing,
+  property: Url | UrlString,
+  preferredLanguageTags: string[]
+): string | null {
+  let value = getPreferredLocale(thing, property, preferredLanguageTags);
+
+  if (!value) {
+    value = getStringNoLocale(thing, property);
+  }
+  return value;
 }
 
 /**
