@@ -567,7 +567,7 @@ from 3rd-parties, see
   vocabulary webpage), as all our vocabularies describe themselves, and the
   terms they contain, in both of those languages (see our
   [Companies House vocabulary](./resources/Vocab/ThirdParty/CopyOfVocab/inrupt-3rd-party-companies-house-uk.ttl)
-  vocabulary for instance).
+  for instance).
 
 **Postman Collections for API calls:**
 
