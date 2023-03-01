@@ -24,6 +24,8 @@ The following changes have been implemented but not released yet:
 - Fixed Hobby resource IRI to remove trailing slash (making it look like a
   Container).
 - Added simple utility function to get value with preferred language locale.
+- Added UK Companies House registration instructions (as it's quite a
+  long-winded process!).
 
 ## [0.0.1] - 2022-02-01
 

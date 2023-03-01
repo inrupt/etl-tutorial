@@ -48,7 +48,8 @@ const DATA_SOURCE = "CompaniesHouse-UK";
 
 // These are the publicly available API details for performing a company
 // search via the UK Companies House (that API does require an authentication
-// token though...).
+// token though, for which we've provided detailed step-by-step instructions
+// in our sample environments file - /e2e/node/env.example).
 const companiesHouseUkEndpointRoot =
   "https://api.company-information.service.gov.uk/";
 const companiesHouseUkEndpointSearchCompanyById = `${companiesHouseUkEndpointRoot}search/companies?q={{COMPANY_ID}}`;
