@@ -26,6 +26,9 @@ The following changes have been implemented but not released yet:
 - Added simple utility function to get value with preferred language locale.
 - Added UK Companies House registration instructions (as it's quite a
   long-winded process!).
+- Added ExtractTransform-display test for Hobby.
+- Use environment variable in localExtract-TransformLoad tests for Pod storage
+  (so the tests can actually write to a real Pod).
 
 ## [0.0.1] - 2022-02-01
 

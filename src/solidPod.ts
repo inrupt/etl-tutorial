@@ -78,8 +78,8 @@ export async function insertResourceInSolidPod(
 ): Promise<string> {
   try {
     await saveSolidDatasetAt(resourceIri, resource, {
-      // @ts-ignore
       fetch: session.fetch,
+      // PMcB: This is a feature request I've submitted to the SDK Team...
       // outputDiagnosticsOnError: false,
     });
     debug(`...leaf resource saved [${resourceIri}].`);
@@ -166,8 +166,8 @@ export async function updateOrInsertResourceInSolidPod(
       try {
         debug(`Get resource: [${resource.url}]`);
         existingPodDataset = await getSolidDataset(resource.url, {
-          // @ts-ignore
           fetch: session.fetch,
+          // PMcB: This is a feature request I've submitted to the SDK Team...
           // outputDiagnosticsOnError: false,
         });
         debug(
@@ -260,8 +260,8 @@ export async function updateOrInsertResourceInSolidPod(
 
           // eslint-disable-next-line no-await-in-loop
           await saveSolidDatasetAt(resource.url, mergedDataset, {
-            // @ts-ignore
             fetch: session.fetch,
+            // PMcB: This is a feature request I've submitted to the SDK Team...
             // outputDiagnosticsOnError: false,
           });
           debug(`...container resource updated [${resource.url}].`);
@@ -277,9 +277,9 @@ export async function updateOrInsertResourceInSolidPod(
           debug(`Creating new Container: [${resource.url}]...`);
           // eslint-disable-next-line no-await-in-loop
           await createContainerAt(resource.url, {
-            // @ts-ignore
             fetch: session.fetch,
             initialContent: dataset,
+            // PMcB: This is a feature request I've submitted to the SDK Team...
             // outputDiagnosticsOnError: false,
           });
           debug(`...created as a Container: [${resource.url}].`);
@@ -377,7 +377,6 @@ export async function updateOrInsertResourceInSolidPod(
           Buffer.from(await blob.arrayBuffer()),
           {
             contentType: blob.type,
-            // @ts-ignore
             fetch: session.fetch,
           }
         );
