@@ -19,7 +19,10 @@ prefix inrupt_common_ext: <https://inrupt.com/vocab/common-local-ext#>
 # So we very deliberately re-use the underlying vocab's namespace, but use our
 # own prefix to try and differentiate.
 #
-inrupt_common_ext: a owl:Ontology, inrupt_gen:Ontology ;
+# Note: We don't mark this as an 'owl:Ontology', but as an Inrupt extension to
+# ontology.
+#
+inrupt_common_ext: a inrupt_gen:OntologyExtension ;
     owl:versionInfo "0.0.1" ;
     owl:versionIRI <https://inrupt.com/vocab/extension/schema/0.0.1> ;
     dcterms:creator <https://w3id.com/inrupt/namespace/webid/inrupt> ;

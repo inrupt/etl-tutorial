@@ -20,7 +20,10 @@ prefix solid_etl_tutorial_ext: <https://w3id.org/etl_tutorial/vocab/extension/so
 # So we very deliberately re-use the underlying vocab's namespace, but use our
 # own prefix to try and differentiate.
 #
-solid_etl_tutorial_ext: a owl:Ontology, inrupt_gen:Ontology ;
+# Note: We don't mark this as an 'owl:Ontology', but as an Inrupt extension to
+# ontology.
+#
+solid_etl_tutorial_ext: a inrupt_gen:OntologyExtension ;
     owl:versionInfo "0.0.1" ;
     owl:versionIRI <http://www.w3.org/ns/solid/terms/0.0.1> ;
     dcterms:creator <https://w3id.com/inrupt/namespace/webid/inrupt> ;
