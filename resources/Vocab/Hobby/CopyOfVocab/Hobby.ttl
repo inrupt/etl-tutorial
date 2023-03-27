@@ -3,6 +3,7 @@ prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 prefix owl: <http://www.w3.org/2002/07/owl#>
 prefix vann: <http://purl.org/vocab/vann/>
 prefix dcterms: <http://purl.org/dc/terms/>
+prefix dalicc: <http://dalicc.net/licenselibrary/>
 
 prefix inrupt_gen: <https://inrupt.com/vocab/tool/artifact_generator#>
 
@@ -17,7 +18,7 @@ hobby: a owl:Ontology, inrupt_gen:Ontology ;
     dcterms:description "Vocabulary for Hobbies."@en ;
     vann:preferredNamespacePrefix "hobby" ;
     vann:preferredNamespaceUri "https://inrupt.com/ns/vocab/hobby/" ;
-    dcterms:license "http://www.opendatacommons.org/licenses/pddl/" .
+    dcterms:license dalicc:MIT .
 
 
 hobby:Hobby a rdfs:Class ;

@@ -93,7 +93,6 @@ export async function initiateApplication(
     const fetchedRootResource = await getSolidDataset(
       applicationEntrypointIri,
       {
-        // @ts-ignore
         fetch: session.fetch,
       }
     ).catch((error) => {
@@ -113,7 +112,6 @@ export async function initiateApplication(
         `Found resource at [${applicationEntrypointIri}] - about to recursively delete...`
       );
       await deleteRecursively(fetchedRootResource, {
-        // @ts-ignore
         fetch: session.fetch,
       }).catch((error) => {
         const message = `Failed to recursively delete ${APPLICATION_LABEL} resources from Pod at [${applicationEntrypointIri}] - error: [${error}]`;
@@ -186,6 +184,12 @@ export async function createWebIdProfileDocumentIfNeeded(
   }
 
   return resources;
+}
+
+export function determineAppDataContainerIri(
+  applicationEntrypointIri: string
+): string {
+  return `${applicationEntrypointIri}${APPLICATION_FIRST_LEVEL_OF_HIERARCHY}etl-run-1/`;
 }
 
 export async function createApplicationResources(
@@ -272,12 +276,6 @@ export async function createApplicationResources(
     }] [${APPLICATION_LABEL}]-specific ${pluralize("resource", resources)}.`
   );
   return resources;
-}
-
-export function determineAppDataContainerIri(
-  applicationEntrypointIri: string
-): string {
-  return `${applicationEntrypointIri}${APPLICATION_FIRST_LEVEL_OF_HIERARCHY}etl-run-1/`;
 }
 
 export function makeDataSourceContainerBuilder(

@@ -28,6 +28,7 @@ import {
 } from "../solidDatasetUtil";
 
 import { hobbyFileExtract, hobbyTransform } from "./clientHobbyFile";
+import { HOBBY_SOURCE_FILE } from "../applicationConstant";
 
 // Load environment variables from .env.test.local if available:
 config({
@@ -38,15 +39,12 @@ config({
   silent: process.env.CI === "true",
 });
 
-const hobbySourceFile =
-  "resources/test/DummyData/DummyDataSource/DummyHobby/TestUser-Hobby-Skydive.json";
-
 describe("Hobby data source", () => {
   const credential: SolidDataset =
     createCredentialResourceFromEnvironmentVariables();
 
   it("should return", async () => {
-    await expect(hobbyFileExtract(hobbySourceFile)).resolves.not.toBeNull();
+    await expect(hobbyFileExtract(HOBBY_SOURCE_FILE)).resolves.not.toBeNull();
   });
 
   it("should fail to extract from source", async () => {
@@ -62,7 +60,7 @@ describe("Hobby data source", () => {
   });
 
   it("should extract and transform hobby", async () => {
-    const responseJson = await hobbyFileExtract(hobbySourceFile);
+    const responseJson = await hobbyFileExtract(HOBBY_SOURCE_FILE);
 
     const resourceDetails = hobbyTransform(
       credential,

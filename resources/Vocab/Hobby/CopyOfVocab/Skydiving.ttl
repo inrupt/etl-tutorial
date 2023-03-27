@@ -3,6 +3,7 @@ prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 prefix owl: <http://www.w3.org/2002/07/owl#>
 prefix vann: <http://purl.org/vocab/vann/>
 prefix dcterms: <http://purl.org/dc/terms/>
+prefix dalicc: <http://dalicc.net/licenselibrary/>
 
 prefix inrupt_gen: <https://inrupt.com/vocab/tool/artifact_generator#>
 
@@ -18,7 +19,7 @@ skydive:
     dcterms:description "Vocabulary for the sport of skydiving." ;
     vann:preferredNamespacePrefix "skydive" ;
     vann:preferredNamespaceUri "https://inrupt.com/vocab/demo/skydiving#" ;
-    dcterms:license "http://www.opendatacommons.org/licenses/pddl/" .
+    dcterms:license dalicc:MIT .
 
 
 skydive:Skydiving a owl:Class, hobby:Hobby ;

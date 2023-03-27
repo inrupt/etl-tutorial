@@ -25,7 +25,7 @@ inrupt_3rd_party_passport_office_uk: a owl:Ontology, inrupt_gen:Ontology  ;
      dcterms:description
          "Inrupt vocabulary for the Passport Office of the UK"@en ,
          "Vocabulario ininterrumpido para la Oficina de Pasaportes del Reino Unido"@es ;
-     dcterms:creator <https://inrupt.com/profile/card/#us> ;
+     dcterms:creator <https://w3id.com/inrupt/namespace/webid/inrupt> ;
      dcterms:issued "2021-08-23"^^xsd:date ;
      vann:preferredNamespacePrefix "inrupt_3rd_party_passport_office_uk" ;
      vann:preferredNamespaceUri <https://inrupt.com/vocab/3rdparty/pasport_office_uk#> ;

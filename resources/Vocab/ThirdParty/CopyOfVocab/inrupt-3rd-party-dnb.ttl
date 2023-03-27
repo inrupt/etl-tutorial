@@ -25,7 +25,7 @@ inrupt_3rd_party_dnb: a owl:Ontology, inrupt_gen:Ontology  ;
      dcterms:description
          "Inrupt vocabulary created to represent terms from D&B APIs."@en ,
          "Vocabulario de Inrupt creado para representar términos de las API de D&B."@es ;
-     dcterms:creator <https://inrupt.com/profile/card/#us> ;
+     dcterms:creator <https://w3id.com/inrupt/namespace/webid/inrupt> ;
      dcterms:issued "2021-08-23"^^xsd:date ;
      vann:preferredNamespacePrefix "inrupt_3rd_party_dnb" ;
      vann:preferredNamespaceUri <https://inrupt.com/vocab/3rdparty/dnb#> ;

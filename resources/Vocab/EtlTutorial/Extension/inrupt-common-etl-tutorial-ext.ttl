@@ -4,6 +4,7 @@ prefix xsd: <http://www.w3.org/2001/XMLSchema#>
 prefix owl: <http://www.w3.org/2002/07/owl#>
 prefix dcterms: <http://purl.org/dc/terms/>
 prefix vann: <http://purl.org/vocab/vann/>
+prefix dalicc: <http://dalicc.net/licenselibrary/>
 
 prefix inrupt_common: <https://inrupt.com/vocab/common#>
 
@@ -18,10 +19,13 @@ prefix inrupt_common_ext: <https://inrupt.com/vocab/common-local-ext#>
 # So we very deliberately re-use the underlying vocab's namespace, but use our
 # own prefix to try and differentiate.
 #
-inrupt_common_ext: a owl:Ontology, inrupt_gen:Ontology ;
+# Note: We don't mark this as an 'owl:Ontology', but as an Inrupt extension to
+# ontology.
+#
+inrupt_common_ext: a inrupt_gen:OntologyExtension ;
     owl:versionInfo "0.0.1" ;
     owl:versionIRI <https://inrupt.com/vocab/extension/schema/0.0.1> ;
-    dcterms:creator <https://inrupt.com/profile/card/#us> ;
+    dcterms:creator <https://w3id.com/inrupt/namespace/webid/inrupt> ;
     dcterms:issued "2021/10/15"^^xsd:date ;
     dcterms:title "Local extension to the Inrupt Common vocabulary" ;
     dcterms:description """Local extension to Inrupt terms, allowing us quickly and
@@ -29,7 +33,7 @@ inrupt_common_ext: a owl:Ontology, inrupt_gen:Ontology ;
  wait for them to be officially included and released by Inrupt.""" ;
     vann:preferredNamespacePrefix "inrupt_common" ;
     vann:preferredNamespaceUri "https://inrupt.com/vocab/common#" ;
-    dcterms:license "http://www.opendatacommons.org/licenses/pddl/" .
+    dcterms:license dalicc:MIT .
 
 #
 # NOTE: All the terms here actually belong in the Inrupt Common vocabulary,

@@ -28,7 +28,7 @@ inrupt_3rd_party_companies_house_uk: a owl:Ontology, inrupt_gen:Ontology  ;
          "Inrupt vocabulary created to represent terms from Companies House UK."@en ,
          "Inrupt vocabulario creado para representar términos de Companies House UK."@es ;
      rdfs:seeAlso <https://developer.company-information.service.gov.uk/> ;
-     dcterms:creator <https://inrupt.com/profile/card/#us> ;
+     dcterms:creator <https://w3id.com/inrupt/namespace/webid/inrupt> ;
      dcterms:issued "2021-08-23"^^xsd:date ;
      vann:preferredNamespacePrefix "inrupt_3rd_party_companies_house_uk" ;
      vann:preferredNamespaceUri <https://inrupt.com/vocab/3rdparty/companies-house-uk#> ;

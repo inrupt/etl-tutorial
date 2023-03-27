@@ -64,6 +64,7 @@ import {
   hobbyFileExtract,
   hobbyTransform,
 } from "../../src/dataSource/clientHobbyFile";
+import { APPLICATION_ENTRYPOINT } from "../../src/applicationConstant";
 
 // Load environment variables from .env.test.local if available:
 config({
@@ -188,7 +189,7 @@ describe("All data sources", () => {
       const resources = await passportTransform(
         credential,
         passportData,
-        "https://example.com/anything/"
+        `${process.env.SOLID_STORAGE_ROOT!}${APPLICATION_ENTRYPOINT}`
       );
 
       let response = await insertIntoTriplestoreResources(
@@ -225,7 +226,7 @@ describe("All data sources", () => {
       const resources = await hobbyTransform(
         credential,
         hobbyData,
-        "https://example.com/anything/"
+        `${process.env.SOLID_STORAGE_ROOT!}${APPLICATION_ENTRYPOINT}`
       );
 
       let response = await insertIntoTriplestoreResources(
@@ -260,7 +261,7 @@ describe("All data sources", () => {
       const resources = await companiesHouseUkTransformCompany(
         credential,
         companiesHouseUkSearchCompanyIdExample,
-        "https://example.com/anything/"
+        `${process.env.SOLID_STORAGE_ROOT!}${APPLICATION_ENTRYPOINT}`
       );
 
       let response = await insertIntoTriplestoreResources(

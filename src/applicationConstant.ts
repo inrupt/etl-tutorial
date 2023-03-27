@@ -29,3 +29,6 @@ export const APPLICATION_ENTRYPOINT = `private/${APPLICATION_VENDOR_NAME}/${APPL
 // provided, it should be truncated with a slash to ensure it represents a
 // container.
 export const APPLICATION_FIRST_LEVEL_OF_HIERARCHY = "";
+
+export const HOBBY_SOURCE_FILE =
+  "resources/test/DummyData/DummyDataSource/DummyHobby/TestUser-Hobby-Skydive.json";

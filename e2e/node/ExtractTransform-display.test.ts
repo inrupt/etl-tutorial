@@ -24,6 +24,7 @@ import { describe, expect, it } from "@jest/globals";
 import {
   getIriAll,
   getStringNoLocale,
+  getStringWithLocale,
   SolidDataset,
 } from "@inrupt/solid-client";
 import { CRED, SCHEMA_INRUPT } from "@inrupt/vocab-common-rdf-rdfdatafactory";
@@ -37,6 +38,8 @@ import {
   INRUPT_3RD_PARTY_UNILEVER,
   INRUPT_3RD_PARTY_COMPANIES_HOUSE_UK,
   INRUPT_3RD_PARTY_PASSPORT_OFFICE_UK,
+  GIST,
+  HOBBY,
 } from "@inrupt/vocab-etl-tutorial-bundle-all-rdfdatafactory";
 
 import {
@@ -50,9 +53,16 @@ import {
 import {
   getIriMandatoryOne,
   getStringNoLocaleMandatoryOne,
-  getThingAllOfType,
   getThingOfTypeFromCollectionMandatoryOne,
 } from "../../src/solidDatasetUtil";
+import {
+  APPLICATION_ENTRYPOINT,
+  HOBBY_SOURCE_FILE,
+} from "../../src/applicationConstant";
+import {
+  hobbyFileExtract,
+  hobbyTransform,
+} from "../../src/dataSource/clientHobbyFile";
 
 // Load environment variables from .env.test.local if available:
 config({
@@ -78,8 +88,81 @@ describe("All data sources", () => {
   const credential: SolidDataset =
     createCredentialResourceFromEnvironmentVariables();
 
+  describe("Passport office", () => {
+    it("extracts and transforms Passport data", async () => {
+      const response = await passportLocalExtract();
+      expect(response).toBeDefined();
+
+      if (response !== null) {
+        const resourceDetails: CollectionOfResources = passportTransform(
+          credential,
+          response,
+          `${process.env.SOLID_STORAGE_ROOT!}${APPLICATION_ENTRYPOINT}`
+        );
+        expect(resourceDetails.rdfResources).toHaveLength(3);
+
+        const passportResource = getThingOfTypeFromCollectionMandatoryOne(
+          resourceDetails,
+          INRUPT_3RD_PARTY_PASSPORT_OFFICE_UK.Passport
+        );
+
+        const passportNumber = getStringNoLocaleMandatoryOne(
+          passportResource,
+          INRUPT_3RD_PARTY_PASSPORT_OFFICE_UK.passportNumber
+        );
+        const issuer = getIriMandatoryOne(passportResource, CRED.issuer);
+        const idCategories = getIriAll(passportResource, GIST.isCategorizedBy);
+
+        debug(
+          `Passport details: passport number [${passportNumber}], issuer [${
+            issuer.value
+          }], categories of ID [${idCategories.join(", ")}].`
+        );
+
+        expect(passportNumber).toBe("PII-123123213");
+      }
+    });
+  });
+
+  describe("Hobby", () => {
+    it("extracts and transforms Hobby data", async () => {
+      const response = await hobbyFileExtract(HOBBY_SOURCE_FILE);
+      expect(response).toBeDefined();
+
+      if (response !== null) {
+        const resourceDetails: CollectionOfResources = hobbyTransform(
+          credential,
+          response,
+          `${process.env.SOLID_STORAGE_ROOT!}${APPLICATION_ENTRYPOINT}`
+        );
+        expect(resourceDetails.rdfResources).toHaveLength(4);
+
+        const hobbyResource = getThingOfTypeFromCollectionMandatoryOne(
+          resourceDetails,
+          HOBBY.Hobby
+        );
+
+        const hobbyKind = getStringNoLocaleMandatoryOne(
+          hobbyResource,
+          HOBBY.kind
+        );
+        const hobbyOrg = getStringWithLocale(
+          hobbyResource,
+          SCHEMA_INRUPT.name,
+          "en"
+        );
+
+        debug(
+          `Hobby details: hobby type [${hobbyKind}], name of organization [${hobbyOrg}].`
+        );
+
+        expect(hobbyKind).toBe("sport");
+      }
+    });
+  });
+
   describe("Companies House UK", () => {
-    it("extracts and transforms as expected", async () => {
+    it("extracts and transforms COmpanies House UK data", async () => {
       const response = await companiesHouseUkExtractCompanyById(
         credential,
         COMPANY_ID_TO_SEARCH
@@ -91,7 +174,7 @@ describe("All data sources", () => {
           companiesHouseUkTransformCompany(
             credential,
             response,
-            "https://example.com/anything/"
+            `${process.env.SOLID_STORAGE_ROOT!}${APPLICATION_ENTRYPOINT}`
           );
 
         const companyResource = getThingOfTypeFromCollectionMandatoryOne(
@@ -138,41 +221,5 @@ describe("All data sources", () => {
         expect(response.items[0].company_number).toBe(COMPANY_ID_TO_SEARCH);
       }
     }, 20000);
-  });
-
-  describe("Passport office", () => {
-    it("extracts and transforms as expected", async () => {
-      const response = await passportLocalExtract();
-      expect(response).toBeDefined();
-
-      if (response !== null) {
-        const resourceDetails: CollectionOfResources = passportTransform(
-          credential,
-          response,
-          "https://example.com/anything/"
-        );
-        expect(resourceDetails.rdfResources).toHaveLength(3);
-
-        const passportResource = getThingOfTypeFromCollectionMandatoryOne(
-          resourceDetails,
-          INRUPT_3RD_PARTY_PASSPORT_OFFICE_UK.Passport
-        );
-
-        const passportNumber = getStringNoLocaleMandatoryOne(
-          passportResource,
-          INRUPT_3RD_PARTY_PASSPORT_OFFICE_UK.passportNumber
-        );
-        const issuer = getIriMandatoryOne(passportResource, CRED.issuer);
-        const tags = getIriAll(passportResource, INRUPT_3RD_PARTY_UNILEVER.tag);
-
-        debug(
-          `Passport details: passport number [${passportNumber}], issuer [${
-            issuer.value
-          }], tags [${tags.join(", ")}].`
-        );
-
-        expect(passportNumber).toBe("PII-123123213");
-      }
-    });
   });
 });
