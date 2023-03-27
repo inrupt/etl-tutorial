@@ -5,6 +5,7 @@ prefix owl:      <http://www.w3.org/2002/07/owl#>
 prefix dcterms:  <http://purl.org/dc/terms/>
 prefix schema:   <http://schema.org/>
 prefix vann:     <http://purl.org/vocab/vann/>
+prefix dalicc:   <http://dalicc.net/licenselibrary/>
 
 prefix inrupt_gen:    <https://inrupt.com/vocab/tool/artifact_generator#>
 
@@ -22,13 +23,13 @@ prefix solid_etl_tutorial_ext: <https://w3id.org/etl_tutorial/vocab/extension/so
 solid_etl_tutorial_ext: a owl:Ontology, inrupt_gen:Ontology ;
     owl:versionInfo "0.0.1" ;
     owl:versionIRI <http://www.w3.org/ns/solid/terms/0.0.1> ;
-    dcterms:creator <https://inrupt.com/profile/card/#us> ;
+    dcterms:creator <https://w3id.com/inrupt/namespace/webid/inrupt> ;
     dcterms:issued "2020/10/02"^^xsd:date ;
     dcterms:title "Inrupt extension adding new Solid Terms" ;
     dcterms:description "Extension to the Solid Terms vocabulary adding new terms" ;
     vann:preferredNamespacePrefix "solid_etl_tutorial_ext" ;
     vann:preferredNamespaceUri "http://www.w3.org/ns/solid/terms#" ;
-    dcterms:license "http://www.opendatacommons.org/licenses/pddl/" .
+    dcterms:license dalicc:MIT .
 
 
 solid:WebId a rdfs:Class ;
