@@ -19,7 +19,7 @@
 
 import debugModule from "debug";
 import fs from "fs";
-import { RDF, SCHEMA_INRUPT } from "@inrupt/vocab-common-rdf-rdfdatafactory";
+import { RDF } from "@inrupt/vocab-common-rdf-rdfdatafactory";
 import { HOBBY } from "@inrupt/vocab-etl-tutorial-bundle-all-rdfdatafactory";
 import { buildThing, SolidDataset } from "@inrupt/solid-client";
 import { APPLICATION_NAME } from "../applicationConstant";
@@ -102,15 +102,21 @@ export function hobbyTransform(
     url: `${hobbyIri}address`,
   })
     // Denote the type of this resource.
-    .addIri(RDF.type, SCHEMA_INRUPT.PostalAddress)
-    .addStringNoLocale(SCHEMA_INRUPT.streetAddress, addressComponents[0].trim())
+    .addIri(RDF.type, "https://schema.org/PostalAddress")
     .addStringNoLocale(
-      SCHEMA_INRUPT.addressLocality,
+      "https://schema.org/streetAddress",
+      addressComponents[0].trim()
+    )
+    .addStringNoLocale(
+      "https://schema.org/addressLocality",
       addressComponents[1].trim()
     )
-    .addStringNoLocale(SCHEMA_INRUPT.addressRegion, addressComponents[2].trim())
     .addStringNoLocale(
-      SCHEMA_INRUPT.addressCountry,
+      "https://schema.org/addressRegion",
+      addressComponents[2].trim()
+    )
+    .addStringNoLocale(
+      "https://schema.org/addressCountry",
       addressComponents[3].trim()
     )
     .build();
@@ -120,10 +126,10 @@ export function hobbyTransform(
   })
     // Denote the type of this resource.
     .addIri(RDF.type, HOBBY.Hobby)
-    .addStringEnglish(SCHEMA_INRUPT.name, hobbyDataAsJson.club)
+    .addStringEnglish("https://schema.org/name", hobbyDataAsJson.club)
     .addStringNoLocale(HOBBY.kind, hobbyDataAsJson.kind_of_hobby)
-    .addIri(SCHEMA_INRUPT.NS("member"), hobbyDataAsJson.web_site)
-    .addIri(SCHEMA_INRUPT.address, hobbyAddress)
+    .addIri("https://schema.org/member", hobbyDataAsJson.web_site)
+    .addIri("https://schema.org/address", hobbyAddress)
     .build();
 
   result.rdfResources.push(buildDataset(hobbyAddress));

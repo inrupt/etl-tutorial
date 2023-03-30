@@ -20,7 +20,7 @@ import { buildThing, createSolidDataset, setThing } from "@inrupt/solid-client";
 
 import { fetch as crossFetch } from "cross-fetch";
 import { config } from "dotenv-flow";
-import { RDF, SCHEMA_INRUPT } from "@inrupt/vocab-common-rdf-rdfdatafactory";
+import { RDF } from "@inrupt/vocab-common-rdf-rdfdatafactory";
 import {
   clearTriplestore,
   insertIntoTriplestoreResources,
@@ -128,7 +128,7 @@ describe("triplestore", () => {
         blob: new Blob(),
         metadata: buildDataset(
           buildThing({ url: "https://inrupt.com/vocab/first" })
-            .addIri(RDF.type, SCHEMA_INRUPT.Person)
+            .addIri(RDF.type, "https://schema.org/Person")
             .build()
         ),
       });
@@ -163,7 +163,7 @@ describe("triplestore", () => {
       resources.push(
         buildDataset(
           buildThing({ url: "https://inrupt.com/vocab/first" })
-            .addIri(RDF.type, SCHEMA_INRUPT.Person)
+            .addIri(RDF.type, "https://schema.org/Person")
             .build()
         )
       );
@@ -185,7 +185,7 @@ describe("triplestore", () => {
 
       const resource = buildDataset(
         buildThing({ url: "https://inrupt.com/vocab/first" })
-          .addIri(RDF.type, SCHEMA_INRUPT.Person)
+          .addIri(RDF.type, "https://schema.org/Person")
           .build()
       );
 
@@ -208,7 +208,7 @@ describe("triplestore", () => {
 
       const thing = buildDataset(
         buildThing({ url: "https://inrupt.com/vocab/first" })
-          .addIri(RDF.type, SCHEMA_INRUPT.Person)
+          .addIri(RDF.type, "https://schema.org/Person")
           .build()
       );
 
@@ -230,7 +230,7 @@ describe("triplestore", () => {
 
       const thing = buildDataset(
         buildThing({ url: "https://inrupt.com/vocab/first" })
-          .addIri(RDF.type, SCHEMA_INRUPT.Person)
+          .addIri(RDF.type, "https://schema.org/Person")
           .build()
       );
 

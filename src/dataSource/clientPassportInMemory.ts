@@ -38,12 +38,7 @@
 import { Blob } from "node:buffer";
 import fs from "fs";
 import debugModule from "debug";
-import {
-  RDF,
-  SCHEMA_INRUPT,
-  CRED,
-  RDFS,
-} from "@inrupt/vocab-common-rdf-rdfdatafactory";
+import { RDF, CRED, RDFS } from "@inrupt/vocab-common-rdf-rdfdatafactory";
 import {
   DPV_PD,
   GIST,
@@ -81,6 +76,7 @@ const inputToEtlFrom3rdParty = {
   number: "PII-123123213",
   photo_image_file:
     "resources/test/DummyData/DummyDataSource/DummyPassportOffice/DummyPhoto/fake_passport.jpg",
+  label: "Government verified passport photo",
   exif: `{ ColorModel: RGB, PixelHeight: 800, PixelWidth: 532 }`,
 };
 
@@ -153,8 +149,11 @@ export function passportTransform(
     // instead assuming consumers only work within that data source's silo).
     .addIri(CRED.issuer, INRUPT_3RD_PARTY_PASSPORT_OFFICE_UK.PassportOffice)
 
-    .addStringEnglish(SCHEMA_INRUPT.name, passportDataAsJson.first_name)
-    .addStringEnglish(SCHEMA_INRUPT.familyName, passportDataAsJson.surname)
+    .addStringEnglish("https://schema.org/name", passportDataAsJson.first_name)
+    .addStringEnglish(
+      "https://schema.org/familyName",
+      passportDataAsJson.surname
+    )
 
     .addStringNoLocale(
       INRUPT_3RD_PARTY_PASSPORT_OFFICE_UK.passportNumber,
@@ -196,10 +195,14 @@ export function passportTransform(
     buildThing({
       url: blobMetadataIri,
     })
-      .addIri(RDF.type, SCHEMA_INRUPT.NS("ImageObject"))
-      .addStringNoLocale(RDFS.label, passportDataAsJson.photo_image_file)
-      .addStringNoLocale(SCHEMA_INRUPT.NS("exifData"), passportDataAsJson.exif)
-      .addIri(SCHEMA_INRUPT.image, blobIri)
+      .addIri(RDF.type, "https://schema.org/ImageObject")
+      .addStringNoLocale(RDFS.label, passportDataAsJson.label)
+      .addStringNoLocale(
+        "https://schema.org/isBasedOn",
+        passportDataAsJson.photo_image_file
+      )
+      .addStringNoLocale("https://schema.org/exifData", passportDataAsJson.exif)
+      .addIri("https://schema.org/image", blobIri)
       .build()
   );
 
