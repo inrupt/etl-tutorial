@@ -162,7 +162,7 @@ describe("ETL process", () => {
 
       const successfullyProcessed = await runEtl(validArguments);
       expect(successfullyProcessed).toBe(1);
-    });
+    }, 15000);
 
     it("should fail ETL from data source fails", async () => {
       jest.requireMock(
@@ -200,7 +200,7 @@ describe("ETL process", () => {
 
       const successfullyProcessed = await runEtl(validArguments);
       expect(successfullyProcessed).toBe(0);
-    });
+    }, 15000);
 
     it("should fail if looking for existing application resources throws", async () => {
       jest.requireMock(
@@ -232,7 +232,7 @@ describe("ETL process", () => {
 
       const successfullyProcessed = await runEtl(validArguments);
       expect(successfullyProcessed).toBe(0);
-    });
+    }, 15000);
 
     it("should fail if ETL application login fails", async () => {
       const validArguments = {
@@ -250,7 +250,7 @@ describe("ETL process", () => {
 
       const successfullyProcessed = await runEtl(validArguments);
       expect(successfullyProcessed).toBe(-1);
-    });
+    }, 15000);
 
     it("should fail on invalid credential resource", async () => {
       const filename =
@@ -265,7 +265,7 @@ describe("ETL process", () => {
 
       const successfullyProcessed = await runEtl(validArguments);
       expect(successfullyProcessed).toBe(-1);
-    });
+    }, 15000);
 
     it("should ignore specified credential resource", async () => {
       const filename =
@@ -281,7 +281,7 @@ describe("ETL process", () => {
 
       const successfullyProcessed = await runEtl(validArguments);
       expect(successfullyProcessed).toBe(0);
-    });
+    }, 15000);
   });
 
   describe("Loading resources and blobs", () => {
@@ -300,7 +300,7 @@ describe("ETL process", () => {
           null
         )
       ).resolves.toContain("No Linked Data resources or Blobs to load");
-    });
+    }, 15000);
 
     it("should report no resources to load", async () => {
       const authnModule = jest.requireMock(
@@ -317,7 +317,7 @@ describe("ETL process", () => {
           { rdfResources: [], blobsWithMetadata: null }
         )
       ).resolves.toContain("Empty set of resources to load");
-    });
+    }, 15000);
   });
 
   describe("Loading resources", () => {
@@ -338,7 +338,7 @@ describe("ETL process", () => {
           [{ url: "https://example.com/test", blob: new Blob([]) }]
         )
       ).resolves.toContain(`[${dataSource}] provided no resources`);
-    });
+    }, 15000);
 
     it("should report Blob", async () => {
       const authnModule = jest.requireMock(
@@ -376,7 +376,7 @@ describe("ETL process", () => {
           [{ url: "https://example.com/test", blob: new Blob([]) }]
         )
       ).resolves.toContain("and [1] Blob");
-    });
+    }, 15000);
 
     it("should report no resources to load", async () => {
       const authnModule = jest.requireMock(
@@ -393,7 +393,7 @@ describe("ETL process", () => {
           []
         )
       ).resolves.toContain("Empty set of resources to load");
-    });
+    }, 15000);
 
     it("should load resource, not logged into Pod", async () => {
       const authnModule = jest.requireMock(
@@ -415,7 +415,7 @@ describe("ETL process", () => {
           dataset,
         ])
       ).resolves.toContain("ETL tool did not log into");
-    });
+    }, 15000);
 
     it("should load resource, logged into Pod", async () => {
       const dataset = buildDataset(
@@ -438,7 +438,7 @@ describe("ETL process", () => {
           dataset,
         ])
       ).resolves.toContain("Successfully inserted or updated [1] resource");
-    });
+    }, 15000);
   });
 
   describe("Log into Pod", () => {
@@ -464,7 +464,7 @@ describe("ETL process", () => {
       // setting it's logged-in flag to 'true', when in fact it's passed
       // 'undefined'.
       expect(session.info.isLoggedIn).toBeTruthy();
-    });
+    }, 15000);
 
     it("should fail login if registered app creds resource is invalid Turtle", async () => {
       jest.requireMock(
@@ -487,7 +487,7 @@ describe("ETL process", () => {
       // setting it's logged-in flag to 'true', when in fact it's passed
       // 'undefined', and actually isn't logged in at all...
       expect(session.info.isLoggedIn).toBeTruthy();
-    });
+    }, 15000);
 
     it("should throw if login throws", async () => {
       jest.requireMock(
@@ -505,6 +505,6 @@ describe("ETL process", () => {
       await expect(loginAsRegisteredApp(validArguments)).rejects.toThrow(
         "failed to log into Solid"
       );
-    });
+    }, 15000);
   });
 });

@@ -129,7 +129,7 @@ describe("All data sources", () => {
     } else {
       // Just set a higher timeout for our Pod login attempts...
       custom.setHttpOptionsDefaults({
-        timeout: 10000,
+        timeout: 20000,
       });
 
       await session.login({
@@ -162,7 +162,9 @@ describe("All data sources", () => {
           `No storage root (or just our default one for triplestore population), so not attempting to access a private resource on the ETL Tutorial Pod.`
         );
       } else {
-        const resourceIri = `${storageRoot}private/`;
+        // Storage root is private (and we shouldn't ever rely on any
+        // particular resource being present in any Pod).
+        const resourceIri = `${storageRoot}`;
         debug(`Attempting to read PRIVATE resource [${resourceIri}]...`);
         try {
           const dataset = await getSolidDataset(resourceIri, {
@@ -179,7 +181,7 @@ describe("All data sources", () => {
           throw new Error(message);
         }
       }
-    }, 10000);
+    }, 15000);
   });
 
   describe("Passport (local)", () => {
