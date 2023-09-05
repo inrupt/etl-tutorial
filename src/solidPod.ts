@@ -48,6 +48,14 @@ import {
   SolidDataset,
 } from "@inrupt/solid-client";
 import { Session } from "@inrupt/solid-client-authn-node";
+import {
+  DCTERMS,
+  LDP,
+  OWL,
+  RDF,
+  RDFS,
+  XSD,
+} from "@inrupt/vocab-common-rdf-rdfdatafactory";
 import { APPLICATION_NAME } from "./applicationConstant";
 
 const debug = debugModule(`${APPLICATION_NAME}:solidPod`);
@@ -60,12 +68,12 @@ const debug = debugModule(`${APPLICATION_NAME}:solidPod`);
  * @type {{schema: string, void: string, rdf: string, owl: string, xsd: string, skos: string, dcterms: string, rdfs: string, time: string, vann: string}}
  */
 export const RDF_PREFIXES = {
-  rdf: "http://www.w3.org/1999/02/22-rdf-syntax-ns#",
-  rdfs: "http://www.w3.org/2000/01/rdf-schema#",
-  ldp: "http://www.w3.org/ns/ldp#",
-  owl: "http://www.w3.org/2002/07/owl#",
-  xsd: "http://www.w3.org/2001/XMLSchema#",
-  dcterms: "http://purl.org/dc/terms/",
+  rdf: RDF.NAMESPACE,
+  rdfs: RDFS.NAMESPACE,
+  ldp: LDP.NAMESPACE,
+  owl: OWL.NAMESPACE,
+  xsd: XSD.NAMESPACE,
+  dcterms: DCTERMS.NAMESPACE,
   schema: "https://schema.org/",
 };
 
