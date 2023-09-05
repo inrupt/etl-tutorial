@@ -101,7 +101,10 @@ describe("All data sources", () => {
         const resourceDetails: CollectionOfResources = passportTransform(
           credential,
           response,
-          `${process.env.SOLID_STORAGE_ROOT!}${APPLICATION_ENTRYPOINT}`
+          `${
+            process.env.SOLID_STORAGE_ROOT ||
+            "https://valid-iri-if-none-provided.example.com/"
+          }${APPLICATION_ENTRYPOINT}`
         );
         expect(resourceDetails.rdfResources).toHaveLength(3);
 
@@ -137,7 +140,10 @@ describe("All data sources", () => {
         const resourceDetails: CollectionOfResources = hobbyTransform(
           credential,
           response,
-          `${process.env.SOLID_STORAGE_ROOT!}${APPLICATION_ENTRYPOINT}`
+          `${
+            process.env.SOLID_STORAGE_ROOT ||
+            "https://valid-iri-if-none-provided.example.com/"
+          }${APPLICATION_ENTRYPOINT}`
         );
         expect(resourceDetails.rdfResources).toHaveLength(4);
 
@@ -178,7 +184,10 @@ describe("All data sources", () => {
           companiesHouseUkTransformCompany(
             credential,
             response,
-            `${process.env.SOLID_STORAGE_ROOT!}${APPLICATION_ENTRYPOINT}`
+            `${
+              process.env.SOLID_STORAGE_ROOT ||
+              "https://valid-iri-if-none-provided.example.com/"
+            }${APPLICATION_ENTRYPOINT}`
           );
 
         const companyResource = getThingOfTypeFromCollectionMandatoryOne(
