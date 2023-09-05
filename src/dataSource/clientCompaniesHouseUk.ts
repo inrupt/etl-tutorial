@@ -18,7 +18,6 @@
 // SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 import debugModule from "debug";
-import { fetch as crossFetch } from "cross-fetch";
 import { RDF, RDFS } from "@inrupt/vocab-common-rdf-rdfdatafactory";
 import {
   INRUPT_COMMON,
@@ -83,7 +82,7 @@ export async function companiesHouseUkExtractCompanyById(
     companyId
   );
 
-  return crossFetch(endpoint, {
+  return fetch(endpoint, {
     method: "GET",
     headers: {
       Accept: "application/json",

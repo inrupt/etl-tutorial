@@ -17,11 +17,6 @@
 // OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
 // SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
-// We need to import Response because it's not a global in Node.
-// We need to rename Response because otherwise ESLint thinks we're
-// re-defining a global - d'oh!
-import { Response as CrossFetchResponse } from "cross-fetch";
-
 import { buildThing } from "@inrupt/solid-client";
 import {
   describeCollectionOfResources,
@@ -53,7 +48,7 @@ describe("Util functions", () => {
 
   describe("handle HTTP response containing JSON", () => {
     it("should succeed", async () => {
-      const res = new CrossFetchResponse(
+      const res = new Response(
         JSON.stringify({
           data: "stuff...",
           success: true,
@@ -65,7 +60,7 @@ describe("Util functions", () => {
     });
 
     it("should fail if not success", async () => {
-      const res = new CrossFetchResponse("An error message", {
+      const res = new Response("An error message", {
         status: 500,
       });
 
@@ -78,14 +73,14 @@ describe("Util functions", () => {
   describe("handle HTTP response containing a Blob", () => {
     it("should succeed", async () => {
       const blob = "hello world!";
-      const res = new CrossFetchResponse(blob);
+      const res = new Response(blob);
 
       const response = await handleResponseBlob(res, dataSource, endpoint);
       expect(await response.text()).toEqual(blob);
     });
 
     it("should fail if not success", async () => {
-      const res = new CrossFetchResponse("An error message", {
+      const res = new Response("An error message", {
         status: 500,
       });
 

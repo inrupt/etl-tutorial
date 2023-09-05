@@ -64,6 +64,10 @@ import {
   hobbyTransform,
 } from "../../src/dataSource/clientHobbyFile";
 
+import { DataFactory } from "rdf-data-factory";
+import * as RDFJS from "rdf-js";
+const factory: RDFJS.DataFactory = new DataFactory();
+
 // Load environment variables from .env.test.local if available:
 config({
   default_node_env: process.env.NODE_ENV || "test",
@@ -179,14 +183,20 @@ describe("All data sources", () => {
 
         const companyResource = getThingOfTypeFromCollectionMandatoryOne(
           resourceDetails,
-          SCHEMA_INRUPT.NS("Organization")
+          // SCHEMA_INRUPT.Organization
+          factory.namedNode("https://schema.org/Organization")
         );
         const addressResource = getThingOfTypeFromCollectionMandatoryOne(
           resourceDetails,
-          SCHEMA_INRUPT.PostalAddress
+          // SCHEMA_INRUPT.PostalAddress
+          factory.namedNode("https://schema.org/PostalAddress")
         );
 
-        const name = getStringNoLocale(companyResource, SCHEMA_INRUPT.name);
+        // const name = getStringNoLocale(companyResource, SCHEMA_INRUPT.name);
+        const name = getStringNoLocale(
+          companyResource,
+          factory.namedNode("https://schema.org/name")
+        );
         const status = getStringNoLocale(
           companyResource,
           INRUPT_3RD_PARTY_COMPANIES_HOUSE_UK.status
@@ -194,23 +204,28 @@ describe("All data sources", () => {
 
         const streetAddress = getStringNoLocale(
           addressResource,
-          SCHEMA_INRUPT.streetAddress
+          // SCHEMA_INRUPT.streetAddress
+          factory.namedNode("https://schema.org/streetAddress")
         );
         const locality = getStringNoLocale(
           addressResource,
-          SCHEMA_INRUPT.addressLocality
+          // SCHEMA_INRUPT.addressLocality
+          factory.namedNode("https://schema.org/addressLocality")
         );
         const region = getStringNoLocale(
           addressResource,
-          SCHEMA_INRUPT.addressRegion
+          // SCHEMA_INRUPT.addressRegion
+          factory.namedNode("https://schema.org/addressRegion")
         );
         const country = getStringNoLocale(
           addressResource,
-          SCHEMA_INRUPT.addressCountry
+          // SCHEMA_INRUPT.addressCountry
+          factory.namedNode("https://schema.org/addressCountry")
         );
         const postCode = getStringNoLocale(
           addressResource,
-          SCHEMA_INRUPT.postalCode
+          // SCHEMA_INRUPT.postalCode
+          factory.namedNode("https://schema.org/postalCode")
         );
 
         debug(`Company details: name [${name}], status [${status}].`);
