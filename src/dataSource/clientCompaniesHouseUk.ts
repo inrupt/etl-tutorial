@@ -18,12 +18,7 @@
 // SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 import debugModule from "debug";
-import { fetch as crossFetch } from "cross-fetch";
-import {
-  RDF,
-  RDFS,
-  SCHEMA_INRUPT,
-} from "@inrupt/vocab-common-rdf-rdfdatafactory";
+import { RDF, RDFS } from "@inrupt/vocab-common-rdf-rdfdatafactory";
 import {
   INRUPT_COMMON,
   INRUPT_3RD_PARTY_COMPANIES_HOUSE_UK,
@@ -87,7 +82,7 @@ export async function companiesHouseUkExtractCompanyById(
     companyId
   );
 
-  return crossFetch(endpoint, {
+  return fetch(endpoint, {
     method: "GET",
     headers: {
       Accept: "application/json",
@@ -165,25 +160,25 @@ export function companiesHouseUkTransformCompany(
     const address = buildThing({
       url: `${searchResultIri}address`,
     })
-      .addIri(RDF.type, SCHEMA_INRUPT.PostalAddress)
+      .addIri(RDF.type, "https://schema.org/PostalAddress")
       .addStringEnglish(RDFS.label, "Address")
       .addStringNoLocale(
-        SCHEMA_INRUPT.streetAddress,
+        "https://schema.org/streetAddress",
         companyDataAsJson.address_snippet
       )
       .addStringNoLocale(
-        SCHEMA_INRUPT.addressLocality,
+        "https://schema.org/addressLocality",
         companyDataAsJson.address.locality
       )
       .addStringNoLocale(
-        SCHEMA_INRUPT.addressRegion,
+        "https://schema.org/addressRegion",
         companyDataAsJson.address.address_line_1
       )
       .addStringNoLocale(
-        SCHEMA_INRUPT.postalCode,
+        "https://schema.org/postalCode",
         companyDataAsJson.address.postal_code
       )
-      .addStringNoLocale(SCHEMA_INRUPT.addressCountry, countryValue)
+      .addStringNoLocale("https://schema.org/addressCountry", countryValue)
       .build();
 
     const company = buildDataset(
@@ -192,18 +187,18 @@ export function companiesHouseUkTransformCompany(
       })
         // Here we are saying that we consider this company to be of type
         // 'Schema.org Organization' (i.e., literally of type
-        // 'http://schema.org/Organization').
-        .addIri(RDF.type, SCHEMA_INRUPT.NS("Organization"))
+        // 'https://schema.org/Organization').
+        .addIri(RDF.type, "https://schema.org/Organization")
         // Link our company to its address.
-        .addIri(SCHEMA_INRUPT.address, address.url)
+        .addIri("https://schema.org/address", address.url)
 
-        .addStringNoLocale(SCHEMA_INRUPT.name, companyDataAsJson.title)
+        .addStringNoLocale("https://schema.org/name", companyDataAsJson.title)
         .addStringNoLocale(
           INRUPT_3RD_PARTY_COMPANIES_HOUSE_UK.status,
           companyDataAsJson.company_status
         )
         .addDate(
-          SCHEMA_INRUPT.startDate,
+          "https://schema.org/startDate",
           new Date(companyDataAsJson.date_of_creation)
         )
         .build()

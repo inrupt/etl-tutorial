@@ -231,10 +231,7 @@ describe("Solid dataset util functions", () => {
           .build()
       );
 
-      const thing = getThingOfTypeMandatoryOne(
-        dataset,
-        "http://schema.org/Person"
-      );
+      const thing = getThingOfTypeMandatoryOne(dataset, SCHEMA_INRUPT.Person);
       expect(getStringEnglish(thing, SCHEMA_INRUPT.familyName)).toBe(
         personName
       );

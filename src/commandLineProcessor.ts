@@ -76,17 +76,7 @@ function configureLog(argv: Arguments) {
 export default async function processCommandLine<T>(
   exitOnFail: boolean,
   commandLineArgs: string | ReadonlyArray<string>
-  // TODO: This is a kinda ridiculous 'fix', but using the return type from `yargs.parse()` fails,
-  //  so just using the actual return type as described by the TS error.
-  // ): { [key in keyof Arguments<T>]: Arguments<T>[key] } {
-): Promise<{
-  [x: string]: unknown;
-  localUserCredentialResourceGlob: unknown;
-  outputDirectory: string;
-  quiet: boolean;
-  _: (string | number)[];
-  $0: string;
-}> {
+) {
   return (
     yargs
       .exitProcess(exitOnFail)

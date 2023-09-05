@@ -48,9 +48,34 @@ import {
   SolidDataset,
 } from "@inrupt/solid-client";
 import { Session } from "@inrupt/solid-client-authn-node";
+import {
+  DCTERMS,
+  LDP,
+  OWL,
+  RDF,
+  RDFS,
+  XSD,
+} from "@inrupt/vocab-common-rdf-rdfdatafactory";
 import { APPLICATION_NAME } from "./applicationConstant";
 
 const debug = debugModule(`${APPLICATION_NAME}:solidPod`);
+
+/**
+ * Prefixes used for writing RDF in serializations that support prefixes, such
+ * as Turtle. These prefixes simply make the resulting serialization easier
+ * for humans to read.
+ *
+ * @type {{schema: string, void: string, rdf: string, owl: string, xsd: string, skos: string, dcterms: string, rdfs: string, time: string, vann: string}}
+ */
+export const RDF_PREFIXES = {
+  rdf: RDF.NAMESPACE,
+  rdfs: RDFS.NAMESPACE,
+  ldp: LDP.NAMESPACE,
+  owl: OWL.NAMESPACE,
+  xsd: XSD.NAMESPACE,
+  dcterms: DCTERMS.NAMESPACE,
+  schema: "https://schema.org/",
+};
 
 // Type that collects a binary Blob along with its URL and optionally an
 // associated metadata resource that describes that Blob (e.g., the Blog might
@@ -79,6 +104,7 @@ export async function insertResourceInSolidPod(
   try {
     await saveSolidDatasetAt(resourceIri, resource, {
       fetch: session.fetch,
+      prefixes: RDF_PREFIXES,
       // PMcB: This is a feature request I've submitted to the SDK Team...
       // outputDiagnosticsOnError: false,
     });
@@ -261,6 +287,7 @@ export async function updateOrInsertResourceInSolidPod(
           // eslint-disable-next-line no-await-in-loop
           await saveSolidDatasetAt(resource.url, mergedDataset, {
             fetch: session.fetch,
+            prefixes: RDF_PREFIXES,
             // PMcB: This is a feature request I've submitted to the SDK Team...
             // outputDiagnosticsOnError: false,
           });

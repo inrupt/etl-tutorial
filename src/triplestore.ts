@@ -18,7 +18,6 @@
 // SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 import debugModule from "debug";
-import { fetch as crossFetch } from "cross-fetch";
 
 import { SolidDataset } from "@inrupt/solid-client";
 import { INRUPT_COMMON } from "@inrupt/vocab-etl-tutorial-bundle-all-rdfdatafactory";
@@ -61,7 +60,7 @@ export async function clearTriplestore(
     namedGraph === "default" ? "CLEAR ALL" : `CLEAR GRAPH <${namedGraph}>`;
 
   // We have guard above against null or empty repo.
-  return crossFetch(repoEndpointUpdate as string, {
+  return fetch(repoEndpointUpdate as string, {
     method: "POST",
     body: command,
     headers: {
@@ -117,7 +116,7 @@ ${graphWrappedInsertStatement}
   // debug(`Attempting to write to triplestore:\n${fullBody}`);
 
   // We have guard above against null or empty repo.
-  return crossFetch(repoEndpointUpdate as string, {
+  return fetch(repoEndpointUpdate as string, {
     method: "POST",
     body: fullBody,
     headers: {

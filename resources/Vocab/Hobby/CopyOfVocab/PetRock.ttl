@@ -3,7 +3,7 @@ prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 prefix owl: <http://www.w3.org/2002/07/owl#>
 prefix vann: <http://purl.org/vocab/vann/>
 prefix dcterms: <http://purl.org/dc/terms/>
-prefix schema: <http://schema.org/>
+prefix schema: <https://schema.org/>
 prefix dalicc: <http://dalicc.net/licenselibrary/>
 
 prefix inrupt_gen: <https://inrupt.com/vocab/tool/artifact_generator#>

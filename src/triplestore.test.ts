@@ -18,9 +18,8 @@
 // SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 import { buildThing, createSolidDataset, setThing } from "@inrupt/solid-client";
 
-import { fetch as crossFetch } from "cross-fetch";
 import { config } from "dotenv-flow";
-import { RDF, SCHEMA_INRUPT } from "@inrupt/vocab-common-rdf-rdfdatafactory";
+import { RDF } from "@inrupt/vocab-common-rdf-rdfdatafactory";
 import {
   clearTriplestore,
   insertIntoTriplestoreResources,
@@ -30,10 +29,9 @@ import {
 import { createCredentialResourceFromEnvironmentVariables } from "./credentialUtil";
 import { buildDataset } from "./solidDatasetUtil";
 
-jest.mock("cross-fetch");
-const mockedFetch = crossFetch as jest.MockedFunction<typeof crossFetch>;
+const mockedFetch = jest.spyOn(global, "fetch");
 
-// Load environment variables from .env.test.local if available:
+// Load environment variables from .env.test.local, if available:
 config({
   default_node_env: process.env.NODE_ENV || "test",
   path: "resources/test",
@@ -128,7 +126,7 @@ describe("triplestore", () => {
         blob: new Blob(),
         metadata: buildDataset(
           buildThing({ url: "https://inrupt.com/vocab/first" })
-            .addIri(RDF.type, SCHEMA_INRUPT.Person)
+            .addIri(RDF.type, "https://schema.org/Person")
             .build()
         ),
       });
@@ -163,7 +161,7 @@ describe("triplestore", () => {
       resources.push(
         buildDataset(
           buildThing({ url: "https://inrupt.com/vocab/first" })
-            .addIri(RDF.type, SCHEMA_INRUPT.Person)
+            .addIri(RDF.type, "https://schema.org/Person")
             .build()
         )
       );
@@ -185,7 +183,7 @@ describe("triplestore", () => {
 
       const resource = buildDataset(
         buildThing({ url: "https://inrupt.com/vocab/first" })
-          .addIri(RDF.type, SCHEMA_INRUPT.Person)
+          .addIri(RDF.type, "https://schema.org/Person")
           .build()
       );
 
@@ -208,7 +206,7 @@ describe("triplestore", () => {
 
       const thing = buildDataset(
         buildThing({ url: "https://inrupt.com/vocab/first" })
-          .addIri(RDF.type, SCHEMA_INRUPT.Person)
+          .addIri(RDF.type, "https://schema.org/Person")
           .build()
       );
 
@@ -230,7 +228,7 @@ describe("triplestore", () => {
 
       const thing = buildDataset(
         buildThing({ url: "https://inrupt.com/vocab/first" })
-          .addIri(RDF.type, SCHEMA_INRUPT.Person)
+          .addIri(RDF.type, "https://schema.org/Person")
           .build()
       );
 

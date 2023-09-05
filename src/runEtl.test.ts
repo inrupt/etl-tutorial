@@ -41,13 +41,16 @@ import { Blob } from "node:buffer";
 
 import {
   buildThing,
-  getSolidDataset,
-  deleteSolidDataset,
-  overwriteFile,
   mockSolidDatasetFrom,
   mockFetchError,
 } from "@inrupt/solid-client";
-import { WithResourceInfo } from "@inrupt/solid-client/src/interfaces";
+import type {
+  WithResourceInfo,
+  getSolidDataset,
+  deleteSolidDataset,
+  overwriteFile,
+} from "@inrupt/solid-client";
+
 import { ILoginInputOptions } from "@inrupt/solid-client-authn-core";
 import { INRUPT_TEST } from "@inrupt/vocab-inrupt-test-rdfdatafactory";
 import { createCredentialResourceEmpty } from "./credentialUtil";
@@ -165,6 +168,14 @@ describe("ETL process", () => {
     }, 15000);
 
     it("should fail ETL from data source fails", async () => {
+      jest.spyOn(global, "fetch").mockResolvedValueOnce(
+        new Response(
+          JSON.stringify({
+            success: true,
+          })
+        )
+      );
+
       jest.requireMock(
         "@inrupt/solid-client-authn-node"
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -215,7 +226,7 @@ describe("ETL process", () => {
           },
           "getSolidDataset"
         )
-        // We expect a HTTP failure with a response.status code other than
+        // We expect an HTTP failure with a response.status code other than
         // 404!
         .mockRejectedValueOnce(
           mockFetchError("https://example.com/does-not-matter", 401)

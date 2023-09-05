@@ -1,5 +1,5 @@
-/**
- * Copyright 2020 Inrupt Inc.
+/*
+ * Copyright Inrupt Inc.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal in
@@ -19,30 +19,4 @@
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-module.exports = {
-  preset: "ts-jest",
-  testEnvironment: "jsdom",
-  clearMocks: true,
-  collectCoverage: true,
-  coverageThreshold: {
-    global: {
-      branches: 100,
-      functions: 100,
-      lines: 100,
-      statements: 100,
-    },
-  },
-  coveragePathIgnorePatterns: [
-    "/node_modules/",
-    "/src/InruptTooling/",
-    "<rootDir>/dist",
-  ],
-  testPathIgnorePatterns: [
-    "/node_modules/",
-    "/src/InruptTooling/",
-    // By default we only run unit tests:
-    "/src/e2e-node/",
-    "/src/e2e-browser/",
-  ],
-  setupFilesAfterEnv: ["<rootDir>/jest.setup.js"],
-};
+require("@inrupt/jest-jsdom-polyfills");

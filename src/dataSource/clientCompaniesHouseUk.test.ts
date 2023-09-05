@@ -19,9 +19,10 @@
 
 import { SolidDataset } from "@inrupt/solid-client";
 
-import { fetch as crossFetch } from "cross-fetch";
 import { config } from "dotenv-flow";
-import { SCHEMA_INRUPT } from "@inrupt/vocab-common-rdf-rdfdatafactory";
+// import { SCHEMA_INRUPT } from "@inrupt/vocab-common-rdf-rdfdatafactory";
+import { DataFactory } from "rdf-data-factory";
+import * as RDFJS from "rdf-js";
 import { createCredentialResourceFromEnvironmentVariables } from "../credentialUtil";
 import {
   getStringNoLocaleMandatoryOne,
@@ -32,14 +33,14 @@ import {
 /* eslint-disable import/extensions */
 import companiesHouseUkSearchCompanyIdExample from "../../resources/test/RealData/PublicApiResponse/api-uk-companieshouse-search-companyid-unilever.json";
 
-/* eslint-enable import/extensions */
 import {
   companiesHouseUkExtractCompanyById,
   companiesHouseUkTransformCompany,
 } from "./clientCompaniesHouseUk";
 
-jest.mock("cross-fetch");
-const mockedFetch = crossFetch as jest.MockedFunction<typeof crossFetch>;
+const factory: RDFJS.DataFactory = new DataFactory();
+
+const mockedFetch = jest.spyOn(global, "fetch");
 
 // Load environment variables from .env.test.local if available:
 config({
@@ -110,13 +111,15 @@ describe("Companies House UK data source", () => {
 
       const addressResource = getThingOfTypeFromCollectionMandatoryOne(
         resourceDetails,
-        SCHEMA_INRUPT.PostalAddress
+        // SCHEMA_INRUPT.PostalAddress
+        factory.namedNode("https://schema.org/PostalAddress")
       );
 
       expect(
         getStringNoLocaleMandatoryOne(
           addressResource,
-          SCHEMA_INRUPT.addressRegion
+          // SCHEMA_INRUPT.addressRegion
+          factory.namedNode("https://schema.org/addressRegion")
         )
       ).toEqual("Wirral");
     });

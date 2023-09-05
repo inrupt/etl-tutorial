@@ -14,5 +14,7 @@ resources
 
 jest.config.js
 jest.e2e.config.js
+jest.setup.js
+jest.e2e.config.js
 rollup.config.js
 tsconfig.json
