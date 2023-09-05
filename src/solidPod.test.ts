@@ -54,7 +54,7 @@ import {
   createContainerAt,
   setThing,
 } from "@inrupt/solid-client";
-import { WithResourceInfo } from "@inrupt/solid-client/src/interfaces";
+import type { WithResourceInfo } from "@inrupt/solid-client";
 import { INRUPT_TEST } from "@inrupt/vocab-inrupt-test-rdfdatafactory";
 import { updateOrInsertResourceInSolidPod } from "./solidPod";
 import { buildDataset } from "./solidDatasetUtil";

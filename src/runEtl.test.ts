@@ -41,13 +41,16 @@ import { Blob } from "node:buffer";
 
 import {
   buildThing,
-  getSolidDataset,
-  deleteSolidDataset,
-  overwriteFile,
   mockSolidDatasetFrom,
   mockFetchError,
 } from "@inrupt/solid-client";
-import { WithResourceInfo } from "@inrupt/solid-client/src/interfaces";
+import type {
+  WithResourceInfo,
+  getSolidDataset,
+  deleteSolidDataset,
+  overwriteFile,
+} from "@inrupt/solid-client";
+
 import { ILoginInputOptions } from "@inrupt/solid-client-authn-core";
 import { INRUPT_TEST } from "@inrupt/vocab-inrupt-test-rdfdatafactory";
 import { createCredentialResourceEmpty } from "./credentialUtil";
