@@ -109,7 +109,7 @@ npm run e2e-test-node-localExtract-TransformLoad
     whichever repository you configured your `.env.test.local` to Load data
     into).
   - Simply visualize this node:
-    `https://test.example.com/test-user/profile/card#me`
+    `https://test.example.com/test-user/webid`
   - You should be able to intuitively navigate through the ETL-ed data.
 
 Make a change to the local Passport data (e.g., in the JSON in
