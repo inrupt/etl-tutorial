@@ -2,7 +2,7 @@
 
 This repository contains code demonstrating how to Extract, Transform, and
 Load (ETL) into user Pods from various data sources, including publicly
-accessible 3rd-party data sources, local files, etc.
+accessible 3rd-party data sources, local files, JSON Objects, etc.
 
 Developed by [Inrupt, inc](https://www.inrupt.com).
 
@@ -16,32 +16,33 @@ Pods.
 ## Background
 
 To aid in the understanding of Linked Data, which is the foundation for
-everything in Solid, we first recommend reading the
+everything in Solid, we first recommend reading this
 [High-level overview of how Solid stores data](docs/LinkedDataOverview/LinkedData-HighLevel.md).
 
 ## Quick-start Worksheet
 
-If you want a complete, start-to-finish run through of the entire process of
-installing, configuring, testing, and running the ETL Tutorial, then you can
-follow our detailed Worksheet instructions [here](docs/Worksheet/Worksheet.md).
+If you want a complete but quick, start-to-finish run-through of the entire
+process of installing, configuring, testing, and running the ETL Tutorial, then
+you can follow our detailed Worksheet instructions
+[here](docs/Worksheet/Worksheet.md).
 
 The following instructions provide more background, and go into greater
 detail.
 
 ## Install and Run
 
-Since we may not yet wish to publicly publish any of the vocabularies we
-develop for this tutorial (namely the vocabularies we create on behalf of
+Since you may not yet wish to publicly publish any of the vocabularies we
+develop during this tutorial (namely the vocabularies you create on behalf of
 3rd-party data sources that don't yet provide RDF vocabularies themselves), we
-first need to generate a local `npm` package that bundles together JavaScript
-classes representing all the terms from all those vocabularies.
+recommend first generating a local `npm` package that bundles together all the
+JavaScript classes representing all the terms from all those vocabularies.
 
 To do this, we run Inrupt's open-source
 [Artifact Generator](https://github.com/inrupt/artifact-generator), pointing
 it at our local configuration YAML file that references all the local
 vocabularies we wish to use terms from, and that bundles together the
 generated JavaScript classes that contain constants for all the terms from
-each of those vocabularies (which are all located in the
+all of those vocabularies (which are all located in the
 [./resources/Vocab](./resources/Vocab) directory):
 
 ```script
@@ -55,15 +56,16 @@ faster execution), then you can run it directly:
 node ../SDK/artifact-generator/src/index.js generate --vocabListFile "resources/Vocab/vocab-etl-tutorial-bundle-all.yml" --outputDirectory "./src/InruptTooling/Vocab/EtlTutorial" --noPrompt --force --publish npmInstallAndBuild
 ```
 
-**Note**: during any ETL development, it's generally very common to continue
-to re-run the Artifact Generator regularly, for example after any local
-vocabulary changes or updates (we can also run it in 'file watcher' mode so
-that it runs automatically on any local vocab file changes, which is really
-convenient). So since it's a such a regular thing to run, it's generally a
-good idea to clone and run the Artifact Generator locally (as that's much
-faster than using `npx`).
+**Note**: During ETL development generally it's common to re-run the Artifact
+Generator regularly, for example after any local vocabulary changes or updates.
+We can also keep it running constantly in 'file watcher' mode so that it re-runs
+automatically on any local vocab file changes, which can be really convenient.
 
-Now install our ETL Tutorial as normal:
+So since it can be run so regularly, it can generally be a good idea to clone
+and run the open-source Artifact Generator locally (as that's much faster than
+using `npx`).
+
+Now install our ETL Tutorial:
 
 ```script
 npm install
@@ -71,11 +73,11 @@ npm install
 
 Finally, execute the units tests to ensure everything is configured correctly:
 
-Note: You can expect to see error output in the console, as we have **_100%
+**Note**: You can expect to see error output in the console, as we have **_100%
 branch code coverage_**, meaning our tests deliberately force lots of error
-situations so that we can test that our code correctly handles all these error
-situations. What we expect to see is a completely green final Jest report,
-with 100% coverage across the board.
+situations so that we can test that our code handles all those situations
+correctly. What we expect to see is a completely green final Jest report, with
+100% coverage across the board.
 
 ```script
 npm test
@@ -83,10 +85,10 @@ npm test
 
 ## End-2-End tests
 
-We provide multiple forms of End-2-End tests to allow us demonstrate and test
-different aspects of the overall ETL process in isolation. This clear
-separation also allows us to understand the various different credentials we
-generally need for an overall ETL process flow.
+We provide multiple forms of End-2-End tests to demonstrate and test different
+aspects of the overall ETL process in isolation. This clear separation also
+allows you to understand the various different credentials we generally need for
+an overall ETL process flow.
 
 For all these tests, and indeed when running the actual ETL process 'for real',
 we only need to create and edit a single local environment file to provide the
@@ -94,9 +96,11 @@ various credentials needed.
 
 Note however, that all these End-2-End tests, and the ETL process itself, will
 also all 'pass' without any such environment file at all, as the ETL code
-treats loading into Pods or a triplestore as completely optional. So if no
-credentials are provided at all, everything will still pass, but you'll see
-lots of console output saying Extraction and Loading are being ignored!
+actually treats the loading of data into Pods or a triplestore as completely
+optional (to allow easy testing of just the Extract phase, or just the
+Transformation phase). So even if no credentials are provided at all, everything
+will still pass, but you'll see lots of console output saying the Extraction
+and/or the Loading phases are being ignored!
 
 ### Overview of our End-2-End test suites
 
@@ -111,16 +115,17 @@ being 'ignored':
    ```
    (Without any credentials, we'll see this test successfully Extract data
    from local copies of 3rd-party data, successfully transform that data into
-   RDF, and then display that data to the console, but we'll see it ignore
-   Extraction from 3rd-parties for which we **require** credentials.)
-2. Load locally, Transform, and Load to Pods (and/or triplestore):
+   Linked Data, and then display that data to the console, but we'll see it
+   ignore Extraction from any 3rd-parties that **require** credentials.)
+2. Load locally, Transform, and Load to Pods (and/or a triplestore, if
+   configured):
    ```script
    npm run e2e-test-node-localExtract-TransformLoad
    ```
    (Without any credentials, we'll see this test successfully Extract data
    from local copies of 3rd-party data, successfully transform that data into
-   RDF, but then ignore all attempts to Load those resources into any Pod or
-   triplestore.)
+   Linked Data, but then ignore all attempts to Load those resources into any
+   Pod or triplestore.)
 
 ### Overview of test suites
 
@@ -129,21 +134,21 @@ Here we describe our test suites in a bit more detail...
 #### 1. Extract, Transform, and display to console.
 
 Tests that connect to each of our 3rd-party data sources to Extract data,
-Transform that extracted data into RDF, and then just outputs some of that
-data to the console (rather than Loading it anywhere!). This is to demonstrate
-and test **_only_** the Extract and Transform stages of the ETL process, and
-so for these tests we don't need to configure or setup anything to do with
-Solid Pods or triplestores (since we deliberately don't attempt to 'Load' this
-Extracted and Transformed data anywhere).
+Transform that extracted data into Linked Data, and then just outputs some of
+that data to the console (rather than Loading it anywhere!). This is to
+demonstrate and test **_only_** the Extract and Transform stages of the ETL
+process, and so for these tests we don't need to configure or setup anything to
+do with Solid Pods or triplestores (since we deliberately don't attempt to
+'Load' this Extracted and Transformed data anywhere yet).
 
 #### 2. Load locally, Transform, and Load to Pods (and/or triplestore).
 
 Tests that read local copies of 3rd-party data (so in this case, we are
 deliberately avoiding the need for any credentials to connect to any of our
-3rd-party data sources). These tests Transform that local data into RDF, and
-attempt to Load that data into a Solid Pod (and optionally a triplestore). In
+3rd-party data sources). These tests Transform that local data into Linked Data,
+and attempt to Load it into a Solid Pod (and optionally, a triplestore). In
 other words, this is for demonstrating and testing **_only_** the
-Transformation and Loading stages of the ETL process.
+Transformation and Loading phases of the ETL process.
 
 ### Create a local-only environment file
 
@@ -151,7 +156,7 @@ To run our ETL Tutorial or execute our End-2-End tests for 'real' (i.e., where
 we attempt to Extract real data from actual 3rd-parties, and/or Load data into
 real Solid Pods or a triplestore), we need to provide real, valid credentials,
 i.e., to allow our application to authenticate with the real APIs of our
-3rd-party data sources, and/or to allow our application to write RDF data to
+3rd-party data sources, and/or to allow our application to write Linked Data to
 real user's Solid Pods (and/or, optionally, to a triplestore).
 
 To allow us do all of this, we simply need to create and configure a single
@@ -164,13 +169,14 @@ local environment file, as follows:
    End-2-End tests, and/or the full ETL process itself).
 
 We can now configure this local environment file in various ways, and re-run
-our End-2-End test suites to understand all the variations of ETL possible.
+our End-2-End test suites to understand all the possible mix-and-match
+variations of ETL.
 
 ### Loading into a triplestore
 
 If you are already familiar with triplestores, then perhaps the easiest option
 initially is to simply create a new repository in your favorite triplestore
-and provide that repository's SPARQL update endpoint to our local environment
+and provide that repository's SPARQL update endpoint in your local environment
 file.
 
 If you are not already familiar with triplestores, you can safely ignore this
@@ -213,8 +219,8 @@ default inferred triples in all search results)).
 
 **Note**: At this stage (i.e., by only configuring our triplestore via the ETL
 environment file), all triples will be added directly to the `default` Named
-Graph. For more information on how to populate Named Graphs-per-user Pod, see
-later in this documentation.
+Graph. For more information on how to populate separate Named Graphs per user,
+see later in this documentation.
 
 If your triplestore supports visualizing triples (such as GraphDB), then our
 data can already be intuitively inspected and navigated by starting at the
@@ -228,13 +234,12 @@ any Linked Data Platform (LDP) containment triples (e.g., no `ldp:contains` or
 Loaded data into a raw triplestore, which has no inherent notion of LDP
 containment. We'll see later that Loading the same resources into a Solid Pod
 does result in these containment triples, since they'll have been created by
-virtue of Solid servers also being LDP servers (as currently defined in the
-Solid specification).
+virtue of Solid servers (currently) also being LDP servers.
 
 ### Running just Extract and Transform
 
 The test suite `e2e/node/ExtractTransform-display.test.ts` tests the
-Extraction of data from each of our 3rd-party data sources; Transforms that
+Extraction of data from each of our 3rd-party data sources, Transforms that
 Extracted data into Linked Data, and then displays it to the console for
 manual, visual verification (i.e., it deliberately does **_not_** attempt to
 Load this Transformed data anywhere, such as a Solid Pod or a triplestore).
@@ -248,12 +253,13 @@ npm run e2e-test-node-ExtractTransform-display
 **Note**: We can still run these tests without any environment file at all,
 but the code simply won't attempt any Extraction or Loading.
 
-If the supplied credentials are all valid, you should see data displayed
-on-screen, with colorful console output via the [debug](https://www.npmjs.com/package/debug)
-library, from all data sources that have configured credentials. Data sources
-without credentials are simply ignored, so these tests are convenient for
-testing individual data sources in isolation (i.e., simply comment out the
-credentials for the other data sources), or collectively.
+If the credentials you supplied were all valid, you should see data displayed
+on-screen, with colorful console output (via the
+[debug](https://www.npmjs.com/package/debug) library) from all data sources that
+have configured credentials. Data sources without credentials are simply
+ignored, so these tests are convenient for testing individual data sources in
+isolation (i.e., simply comment out the credentials for the other data sources),
+or collectively.
 
 ### Running the ETL process 'for real'
 
@@ -273,42 +279,43 @@ and also the ETL process registration credentials (see
 
 **_Note:_** We can also provide within these user-specific credential
 resources a SPARQL Update endpoint URL for a triplestore, and also a Named
-Graph IRI to use as that user's Pod in that triplestore. This allows us to
-populate multiple user's data in a single triplestore instance, with each
-user's Pod isolated by having its data in its own Named Graph. If no Named
-Graph value is provided, then that user's data will be loaded into the
-'default' graph of the triplestore, which would only be useful if running the
-ETL for a single user (as loading multiple users would just result in each
-user overwriting the data of the previously ETL'ed user).
+Graph IRI to represent that user's separate 'Pod' within that triplestore
+repository. This allows us to populate multiple user's data in a single
+triplestore instance, with each user's Pod isolated by having its data in its
+own Named Graph. If no Named Graph value is provided, then that user's data will
+be loaded into the 'default' graph of the triplestore, which is really only
+useful if running the ETL for a single user (as loading multiple users would
+just result in each user's data overwriting the data of the previously ETL'ed
+user).
 
 ## ETL Process
 
-Our ETL process runs as an automated process - one that individual end users
-need to specifically grant access to, to allow that process Load data into
-their Pods for them. (Note: if an Enterprise provides their end users with
+Our ETL process runs as an automated application - one that individual end users
+need to specifically grant access to, to allow that application Load data into
+their Pods on their behalf. (Note: if an Enterprise provides their users with
 Pods, then that Pod provisioning phase can automate the granting of that
-permission, so the actual end users may never need to take any specific action
-here at all).
+permission, so the actual end users themselves may never need to take any
+specific action here at all).
 
 To allow the ETL process to be granted access to any Pod, it needs to have an
 identifier (i.e., it needs a WebID). The easiest way to do this is simply to
 create a new Pod for **_your_** ETL Tutorial process.
 
-Note: [YopMail](https://yopmail.com/en/) is a very convenient, easy-to-use
+**Note**: [YopMail](https://yopmail.com/en/) is a very convenient, easy-to-use
 tool that can be used to create 'burner' email addresses for creating
 development or test accounts.
 
-Note: [Secure Password Generator](https://passwordsgenerator.net/) is a very
+**Note**: [Secure Password Generator](https://passwordsgenerator.net/) is a very
 convenient, easy-to-use tool that can be used to create secure 'burner'
 passwords for creating development or test accounts.
 
-### Registering the ETL process for each user
+### Registering our ETL application for each user
 
-In order for the ETL process to populate any user's Pod, the ETL process must
-first be registered. This simple registration process will generate standard
-OAuth Client ID and Client Secret values that our ETL tool will use to
-authenticate itself to allow it access individual user Pod's to Load their
-respective data.
+In order for our ETL application to populate any user's Pod, the application
+itself must first be registered. This simple registration process will generate
+standard OAuth `Client ID` and `Client Secret` values that our application will
+use to authenticate itself to allow it access individual user Pod's to Load
+their respective data.
 
 1. Go to the `registration` endpoint of the user's Identity Provider. For
    example, for Pods registered with Inrupt's PodSpaces, that would be:
@@ -317,26 +324,27 @@ respective data.
    https://login.inrupt.com/registration.html
    ```
 
-2. Login as the ETL tool user.
+2. Login as the ETL user.
 3. After successful login, the "Inrupt Application Registration" is
    redisplayed.
-4. In the "Register an app" field, enter a descriptive name for our ETL
-   application, and click "Register".
-5. After registration, store the displayed `Client ID` and `Client Secret`
+4. In the "Register an App" field, enter a descriptive name for our ETL
+   application, and click the "REGISTER" button.
+5. After registration, record the displayed `Client ID` and `Client Secret`
    values, which we'll need in the next step.
 
 ### Providing a Turtle credential file for the ETL application
 
-Our ETL process needs credentials with which it can connect to user Pods, so
-that (once authorized by each user) it can then load user-specific data into
+Our ETL application needs credentials with which it can connect to user Pods, so
+that (once authorized by each user) it can then Load user-specific data into
 those Pods.
 
 The easiest way to provide these credentials is to use a local Turtle file. An
 example Turtle file is provided here:
 ` resources/CredentialResource/RegisteredApp/example-registered-app-credential.ttl`.
 
-For more detailed instructions, see the [README.md](resources/CredentialResource/RegisteredApp/README.md)
-file in that directory.
+For more detailed instructions, see the
+[README.md](resources/CredentialResource/RegisteredApp/README.md) file in that
+directory.
 
 ### Providing a Turtle credential file per user
 
@@ -348,15 +356,15 @@ Pod!).
 1. Make a copy of the example user credentials Turtle file
    `resources/CredentialResource/User/example-user-credential.ttl` in the same
    directory.
-2. Rename the copied file using a simple naming convention such as
+2. Name the copied file using a simple naming convention such as
    `user-credential-<USER-NAME>.ttl`.
 3. Repeat this process, once for each user, filling in that user's 3rd-party
    API and Solid Pod credentials as appropriate for each user (if a user
    doesn't have credentials for a particular data source simply leave out
-   those credentials, or provide empty string values - the ETL tool will skip
-   that data source for that user).
+   those credentials, or provide empty string values - our ETL application will
+   skip that data source for that user).
 
-### Executing the ETL process
+### Executing the ETL application
 
 Make sure the project is successfully compiled to JavaScript:
 
@@ -373,12 +381,12 @@ node dist/index.js runEtl --etlCredentialResource <resources/CredentialResource/
 **_Note_**: Make sure to enclose the directory and glob pattern matching the
 naming convention you used to name your user credential files in double quote
 characters, so that any wildcard characters (like asterisks or question marks)
-will be interpreted correctly.
+will be correctly interpreted.
 
 ### Using `ts-node` to speed up running the ETL process repeatedly
 
 Since this project is TypeScript, it can be very convenient to use `ts-node`
-so that we don't have to repeatedly run the TypeScript compilation step. We
+so that we don't have to repeatedly re-run the TypeScript compilation step. We
 install `ts-node` globally, but of course you don't have to do this, you can
 install it locally too, or you could choose to use `npx`:
 
@@ -386,7 +394,7 @@ install it locally too, or you could choose to use `npx`:
 npm install -g ts-node typescript '@types/node'
 ```
 
-Now the entire ETL process can be run for multiple users with just a single
+Now the entire ETL application can be run for multiple users with just a single
 command:
 
 ```script
@@ -396,7 +404,7 @@ ts-node src/index.ts runEtl --etlCredentialResource <resources/CredentialResourc
 **_Note_**: Make sure to enclose the directory and glob pattern matching the
 naming convention you used to name your user credential files in double quote
 characters, so that any wildcard characters (like asterisks or question marks)
-will be interpreted correctly.
+will be correctly interpreted.
 
 ### Running Extract, Transform, and Load (from local data only)
 
@@ -457,7 +465,8 @@ Widoco automatically generates a detailed website describing all the
 information contained in a vocabulary (it can actually be configured to
 generate a website per human-language, meaning if our vocabularies have
 descriptive meta-data in English, French, Spanish, etc., Widoco can generate
-websites in each of those languages).
+websites in each of those languages, with very convenient links between them
+all).
 
 **_Note_**: Widoco is a Java application, and requires Java version 8 or
 higher to be installed on your machine. See
@@ -507,7 +516,7 @@ provide for running our End-2-End tests [here](e2e/node/.env.example).
 The general approach for invoking 3rd-party APIs is to first request a fresh
 access token, which generally requires providing identifying credentials, such
 as a username and password. This access token is then generally provided as
-the value of the HTTP `Authorization` header in all subsequent API calls.
+the value of the HTTP `Authorization:` header in all subsequent API calls.
 
 Our collections automatically store the data-source-specific access token in
 internal environment variables using the 'Tests' feature of Postman. For
@@ -517,7 +526,7 @@ access token from a successful authentication request into the `eagleViewAuthTok
 environment variable. This environment variable is then used in subsequent
 EagleView calls, such as the
 `https://webservices-integrations.eagleview.com/v2/Product/GetAvailableProducts`
-request, where it is specified as the `Authorization` header value (look in
+request, where it is specified as the `Authorization:` header value (look in
 the 'Headers' tab) .
 
 ## Advanced Vocabulary Management
@@ -538,7 +547,7 @@ from 3rd-parties, see
 
 **Generated artifacts:**
 
-- After running the Artifact Generator command in the install instructions
+- After running the Artifact Generator as described in the install instructions
   above, a series of artifacts will be generated in
   [./src/InruptTooling/Vocab/EtlTutorial](./src/InruptTooling/Vocab/EtlTutorial).
 - You'll notice multiple 'forms' of generated artifacts here, for both Java
@@ -564,8 +573,8 @@ from 3rd-parties, see
   root of each directory.
   **_Note:_** Notice that the documentation is generated in both English and
   Spanish (language selection is available in the top-right-hand corner of the
-  vocabulary webpage), as all our vocabularies describe themselves, and the
-  terms they contain, in both of those languages (see our
+  vocabulary webpage), as all our vocabularies describe themselves and the
+  terms they contain in both of those languages (see our
   [Companies House vocabulary](./resources/Vocab/ThirdParty/CopyOfVocab/inrupt-3rd-party-companies-house-uk.ttl)
   for instance).
 
@@ -573,15 +582,15 @@ from 3rd-parties, see
 
 - [Postman collections](./resources/Postman)
 - We've been careful not to include any credentials in our Postman
-  collections, instead relying environment variables to provide these.
+  collections, instead relying on environment variables to provide these.
 
 **Extract, Transform, and Load (ETL):**
 
 - TypeScript modules for external data sources (all under
   [./src/dataSource](./src/dataSource)):
 
-  - Companies House UK
-  - Local Passport data as JSON
+  - Companies House UK.
+  - Local Passport data as JSON.
 
 - **_Note:_** We have 100% branch code coverage, which we plan to maintain
   throughout this project.
@@ -614,9 +623,9 @@ from 3rd-parties, see
 - Inrupt's Artifact Generator (**_public_**) :
   [inrupt/artifact-generator](https://github.com/inrupt/artifact-generator)
 - Inrupt's published artifacts:
-- Java: Cloudsmith [SDK Development](https://cloudsmith.io/~inrupt/repos/sdk-development/packages/)
-  (**_private_** - we intend to open-source, based on demand)
-- JavaScript: [npmjs.org](https://www.npmjs.com/search?q=%40inrupt%2Fvocab-) (**_public_**)
+  - Java: Cloudsmith [SDK Development](https://cloudsmith.io/~inrupt/repos/sdk-development/packages/)
+    (**_private_** - we intend to open-source, based on demand)
+  - JavaScript: [npmjs.org](https://www.npmjs.com/search?q=%40inrupt%2Fvocab-) (**_public_**)
 
 **Utilities**
 
@@ -638,16 +647,16 @@ from 3rd-parties, see
 
 ## Potential Future Work
 
-- Should probably only delete Containers for data sources that are being
+- We should probably only delete Containers for data sources that are being
   re-loaded (so if I want to re-run just for InsideMaps and leave all other
   creds empty). But then, how would I delete or remove entire data source
-  Containers.
+  Containers?
 
 - Error handling - should the ETL tool exit when it encounters an error
   reading from a data source? Should it just fail for the current user, or the
   entire process?
 
-- Investigate get local government public data, e.g., perhaps local areas
+- Investigate getting local government public data, e.g., perhaps local areas
   publish their local water charge rates (so we could query that data in
   real-time to provide water charges based on the user's "census_tract"
   field).
@@ -659,7 +668,7 @@ from 3rd-parties, see
 
 - Drive ETL process based on direct user input via the WebApp, to do things
   like:
-  - Enter credentials for pre-defined data sources.
+  - Manually enter credentials for pre-defined data sources.
   - Detect discrepancies in preferences between data sources (e.g., user has
     set imperial as their Pod-wide choice, but the preference set within a
     specific data source is metric). Alert the user to this, and allow them to
