@@ -203,7 +203,7 @@ never attempts to Load any data anywhere anyway)...
 npm run e2e-test-node-localExtract-TransformLoad
 ```
 
-...you should see console output informing you that our ETL process
+...you should see console output informing you that our ETL application
 successfully Loaded resources into your triplestore repository. If your
 triplestore is not running, or you provided an incorrect SPARQL Update
 endpoint, then this test suite should fail (for example, with
@@ -261,7 +261,7 @@ ignored, so these tests are convenient for testing individual data sources in
 isolation (i.e., simply comment out the credentials for the other data sources),
 or collectively.
 
-### Running the ETL process 'for real'
+### Running the ETL application 'for real'
 
 To execute the entire ETL process 'for real' (i.e., hitting the 3rd-party APIs
 and populating real Solid Pods (and optionally also a triplestore)), we run
@@ -274,8 +274,8 @@ one per user, configured with that user's API credentials for each of the
 3rd-party data sources that that user has access to (each individual user may
 have credentials for none, some, or all, of the data sources), and also
 providing their Solid Pod credentials (such as their WebID and storage root,
-and also the ETL process registration credentials (see
-[below](#registering_the_etl_process_for_each_user))).
+and also the ETL application registration credentials (see
+[below](#registering_the_etl_application_for_each_user))).
 
 **_Note:_** We can also provide within these user-specific credential
 resources a SPARQL Update endpoint URL for a triplestore, and also a Named
@@ -288,7 +288,7 @@ useful if running the ETL for a single user (as loading multiple users would
 just result in each user's data overwriting the data of the previously ETL'ed
 user).
 
-## ETL Process
+## ETL Application
 
 Our ETL process runs as an automated application - one that individual end users
 need to specifically grant access to, to allow that application Load data into
@@ -297,9 +297,9 @@ Pods, then that Pod provisioning phase can automate the granting of that
 permission, so the actual end users themselves may never need to take any
 specific action here at all).
 
-To allow the ETL process to be granted access to any Pod, it needs to have an
-identifier (i.e., it needs a WebID). The easiest way to do this is simply to
-create a new Pod for **_your_** ETL Tutorial process.
+To allow the ETL application to be granted access to any Pod, it needs to have
+an identifier (i.e., it needs a WebID). The easiest way to do this is simply to
+create a new Pod for **_your_** ETL Tutorial application.
 
 **Note**: [YopMail](https://yopmail.com/en/) is a very convenient, easy-to-use
 tool that can be used to create 'burner' email addresses for creating
@@ -348,7 +348,7 @@ directory.
 
 ### Providing a Turtle credential file per user
 
-We can drive our ETL process using a credential resource per user, and the
+We can drive our ETL application using a credential resource per user, and the
 easiest way to provide these resources is to use local Turtle files - one per
 user (these could also be stored as resources within each user's individual
 Pod!).
@@ -383,7 +383,7 @@ naming convention you used to name your user credential files in double quote
 characters, so that any wildcard characters (like asterisks or question marks)
 will be correctly interpreted.
 
-### Using `ts-node` to speed up running the ETL process repeatedly
+### Using `ts-node` to speed up running the ETL application repeatedly
 
 Since this project is TypeScript, it can be very convenient to use `ts-node`
 so that we don't have to repeatedly re-run the TypeScript compilation step. We
@@ -666,7 +666,7 @@ from 3rd-parties, see
   yet defined in the Pod, the user could stipulate they wish to create these
   Pod-wide preferences based on current preferences they may have set.
 
-- Drive ETL process based on direct user input via the WebApp, to do things
+- Drive the ETL process based on direct user input via a WebApp, to do things
   like:
   - Manually enter credentials for pre-defined data sources.
   - Detect discrepancies in preferences between data sources (e.g., user has
