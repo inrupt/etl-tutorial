@@ -57,7 +57,7 @@ const debug = debugModule(`${APPLICATION_NAME}:applicationSetup`);
 
 // These default values can be useful if we wanted to populate a triplestore
 // even if no Solid Pod details are provided at all.
-const DEFAULT_WEBID = "https://test.example.com/test-user/profile/card#me";
+const DEFAULT_WEBID = "https://test.example.com/test-user/webid";
 export const DEFAULT_STORAGE_ROOT_PREFIX =
   "https://different.domain.example.com/testStorageRoot/user-GUID-";
 
