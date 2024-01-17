@@ -40,3 +40,7 @@ docs/dist/
 docs/.DS_Store
 .env*.local
 .cache
+
+# Ignore IntelliJ IDE files...
+.idea/
+*.iml
